@@ -212,7 +212,7 @@ public class UserTracker extends Component
     }
 
 
-    void updateDepth()
+    public void updateDepth()
     {
         try {
 
