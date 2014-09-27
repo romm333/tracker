@@ -23,7 +23,6 @@ package usertracking.prototype.classes;
 
 import org.OpenNI.*;
 
-
 import java.nio.ShortBuffer;
 import java.util.HashMap;
 import java.awt.*;
@@ -140,7 +139,7 @@ public class UserTracker extends Component
     private BufferedImage bimg;
     int width, height;
     
-    private final String SAMPLE_XML_FILE = "../../../Data/SamplesConfig.xml";
+    private final String SAMPLE_XML_FILE = "../Data/SamplesConfig.xml";
     public UserTracker()
     {
 
@@ -257,8 +256,7 @@ public class UserTracker extends Component
         }
     }
 
-
-    public Dimension getPreferredSize() {
+     public Dimension getPreferredSize() {
         return new Dimension(width, height);
     }
 
@@ -309,6 +307,7 @@ public class UserTracker extends Component
 
 		g.drawLine((int)pos1.getX(), (int)pos1.getY(), (int)pos2.getX(), (int)pos2.getY());
     }
+    
     public void drawSkeleton(Graphics g, int user) throws StatusException
     {
     	getJoints(user);
