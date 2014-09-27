@@ -2,6 +2,7 @@ package usertracking.prototype.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.HashMap;
 
@@ -18,16 +19,26 @@ public class SkeletonViewer extends Component {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private SimpleTracker viewer;
+	private SimpleTracker tracker;
+	private int width;
+	private int height;
+	
+	 private boolean drawBackground = true;
+	    private boolean drawPixels = false;
+	    private boolean drawSkeleton = true;
+	    private boolean printID = true;
+	    private boolean printState = true;
 
-	public void setViewer(SimpleTracker _viewer) {
-		viewer = _viewer;
+	public SkeletonViewer(SimpleTracker _traker) {
+		this.tracker = _traker;
+
+		width = this.tracker.width;
+		height = this.tracker.height;
+		this.setSize(width, height);
 	}
 
-	public SkeletonViewer() {
-		int width = this.viewer.depthMD.getFullXRes();
-		int heigth = this.viewer.depthMD.getFullYRes();
-		this.setSize(width, heigth);
+	public Dimension getPreferredSize() {
+		return new Dimension(width, height);
 	}
 
 	@Override
@@ -35,17 +46,49 @@ public class SkeletonViewer extends Component {
 		drawSkeleton(g);
 	}
 
+	Color colors[] = { Color.RED, Color.BLUE, Color.CYAN, Color.GREEN,
+			Color.MAGENTA, Color.PINK, Color.YELLOW, Color.WHITE };
+
 	void drawSkeleton(Graphics g) {
 		int[] users;
 		try {
-			users = viewer.userGen.getUsers();
+			users = tracker.userGen.getUsers();
 
 			for (int i = 0; i < users.length; ++i) {
-				Color c = Color.black;
+				Color c = colors[users[i] % colors.length];
+				c = new Color(255 - c.getRed(), 255 - c.getGreen(),
+						255 - c.getBlue());
+
 				g.setColor(c);
-				if (viewer.skeletonCap.isSkeletonTracking(users[i])) {
+				if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
 					drawSkeleton(g, users[i]);
-					System.out.println("drawing");
+				}
+				
+				if (printID)
+				{
+					Point3D com = tracker.depthGen.convertRealWorldToProjective(tracker.userGen.getUserCoM(users[i]));
+					String label = null;
+					if (!printState)
+					{
+						label = new String(""+users[i]);
+					}
+					else if (tracker.skeletonCap.isSkeletonTracking(users[i]))
+					{
+						// Tracking
+						label = new String(users[i] + " - Tracking");
+					}
+					else if (tracker.skeletonCap.isSkeletonCalibrating(users[i]))
+					{
+						// Calibrating
+						label = new String(users[i] + " - Calibrating");
+					}
+					else
+					{
+						// Nothing
+						label = new String(users[i] + " - Looking for pose (" + tracker.calibPose + ")");
+					}
+
+					g.drawString(label, (int)com.getX(), (int)com.getY());
 				}
 			}
 		} catch (StatusException e) {
@@ -55,18 +98,18 @@ public class SkeletonViewer extends Component {
 	}
 
 	public void getJoint(int user, SkeletonJoint joint) throws StatusException {
-		SkeletonJointPosition pos = viewer.skeletonCap
+		SkeletonJointPosition pos = tracker.skeletonCap
 				.getSkeletonJointPosition(user, joint);
 		if (pos.getPosition().getZ() != 0) {
-			viewer.getJoints()
+			tracker.getJoints()
 					.get(user)
 					.put(joint,
-							new SkeletonJointPosition(viewer.depthGen
+							new SkeletonJointPosition(tracker.depthGen
 									.convertRealWorldToProjective(pos
 											.getPosition()), pos
 									.getConfidence()));
 		} else {
-			viewer.getJoints().get(user)
+			tracker.getJoints().get(user)
 					.put(joint, new SkeletonJointPosition(new Point3D(), 0));
 		}
 	}
@@ -111,8 +154,8 @@ public class SkeletonViewer extends Component {
 
 	public void drawSkeleton(Graphics g, int user) throws StatusException {
 		getJoints(user);
-		HashMap<SkeletonJoint, SkeletonJointPosition> dict = viewer.getJoints()
-				.get(new Integer(user));
+		HashMap<SkeletonJoint, SkeletonJointPosition> dict = tracker
+				.getJoints().get(new Integer(user));
 
 		drawLine(g, dict, SkeletonJoint.HEAD, SkeletonJoint.NECK);
 

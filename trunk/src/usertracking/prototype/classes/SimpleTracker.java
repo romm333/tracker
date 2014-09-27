@@ -15,7 +15,7 @@ public class SimpleTracker {
 	public UserGenerator userGen;
 	public SkeletonCapability skeletonCap;
 	public PoseDetectionCapability poseDetectionCap;
-	String calibPose = null;
+	public String calibPose = null;
 	HashMap<Integer, HashMap<SkeletonJoint, SkeletonJointPosition>> joints;
 
 	private byte[] imgbytes;
@@ -26,16 +26,24 @@ public class SimpleTracker {
 		return joints;
 	}
 
+	public int width;
+	public int height;
+
 	public SimpleTracker() {
 		try {
 			scriptNode = new OutArg<ScriptNode>();
 			context = Context.createFromXmlFile(SAMPLE_XML_FILE, scriptNode);
 
 			depthGen = DepthGenerator.create(context);
-			depthMD = depthGen.getMetaData();
+			DepthMetaData depthMD = depthGen.getMetaData();
 
 			histogram = new float[10000];
-			
+			width = depthMD.getFullXRes();
+			height = depthMD.getFullYRes();
+
+			imgbytes = new byte[width * height * 3];
+			histogram = new float[10000];
+
 			userGen = UserGenerator.create(context);
 			skeletonCap = userGen.getSkeletonCapability();
 
@@ -112,7 +120,7 @@ public class SimpleTracker {
 				imgbytes[3 * pos + 1] = 0;
 				imgbytes[3 * pos + 2] = 0;
 
-				if (true || pixel != 0) {
+				if (pixel != 0) {
 					int colorID = user % (colors.length - 1);
 					if (user == 0) {
 						colorID = colors.length - 1;
@@ -166,7 +174,7 @@ public class SimpleTracker {
 		public void update(
 				IObservable<CalibrationProgressEventArgs> observable,
 				CalibrationProgressEventArgs args) {
-			System.out.println("Calibraion complete: " + args.getStatus());
+			System.out.println("Calibration complete: " + args.getStatus());
 			try {
 				if (args.getStatus() == CalibrationProgressStatus.OK) {
 					System.out.println("starting tracking " + args.getUser());

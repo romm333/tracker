@@ -13,7 +13,11 @@ public class TrackerViewBoard extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	private Label statusLabel;
-	private UserTracker userTracker;
+	private SimpleTracker tracker;
+	
+	private SkeletonViewer leftViewer;
+	private SkeletonViewer centerViewer;
+	
 	JPanel leftPanel;
 	JPanel centerPanel;
 	JPanel rightPanel;
@@ -28,8 +32,9 @@ public class TrackerViewBoard extends JFrame {
 		TrackerViewBoard trackerViewBoard = new TrackerViewBoard();
 		trackerViewBoard.showTopMenu();
 		while (true) {
-			trackerViewBoard.userTracker.updateDepth();
-			trackerViewBoard.userTracker.repaint();
+			trackerViewBoard.tracker.updateDepth();
+			trackerViewBoard.leftViewer.repaint();
+			trackerViewBoard.centerViewer.repaint();
 		}
 	}
 
@@ -43,11 +48,14 @@ public class TrackerViewBoard extends JFrame {
 			}
 		});
 
-		userTracker = new UserTracker();
-		
-
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//trackers
+		tracker = new SimpleTracker();
+		leftViewer = new SkeletonViewer(tracker);
+		centerViewer = new SkeletonViewer(tracker);
+		
 
 		// Main Panels
 
@@ -59,7 +67,7 @@ public class TrackerViewBoard extends JFrame {
 		leftPanel.setMinimumSize(new Dimension(325, 250));
 		leftPanel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1,
 				Color.BLACK));
-		leftPanel.add(userTracker);
+		leftPanel.add(leftViewer);
 		
 		centerPanel = new JPanel();
 		centerPanel.setBackground(Color.gray);
@@ -68,6 +76,7 @@ public class TrackerViewBoard extends JFrame {
 		centerPanel.setMinimumSize(new Dimension(300, 250));
 		centerPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 1,
 				Color.BLACK));
+		centerPanel.add(centerViewer);
 
 		rightPanel = new JPanel();
 		rightPanel.setBackground(Color.gray);
