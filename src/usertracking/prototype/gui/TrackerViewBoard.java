@@ -1,23 +1,23 @@
 package usertracking.prototype.gui;
 
-
 import java.awt.*;
 import java.awt.event.*;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-
+import javax.swing.JPanel;
 import usertracking.prototype.classes.*;
-
 
 public class TrackerViewBoard extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	//private Frame this;
-	private Label headerLabel;
 	private Label statusLabel;
 	private UserTracker userTracker;
-	
+	JPanel leftPanel;
+	JPanel centerPanel;
+	JPanel rightPanel;
+	JPanel bottomPanel;
 	
 	public TrackerViewBoard() {
 		super("Tracker View Board");
@@ -27,41 +27,71 @@ public class TrackerViewBoard extends JFrame {
 	public static void main(String[] args) {
 		TrackerViewBoard trackerViewBoard = new TrackerViewBoard();
 		trackerViewBoard.showTopMenu();
-	    while(true) {
-	    	trackerViewBoard.userTracker.updateDepth();
-	    	trackerViewBoard.userTracker.repaint();
-	    }
-   	}
+		while (true) {
+			trackerViewBoard.userTracker.updateDepth();
+			trackerViewBoard.userTracker.repaint();
+		}
+	}
 
 	private void prepareGUI() {
-	
-		this.setSize(600, 800);
-		this.setLayout(new GridLayout(3, 1));
+
+		this.setSize(850, 500);
+		this.setLayout(new BorderLayout());
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent windowEvent) {
 				System.exit(0);
 			}
 		});
-		headerLabel = new Label();
-		headerLabel.setAlignment(Label.CENTER);
-		
-		statusLabel = new Label();
-		statusLabel.setAlignment(Label.CENTER);
-		statusLabel.setSize(350, 100);
-		
+
 		userTracker = new UserTracker();
 		
-		this.add(headerLabel);
-		this.add(userTracker);
+
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// Main Panels
+
+		// Panels
+		leftPanel = new JPanel();
+		leftPanel.setBackground(Color.gray);
+		leftPanel.setPreferredSize(new Dimension(325, 250));
+
+		leftPanel.setMinimumSize(new Dimension(325, 250));
+		leftPanel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1,
+				Color.BLACK));
+		leftPanel.add(userTracker);
 		
-		this.add(statusLabel);
+		centerPanel = new JPanel();
+		centerPanel.setBackground(Color.gray);
+		centerPanel.setPreferredSize(new Dimension(300, 250));
+		
+		centerPanel.setMinimumSize(new Dimension(300, 250));
+		centerPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 1,
+				Color.BLACK));
+
+		rightPanel = new JPanel();
+		rightPanel.setBackground(Color.gray);
+		rightPanel.setPreferredSize(new Dimension(200, 250));
+
+		rightPanel.setMinimumSize(new Dimension(200, 250));
+		rightPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 1,
+				Color.BLACK));
+
+		bottomPanel = new JPanel();
+		bottomPanel.setBackground(Color.orange);
+		bottomPanel.setPreferredSize(new Dimension(800, 200));
+		bottomPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1,
+				Color.BLACK));
+
+		// Main window adding
+		this.add(leftPanel, BorderLayout.LINE_START);
+		this.add(centerPanel, BorderLayout.CENTER);
+		this.add(rightPanel, BorderLayout.LINE_END);
+		this.add(bottomPanel, BorderLayout.PAGE_END);
+
 		this.setVisible(true);
 	}
-	
-	   // frame.dispose();
-  
-	
-	
+
 	private void showTopMenu() {
 		// create a menu bar
 		final MenuBar menuBar = new MenuBar();
