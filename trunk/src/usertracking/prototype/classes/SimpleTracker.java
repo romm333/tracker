@@ -22,6 +22,12 @@ public class SimpleTracker {
 	private float histogram[];
 	public DepthMetaData depthMD;
 
+	public static String calibrationState;
+
+	public static String userState;
+
+	public static String trakingState;
+
 	public HashMap<Integer, HashMap<SkeletonJoint, SkeletonJointPosition>> getJoints() {
 		return joints;
 	}
@@ -145,6 +151,7 @@ public class SimpleTracker {
 		@Override
 		public void update(IObservable<UserEventArgs> observable,
 				UserEventArgs args) {
+			SimpleTracker.userState = "New user " + args.getId();
 			System.out.println("New user " + args.getId());
 			try {
 				if (skeletonCap.needPoseForCalibration()) {
@@ -163,6 +170,7 @@ public class SimpleTracker {
 		@Override
 		public void update(IObservable<UserEventArgs> observable,
 				UserEventArgs args) {
+			SimpleTracker.userState = "Lost user"+ args.getId();
 			System.out.println("Lost user " + args.getId());
 			joints.remove(args.getId());
 		}
@@ -174,9 +182,12 @@ public class SimpleTracker {
 		public void update(
 				IObservable<CalibrationProgressEventArgs> observable,
 				CalibrationProgressEventArgs args) {
+			SimpleTracker.calibrationState = "Calibration complete: "
+					+ args.getStatus();
 			System.out.println("Calibration complete: " + args.getStatus());
 			try {
 				if (args.getStatus() == CalibrationProgressStatus.OK) {
+					SimpleTracker.trakingState = "starting tracking " + args.getUser();
 					System.out.println("starting tracking " + args.getUser());
 					skeletonCap.startTracking(args.getUser());
 					joints.put(new Integer(args.getUser()),

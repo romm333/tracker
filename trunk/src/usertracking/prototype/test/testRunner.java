@@ -45,18 +45,10 @@ public class testRunner extends JFrame {
 		super.paint(g);
 		g.drawLine(200, 200, 200, 300);
 		
-		int x = 200;
-		int y = 300;
-//		x' = x cos f - y sin f
-	//	y' = y cos f + x sin f
+		int x2  = 200 * (int)Math.cos( Math.toRadians( 180) ) - 300 * (int)Math.sin( Math.toRadians( 180 ) );
+		int y2  = 200 * (int)Math.sin( Math.toRadians( 180) ) + 300 * (int)Math.cos( Math.toRadians( 180 ) );
 		
-		int x1 = 200;
-		int y1 = 300;
-		
-		int x2  = x1 * (int)Math.cos( Math.toRadians( 90 ) ) - y1 * (int)Math.sin( Math.toRadians( 90 ) );
-		int y2  = y1 * (int)Math.cos( Math.toRadians( 90 ) ) + x1 * (int)Math.sin( Math.toRadians( 90 ) );
-		
-		g.drawLine(x, y, x2, y2);
+		g.drawLine(200, 200, x2, y2);
 	}
 
 	void run() {
@@ -66,7 +58,14 @@ public class testRunner extends JFrame {
 		}
 
 	}
-
+	
+	
+//	vec2 rotate(vec2 point, float angle){
+//        vec2 rotated_point;
+//        rotated_point.x = point.x * cos(angle) - point.y * sin(angle);
+//        rotated_point.y = point.x * sin(angle) + point.y * cos(angle);
+//        return rotated_point;
+}
 	// void drawSkelet(Graphics g) {
 	//
 	// int[] users;
@@ -188,4 +187,4 @@ public class testRunner extends JFrame {
 	//
 	// }
 
-}
+

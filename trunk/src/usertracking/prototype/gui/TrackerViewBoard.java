@@ -15,8 +15,10 @@ public class TrackerViewBoard extends JFrame {
 	private Label statusLabel;
 	private SimpleTracker tracker;
 	
-	private SkeletonViewer leftViewer;
-	private SkeletonViewer centerViewer;
+	private SkeletonFrontFacade leftViewer;
+	private SkeletonSideFacade centerViewer;
+	private SkeletonTopFacade topViewer;
+	private SkeletonTextInfoFacade infoViewer;
 	
 	JPanel leftPanel;
 	JPanel centerPanel;
@@ -35,6 +37,9 @@ public class TrackerViewBoard extends JFrame {
 			trackerViewBoard.tracker.updateDepth();
 			trackerViewBoard.leftViewer.repaint();
 			trackerViewBoard.centerViewer.repaint();
+			
+			trackerViewBoard.topViewer.repaint();
+			trackerViewBoard.infoViewer.repaint();
 		}
 	}
 
@@ -53,10 +58,14 @@ public class TrackerViewBoard extends JFrame {
 		
 		//trackers
 		tracker = new SimpleTracker();
-		leftViewer = new SkeletonViewer(tracker);
-		centerViewer = new SkeletonViewer(tracker);
+		leftViewer = new SkeletonFrontFacade(tracker);
+		centerViewer = new SkeletonSideFacade(tracker);
 		
-
+		topViewer = new SkeletonTopFacade(tracker);
+		topViewer.setPreferredSize(new Dimension(800, 200));
+		
+		infoViewer = new SkeletonTextInfoFacade(tracker);
+		infoViewer.setPreferredSize(new Dimension(200, 250));
 		// Main Panels
 
 		// Panels
@@ -85,12 +94,15 @@ public class TrackerViewBoard extends JFrame {
 		rightPanel.setMinimumSize(new Dimension(200, 250));
 		rightPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 1,
 				Color.BLACK));
+		rightPanel.add(infoViewer);
 
 		bottomPanel = new JPanel();
-		bottomPanel.setBackground(Color.orange);
+		bottomPanel.setBackground(Color.gray);
 		bottomPanel.setPreferredSize(new Dimension(800, 200));
 		bottomPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1,
 				Color.BLACK));
+		
+		bottomPanel.add(topViewer);
 
 		// Main window adding
 		this.add(leftPanel, BorderLayout.LINE_START);
