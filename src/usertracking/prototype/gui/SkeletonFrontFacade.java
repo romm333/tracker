@@ -140,7 +140,9 @@ public class SkeletonFrontFacade extends Component {
 		if (jointHash.get(joint1).getConfidence() == 0
 				|| jointHash.get(joint2).getConfidence() == 0)
 			return;
-
+		
+		g.fillOval((int) pos1.getX() - 4, (int) pos1.getY() - 4, 8, 8);
+		g.fillOval((int) pos2.getX() - 4, (int) pos2.getY() - 4, 8, 8);
 		g.drawLine((int) pos1.getX(), (int) pos1.getY(), (int) pos2.getX(),
 				(int) pos2.getY());
 	}
