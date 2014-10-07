@@ -81,17 +81,17 @@ public class SkeletonTopFacade extends Component {
 
 					g.drawString(label, (int) com.getZ() / 10, (int) 125);
 					
-					float tempPixels = com.getZ();
-					
-					if (tempPixels > prevPixels)
-						pixResult = tempPixels - prevPixels;
-					if (prevPixels > tempPixels)
-						pixResult = prevPixels - tempPixels;
-
-					double toDraw = Math.floor(pixResult/3);
-
-					g.drawString("speed:" + toDraw, 200, 180);
-					prevPixels = tempPixels;
+//					float tempPixels = com.getZ();
+//					
+//					if (tempPixels > prevPixels)
+//						pixResult = tempPixels - prevPixels;
+//					if (prevPixels > tempPixels)
+//						pixResult = prevPixels - tempPixels;
+//
+//					double toDraw = Math.floor(pixResult/3);
+//
+//					g.drawString("speed:" + toDraw, 200, 180);
+//					prevPixels = tempPixels;
 
 				}
 			}
@@ -146,13 +146,16 @@ public class SkeletonTopFacade extends Component {
 			HashMap<SkeletonJoint, SkeletonJointPosition> jointHash,
 			SkeletonJoint joint1, SkeletonJoint joint2) {
 		Point3D pos1 = jointHash.get(joint1).getPosition();
-		//Point3D pos2 = jointHash.get(joint2).getPosition();
+		Point3D pos2 = jointHash.get(joint2).getPosition();
 
 		if (jointHash.get(joint1).getConfidence() == 0
 				|| jointHash.get(joint2).getConfidence() == 0)
 			return;
-
-		g.fillOval((int) pos1.getZ() / 10, 100, 10, 10);
+		
+		g.fillOval((int) pos1.getX() - 4, (int) pos1.getY() - 4, 8, 8);
+		g.fillOval((int) pos2.getX() - 4, (int) pos2.getY() - 4, 8, 8);
+		g.drawLine((int) pos1.getX(), (int) pos1.getY(), (int) pos2.getX(),
+				(int) pos2.getY());
 
 	}
 
@@ -161,7 +164,8 @@ public class SkeletonTopFacade extends Component {
 		HashMap<SkeletonJoint, SkeletonJointPosition> dict = tracker
 				.getJoints().get(new Integer(user));
 
-		drawLine(g, dict, SkeletonJoint.TORSO, SkeletonJoint.TORSO);
+		drawLine(g, dict, SkeletonJoint.NECK, SkeletonJoint.LEFT_SHOULDER);
+		drawLine(g, dict, SkeletonJoint.NECK, SkeletonJoint.RIGHT_SHOULDER);
 
 		// drawLine(g, dict, SkeletonJoint.HEAD, SkeletonJoint.NECK);
 		//

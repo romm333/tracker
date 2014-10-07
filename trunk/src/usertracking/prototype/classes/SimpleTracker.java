@@ -68,6 +68,9 @@ public class SimpleTracker {
 			skeletonCap.setSkeletonProfile(SkeletonProfile.ALL);
 
 			context.startGeneratingAll();
+			
+			
+			
 		} catch (GeneralException e) {
 			e.printStackTrace();
 			System.exit(1);

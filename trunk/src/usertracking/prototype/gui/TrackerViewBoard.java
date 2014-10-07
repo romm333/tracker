@@ -45,7 +45,7 @@ public class TrackerViewBoard extends JFrame {
 
 	private void prepareGUI() {
 
-		this.setSize(850, 500);
+		this.setSize(1000, 820);
 		this.setLayout(new BorderLayout());
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent windowEvent) {
@@ -62,10 +62,10 @@ public class TrackerViewBoard extends JFrame {
 		centerViewer = new SkeletonSideFacade(tracker);
 		
 		topViewer = new SkeletonTopFacade(tracker);
-		topViewer.setPreferredSize(new Dimension(800, 200));
+		topViewer.setPreferredSize(new Dimension(1000, 400));
 		
 		infoViewer = new SkeletonTextInfoFacade(tracker);
-		infoViewer.setPreferredSize(new Dimension(200, 250));
+		infoViewer.setPreferredSize(new Dimension(300, 250));
 		// Main Panels
 
 		// Panels
@@ -80,25 +80,25 @@ public class TrackerViewBoard extends JFrame {
 		
 		centerPanel = new JPanel();
 		centerPanel.setBackground(Color.gray);
-		centerPanel.setPreferredSize(new Dimension(300, 250));
+		centerPanel.setPreferredSize(new Dimension(325, 250));
 		
-		centerPanel.setMinimumSize(new Dimension(300, 250));
+		centerPanel.setMinimumSize(new Dimension(325, 250));
 		centerPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 1,
 				Color.BLACK));
 		centerPanel.add(centerViewer);
 
 		rightPanel = new JPanel();
 		rightPanel.setBackground(Color.gray);
-		rightPanel.setPreferredSize(new Dimension(200, 250));
+		rightPanel.setPreferredSize(new Dimension(300, 250));
 
-		rightPanel.setMinimumSize(new Dimension(200, 250));
+		rightPanel.setMinimumSize(new Dimension(300, 250));
 		rightPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 1,
 				Color.BLACK));
 		rightPanel.add(infoViewer);
 
 		bottomPanel = new JPanel();
 		bottomPanel.setBackground(Color.gray);
-		bottomPanel.setPreferredSize(new Dimension(800, 200));
+		bottomPanel.setPreferredSize(new Dimension(1000, 400));
 		bottomPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1,
 				Color.BLACK));
 		
