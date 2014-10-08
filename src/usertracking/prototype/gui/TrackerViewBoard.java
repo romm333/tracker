@@ -53,7 +53,7 @@ public class TrackerViewBoard extends JFrame {
 			}
 		});
 
-		setResizable(false);
+		setResizable(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		//trackers

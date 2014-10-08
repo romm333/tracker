@@ -10,6 +10,7 @@ import org.OpenNI.SkeletonJoint;
 import org.OpenNI.SkeletonJointPosition;
 import org.OpenNI.StatusException;
 
+import usertracking.prototype.classes.DataLogger;
 import usertracking.prototype.classes.SimpleTracker;
 
 public class SkeletonTopFacade extends Component {
@@ -68,7 +69,23 @@ public class SkeletonTopFacade extends Component {
 						label = new String("" + users[i]);
 					} else if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
 						// Tracking
-						label = new String(users[i] + " - Tracking");
+						SkeletonJointPosition posRightShoulder = tracker.skeletonCap
+								.getSkeletonJointPosition(users[i],  SkeletonJoint.RIGHT_SHOULDER);
+						SkeletonJointPosition posNeck = tracker.skeletonCap
+								.getSkeletonJointPosition(users[i],  SkeletonJoint.NECK);
+						SkeletonJointPosition posLeftShoukder = tracker.skeletonCap
+								.getSkeletonJointPosition(users[i], SkeletonJoint.LEFT_SHOULDER);
+						
+						
+						label = new String(users[i] + " - Tracking - " + com.getZ() + 
+								" --LS.Z-- " + posLeftShoukder.getPosition().getZ() + 
+								" --LS.X-- " + posLeftShoukder.getPosition().getX() +
+								" --NECK.Z " + posNeck.getPosition().getZ() + 
+								" --NECK.X " + posNeck.getPosition().getX() +
+								" --RS.Z " + posRightShoulder.getPosition().getZ() +
+								" --RS.X " + posRightShoulder.getPosition().getX());
+						DataLogger.writeFile(label);
+						
 					} else if (tracker.skeletonCap
 							.isSkeletonCalibrating(users[i])) {
 						// Calibrating
@@ -104,18 +121,18 @@ public class SkeletonTopFacade extends Component {
 	public void getJoint(int user, SkeletonJoint joint) throws StatusException {
 		SkeletonJointPosition pos = tracker.skeletonCap
 				.getSkeletonJointPosition(user, joint);
-		if (pos.getPosition().getZ() != 0) {
-			tracker.getJoints()
-					.get(user)
-					.put(joint,
-							new SkeletonJointPosition(tracker.depthGen
-									.convertRealWorldToProjective(pos
-											.getPosition()), pos
-									.getConfidence()));
-		} else {
-			tracker.getJoints().get(user)
-					.put(joint, new SkeletonJointPosition(new Point3D(), 0));
-		}
+//		if (pos.getPosition().getZ() != 0) {
+//			tracker.getJoints()
+//					.get(user)
+//					.put(joint,
+//							new SkeletonJointPosition(tracker.depthGen
+//									.convertRealWorldToProjective(pos
+//											.getPosition()), pos
+//									.getConfidence()));
+//		} else {
+//			tracker.getJoints().get(user)
+//					.put(joint, new SkeletonJointPosition(new Point3D(), 0));
+//		}
 	}
 
 	public void getJoints(int user) throws StatusException {
