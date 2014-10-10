@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.OpenNI.Point3D;
 import org.OpenNI.SkeletonJoint;
@@ -12,6 +14,7 @@ import org.OpenNI.StatusException;
 
 import usertracking.prototype.classes.DataLogger;
 import usertracking.prototype.classes.SimpleTracker;
+import usertracking.prototype.classes.UserProfiler;
 
 public class SkeletonTopFacade extends Component {
 	/**
@@ -73,17 +76,25 @@ public class SkeletonTopFacade extends Component {
 								.getSkeletonJointPosition(users[i],  SkeletonJoint.RIGHT_SHOULDER);
 						SkeletonJointPosition posNeck = tracker.skeletonCap
 								.getSkeletonJointPosition(users[i],  SkeletonJoint.NECK);
-						SkeletonJointPosition posLeftShoukder = tracker.skeletonCap
+						SkeletonJointPosition posLeftShoulder = tracker.skeletonCap
 								.getSkeletonJointPosition(users[i], SkeletonJoint.LEFT_SHOULDER);
+						SkeletonJointPosition posTorso = tracker.skeletonCap
+								.getSkeletonJointPosition(users[i], SkeletonJoint.TORSO);
 						
+						List<Point3D> triangleTops = new LinkedList();
+						triangleTops.add(posRightShoulder.getPosition());
+						triangleTops.add(posLeftShoulder.getPosition());
+						triangleTops.add(posTorso.getPosition());
 						
-						label = new String(users[i] + " - Tracking - " + com.getZ() + 
-								" --LS.Z-- " + posLeftShoukder.getPosition().getZ() + 
-								" --LS.X-- " + posLeftShoukder.getPosition().getX() +
-								" --NECK.Z " + posNeck.getPosition().getZ() + 
-								" --NECK.X " + posNeck.getPosition().getX() +
-								" --RS.Z " + posRightShoulder.getPosition().getZ() +
-								" --RS.X " + posRightShoulder.getPosition().getX());
+						double ddd = UserProfiler.getVectorLength(triangleTops);
+						label = new String(users[i] + " - Tracking - " + ddd);
+//						label = new String(users[i] + " - Tracking - " + com.getZ() + 
+//								" --LS.Z-- " + posLeftShoukder.getPosition().getZ() + 
+//								" --LS.X-- " + posLeftShoukder.getPosition().getX() +
+//								" --NECK.Z " + posNeck.getPosition().getZ() + 
+//								" --NECK.X " + posNeck.getPosition().getX() +
+//								" --RS.Z " + posRightShoulder.getPosition().getZ() +
+//								" --RS.X " + posRightShoulder.getPosition().getX());
 						DataLogger.writeFile(label);
 						
 					} else if (tracker.skeletonCap
@@ -121,15 +132,15 @@ public class SkeletonTopFacade extends Component {
 	public void getJoint(int user, SkeletonJoint joint) throws StatusException {
 		SkeletonJointPosition pos = tracker.skeletonCap
 				.getSkeletonJointPosition(user, joint);
-//		if (pos.getPosition().getZ() != 0) {
-//			tracker.getJoints()
-//					.get(user)
-//					.put(joint,
-//							new SkeletonJointPosition(tracker.depthGen
-//									.convertRealWorldToProjective(pos
-//											.getPosition()), pos
-//									.getConfidence()));
-//		} else {
+		if (pos.getPosition().getZ() != 0) {
+			tracker.getJoints()
+					.get(user)
+					.put(joint,
+							new SkeletonJointPosition(tracker.depthGen
+									.convertRealWorldToProjective(pos
+											.getPosition()), pos
+									.getConfidence()));
+		} // else {
 //			tracker.getJoints().get(user)
 //					.put(joint, new SkeletonJointPosition(new Point3D(), 0));
 //		}
@@ -181,8 +192,9 @@ public class SkeletonTopFacade extends Component {
 		HashMap<SkeletonJoint, SkeletonJointPosition> dict = tracker
 				.getJoints().get(new Integer(user));
 
-		drawLine(g, dict, SkeletonJoint.NECK, SkeletonJoint.LEFT_SHOULDER);
-		drawLine(g, dict, SkeletonJoint.NECK, SkeletonJoint.RIGHT_SHOULDER);
+		drawLine(g, dict, SkeletonJoint.LEFT_SHOULDER, SkeletonJoint.RIGHT_SHOULDER);
+		drawLine(g, dict, SkeletonJoint.RIGHT_SHOULDER, SkeletonJoint.TORSO);
+		drawLine(g, dict, SkeletonJoint.TORSO, SkeletonJoint.LEFT_SHOULDER);
 
 		// drawLine(g, dict, SkeletonJoint.HEAD, SkeletonJoint.NECK);
 		//
