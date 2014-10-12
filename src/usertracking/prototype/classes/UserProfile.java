@@ -1,6 +1,6 @@
 package usertracking.prototype.classes;
 
-import java.util.LinkedList;
+import java.io.ObjectInputStream.GetField;
 import java.util.List;
 
 import org.OpenNI.Point3D;
@@ -9,14 +9,34 @@ public class UserProfile {
 	private String profileName;
 	private int usageCount;
 
-	public double AB;
-	public double BC;
-	public double CA;
+	public double torsoToNeck;
+	public double torsoToLeftShoulder;
+	public double torsoToRigthShoulder;
+	public double torsoToHead;
 
-	private List<Point3D> triangleTops = new LinkedList<Point3D>();
+	public double LStH;
+	public double finalVector;
 
-	public void addTriangleTop(Point3D triangleTop) {
-		triangleTops.add(triangleTop);
+	public String movingDirection = "";
+
+	public void addProfileJoints(List<Point3D> profileJoints) {
+
+		Point3D torsoCoords = profileJoints.get(0);
+		Point3D lefhShoulderCoords = profileJoints.get(1);
+		Point3D rightShoulderCoords = profileJoints.get(2);
+
+		Point3D neckCoords = profileJoints.get(3);
+		Point3D headCoords = profileJoints.get(4);
+
+		torsoToNeck = getLenght(torsoCoords, neckCoords);
+		torsoToLeftShoulder = getLenght(torsoCoords, lefhShoulderCoords);
+		torsoToRigthShoulder = getLenght(torsoCoords, rightShoulderCoords);
+		torsoToHead = getLenght(torsoCoords, headCoords);
+
+		if (neckCoords.getZ() < headCoords.getZ())
+			movingDirection = "MOVING BACK";
+		else
+			movingDirection = "MOVING FORWARD";
 	}
 
 	public String getProfileName() {
@@ -35,25 +55,49 @@ public class UserProfile {
 		this.usageCount = usageCount;
 	}
 
-	public void calculateProfile() {
-		// left to right
-		float aX = triangleTops.get(0).getX();
-		float aY = triangleTops.get(0).getY();
-		float aZ = triangleTops.get(0).getZ();
-
-		float bX = triangleTops.get(1).getX();
-		float bY = triangleTops.get(1).getY();
-		float bZ = triangleTops.get(1).getZ();
-
-		float cX = triangleTops.get(2).getX();
-		float cY = triangleTops.get(2).getY();
-		float cZ = triangleTops.get(2).getZ();
-
-		AB = Math.sqrt(Math.pow((aX - bX), 2) + Math.pow((aY - bY), 2)
-				+ Math.pow((aZ - bZ), 2));
-		BC = Math.sqrt(Math.pow((bX - cX), 2) + Math.pow((bY - cY), 2)
-				+ Math.pow((bZ - cZ), 2));
-		CA = Math.sqrt(Math.pow((cX - aX), 2) + Math.pow((cY - aY), 2)
-				+ Math.pow((cZ - aZ), 2));
+	public double getLenght(Point3D joint1, Point3D joint2) {
+		return Math.sqrt(Math.pow(joint1.getX() - joint2.getX(), 2)
+				+ Math.pow(joint1.getY() - joint2.getY(), 2)
+				+ Math.pow(joint1.getZ() - joint2.getZ(), 2));
 	}
+
+	public void calculateVectorLength() {
+		// double p = (HtRS + RStT + TtLS) / 2;
+		// finalVector = Math.sqrt(p * (p - HtRS) * (p - RStT) * (p - TtLS));
+
+		// double finalVector = 0;
+		// // left to right
+		// float hX = triangleTops.get(0).getX();
+		// float hY = triangleTops.get(0).getY();
+		// float hZ = triangleTops.get(0).getZ();
+		//
+		// float rsX = triangleTops.get(1).getX();
+		// float rsY = triangleTops.get(1).getY();
+		// float rsZ = triangleTops.get(1).getZ();
+		//
+		// float tX = triangleTops.get(2).getX();
+		// float tY = triangleTops.get(2).getY();
+		// float tZ = triangleTops.get(2).getZ();
+		//
+		// float lsX = triangleTops.get(3).getX();
+		// float lsY = triangleTops.get(3).getY();
+		// float lsZ = triangleTops.get(3).getZ();
+		//
+		// double HtRS = Math.sqrt(Math.pow((hX - rsX), 2) + Math.pow((hY -
+		// rsY), 2)
+		// + Math.pow((hZ - rsZ), 2));
+		// double RStT = Math.sqrt(Math.pow((rsX - tX), 2) + Math.pow((rsY -
+		// tY), 2)
+		// + Math.pow((rsZ - tZ), 2));
+		// double TtLS = Math.sqrt(Math.pow((tX - lsX), 2) + Math.pow((tY -
+		// lsY), 2)
+		// + Math.pow((tZ - lsZ), 2));
+		// double LStH = Math.sqrt(Math.pow((lsX - tX), 2) + Math.pow((lsY -
+		// tY), 2)
+		// + Math.pow((lsZ - tZ), 2));
+
+		finalVector = torsoToLeftShoulder + torsoToRigthShoulder;
+		// return finalVector;
+	}
+
 }
