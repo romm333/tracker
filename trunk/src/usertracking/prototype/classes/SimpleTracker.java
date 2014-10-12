@@ -4,7 +4,9 @@ import org.OpenNI.*;
 
 import java.awt.Color;
 import java.nio.ShortBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class SimpleTracker {
 	private final String SAMPLE_XML_FILE = "../Data/SamplesConfig.xml";
@@ -22,11 +24,11 @@ public class SimpleTracker {
 	private float histogram[];
 	public DepthMetaData depthMD;
 
-	public static String calibrationState;
+	public static String calibrationState = "";
 
-	public static String userState;
+	public static String userState = "";
 
-	public static String trakingState;
+	public static String trakingState = "";
 
 	public HashMap<Integer, HashMap<SkeletonJoint, SkeletonJointPosition>> getJoints() {
 		return joints;
@@ -34,6 +36,13 @@ public class SimpleTracker {
 
 	public int width;
 	public int height;
+
+	public UserProfiler userProfiler;
+	HashMap<Integer, UserProfile> matchingUserProfiles;
+
+	public UserProfile getMatchingUserProfile(int uid) {
+		return matchingUserProfiles.get(uid);
+	}
 
 	public SimpleTracker() {
 		try {
@@ -67,14 +76,28 @@ public class SimpleTracker {
 
 			skeletonCap.setSkeletonProfile(SkeletonProfile.ALL);
 
+			matchingUserProfiles = new HashMap<Integer, UserProfile>();
+			userProfiler = new UserProfiler();
+
 			context.startGeneratingAll();
-			
-			
-			
+
 		} catch (GeneralException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+
+	public SkeletonJointPosition getJointPosition(int user, SkeletonJoint joint)
+			throws StatusException {
+		SkeletonJointPosition pos = skeletonCap.getSkeletonJointPosition(user,
+				joint);
+//		if (pos.getPosition().getZ() != 0) {
+//			return new SkeletonJointPosition(
+//					depthGen.convertRealWorldToProjective(pos.getPosition()),
+//					pos.getConfidence());
+//		}
+
+		return pos;
 	}
 
 	private void calcHist(ShortBuffer depth) {
@@ -156,6 +179,7 @@ public class SimpleTracker {
 				UserEventArgs args) {
 			SimpleTracker.userState = "New user " + args.getId();
 			System.out.println("New user " + args.getId());
+
 			try {
 				if (skeletonCap.needPoseForCalibration()) {
 					poseDetectionCap
@@ -169,13 +193,82 @@ public class SimpleTracker {
 		}
 	}
 
+	class UserProfileThread extends Thread {
+		private int userId;
+		private boolean isDone = false;
+
+		public UserProfileThread(int user) {
+			userId = user;
+		}
+
+		public void run() {
+
+			while (!isDone) {
+				if (skeletonCap.isSkeletonTracking(userId)) {
+					try {
+						Thread.sleep(3000);
+
+						Point3D torso = getJointPosition(
+								userId, SkeletonJoint.TORSO).getPosition();
+
+						Point3D neck = getJointPosition(
+								userId, SkeletonJoint.NECK).getPosition();
+						Point3D rightShoulder = getJointPosition(userId,
+										SkeletonJoint.RIGHT_SHOULDER)
+								.getPosition();
+						Point3D leftShoulder = getJointPosition(userId,
+										SkeletonJoint.LEFT_SHOULDER)
+								.getPosition();
+						Point3D head = getJointPosition(
+								userId, SkeletonJoint.HEAD).getPosition();
+
+						List<Point3D> profileJoints = new ArrayList<Point3D>();
+						profileJoints.add(torso);
+						profileJoints.add(leftShoulder);
+						profileJoints.add(rightShoulder);
+						profileJoints.add(neck);
+						profileJoints.add(head);
+
+						UserProfile profile = new UserProfile();
+						profile.addProfileJoints(profileJoints);
+						profile.calculateVectorLength();
+
+						profile.setProfileName("existingUser_" + userId);
+
+						UserProfile oneExistingProfile = userProfiler
+								.getSimilarProfile(profile);
+
+						if (oneExistingProfile == null) {
+							userProfiler.insertProfile(profile);
+						} else {
+							profile = oneExistingProfile;
+						}
+
+						matchingUserProfiles.put(userId, profile);
+
+						System.out.println("profile inserted");
+
+						isDone = true;
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				}
+			}
+		}
+	}
+
 	class LostUserObserver implements IObserver<UserEventArgs> {
 		@Override
 		public void update(IObservable<UserEventArgs> observable,
 				UserEventArgs args) {
-			SimpleTracker.userState = "Lost user"+ args.getId();
+			SimpleTracker.userState = "Lost user" + args.getId();
 			System.out.println("Lost user " + args.getId());
 			joints.remove(args.getId());
+
+			if (matchingUserProfiles.containsKey(args.getId()))
+				matchingUserProfiles.remove(args.getId());
 		}
 	}
 
@@ -190,11 +283,17 @@ public class SimpleTracker {
 			System.out.println("Calibration complete: " + args.getStatus());
 			try {
 				if (args.getStatus() == CalibrationProgressStatus.OK) {
-					SimpleTracker.trakingState = "starting tracking " + args.getUser();
+					SimpleTracker.trakingState = "starting tracking "
+							+ args.getUser();
 					System.out.println("starting tracking " + args.getUser());
 					skeletonCap.startTracking(args.getUser());
 					joints.put(new Integer(args.getUser()),
 							new HashMap<SkeletonJoint, SkeletonJointPosition>());
+
+					UserProfileThread upThread = new UserProfileThread(
+							args.getUser());
+					upThread.start();
+
 				} else if (args.getStatus() != CalibrationProgressStatus.MANUAL_ABORT) {
 					if (skeletonCap.needPoseForCalibration()) {
 						poseDetectionCap.startPoseDetection(calibPose,
