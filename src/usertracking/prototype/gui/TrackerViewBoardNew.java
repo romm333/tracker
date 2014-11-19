@@ -57,8 +57,8 @@ public class TrackerViewBoardNew extends JFrame {
 
 		// trackers
 		tracker = new SimpleTracker();
-		topViewer = new SkeletonTopView(tracker);
-
+		topViewer = new SkeletonTopView(tracker, 330, 590);
+	
 		frontViewer = new SkeletonFrontView(tracker);
 		frontViewer.setPreferredSize(new Dimension(270, 460));
 
