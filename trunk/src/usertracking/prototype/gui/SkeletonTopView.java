@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 import org.OpenNI.Point3D;
@@ -28,10 +29,16 @@ public class SkeletonTopView extends Component {
 
 	public SkeletonTopView(SimpleTracker _traker) {
 		this.tracker = _traker;
-
+		
 		width = this.tracker.width;
 		height = this.tracker.height;
-		this.setSize(width, height);
+	}
+	
+	public SkeletonTopView(SimpleTracker _traker, int _height, int _widht) {
+		this.tracker = _traker;
+		
+		width = _height;
+		height = _widht;
 	}
 
 	public Dimension getPreferredSize() {
@@ -75,9 +82,15 @@ public class SkeletonTopView extends Component {
 						label = new String("" + users[i]);
 					} else if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
 						// Tracking
-						label = new String(users[i] + " - Distance: ");
-						g.drawString(label, (int) com.getX(), (int)com.getZ()/3 - this.getHeight());
-						g.fillRect((int) com.getX(), (int)com.getZ()/3 - this.getHeight(),100, 2);
+						double Zcoord = com.getZ()/2 - this.getHeight();
+						
+						if(Zcoord < this.getHeight() / 35 + 8)
+							Zcoord = this.getHeight() / 35 + 8;
+						
+						DecimalFormat df = new DecimalFormat("####0.00");
+						label = new String("User " + users[i] + " - Distance: " +df.format(com.getZ()/1000));
+						g.drawString(label, (int) com.getX(), (int)Zcoord - 2);
+						g.fillRect((int) com.getX(), (int)Zcoord,100, 2);
 					
 					} else if (tracker.skeletonCap
 							.isSkeletonCalibrating(users[i])) {

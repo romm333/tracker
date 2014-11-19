@@ -2,6 +2,7 @@ package usertracking.prototype.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.HashMap;
