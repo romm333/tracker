@@ -1,7 +1,8 @@
-package usertracking.prototype.test;
+package usertracking.prototype.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.HashMap;
 
@@ -12,40 +13,75 @@ import org.OpenNI.StatusException;
 
 import usertracking.prototype.classes.SimpleTracker;
 
-public class testComponent extends Component {
+public class SkeletonSideView extends Component {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private SimpleTracker viewer;
+	private SimpleTracker tracker;
+	private int width;
+	private int height;
 
-	public void setViewer(SimpleTracker _viewer) {
-		viewer = _viewer;
+	private boolean printID = true;
+	private boolean printState = true;
+
+	public SkeletonSideView(SimpleTracker _traker) {
+		this.tracker = _traker;
+
+		width = this.tracker.width;
+		height = this.tracker.height;
+		this.setSize(width, height);
 	}
 
-	public testComponent() {
-		this.setSize(600, 600);
+	public Dimension getPreferredSize() {
+		return new Dimension(width, height);
 	}
 
 	@Override
 	public void paint(Graphics g) {
-		//
-		drawSkelet(g);
+		drawSkeleton(g);
 	}
 
-	void drawSkelet(Graphics g) {
+	Color colors[] = { Color.RED, Color.BLUE, Color.CYAN, Color.GREEN,
+			Color.MAGENTA, Color.PINK, Color.YELLOW, Color.WHITE };
 
+	void drawSkeleton(Graphics g) {
 		int[] users;
 		try {
-			users = viewer.userGen.getUsers();
+			users = tracker.userGen.getUsers();
 
 			for (int i = 0; i < users.length; ++i) {
-				Color c = Color.black;
+				Color c = colors[users[i] % colors.length];
+				c = new Color(255 - c.getRed(), 255 - c.getGreen(),
+						255 - c.getBlue());
+
 				g.setColor(c);
-				if (viewer.skeletonCap.isSkeletonTracking(users[i])) {
+				if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
 					drawSkeleton(g, users[i]);
-					System.out.println("drawing");
+				}
+
+				if (printID) {
+					Point3D com = tracker.depthGen
+							.convertRealWorldToProjective(tracker.userGen
+									.getUserCoM(users[i]));
+					String label = null;
+					if (!printState) {
+						label = new String("" + users[i]);
+					} else if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
+						// Tracking
+						label = new String(users[i] + " - Tracking");
+					} else if (tracker.skeletonCap
+							.isSkeletonCalibrating(users[i])) {
+						// Calibrating
+						label = new String(users[i] + " - Calibrating");
+					} else {
+						// Nothing
+						label = new String(users[i] + " - Looking for pose ("
+								+ tracker.calibPose + ")");
+					}
+
+					g.drawString(label, (int) com.getX(), (int) com.getY());
 				}
 			}
 		} catch (StatusException e) {
@@ -55,22 +91,40 @@ public class testComponent extends Component {
 	}
 
 	public void getJoint(int user, SkeletonJoint joint) throws StatusException {
-		SkeletonJointPosition pos = viewer.skeletonCap
+		SkeletonJointPosition pos = tracker.skeletonCap
 				.getSkeletonJointPosition(user, joint);
+		
+		
+		
 		if (pos.getPosition().getZ() != 0) {
-			viewer.getJoints()
+			tracker.getJoints()
 					.get(user)
 					.put(joint,
-							new SkeletonJointPosition(viewer.depthGen
+							new SkeletonJointPosition(tracker.depthGen
 									.convertRealWorldToProjective(pos
 											.getPosition()), pos
 									.getConfidence()));
 		} else {
-			viewer.getJoints().get(user)
+			tracker.getJoints().get(user)
 					.put(joint, new SkeletonJointPosition(new Point3D(), 0));
 		}
 	}
 
+	public SkeletonJointPosition rotateJoint(SkeletonJointPosition pos){
+		double rotationAngle = 90;
+		
+		double zPr = pos.getPosition().getZ()*Math.cos(Math.toRadians(rotationAngle)) -pos.getPosition().getX()*Math.sin(Math.toRadians(rotationAngle));
+		double xPr = pos.getPosition().getZ()*Math.sin(Math.toRadians(rotationAngle)) + pos.getPosition().getX()*Math.cos(Math.toRadians(rotationAngle));
+		double yPr = pos.getPosition().getY();
+		
+		Point3D positions = new Point3D((float)xPr, (float)yPr, (float)zPr);
+		
+		SkeletonJointPosition newPosition = new SkeletonJointPosition(positions, pos.getConfidence());
+		return newPosition;
+		
+		
+	}
+	
 	public void getJoints(int user) throws StatusException {
 		getJoint(user, SkeletonJoint.HEAD);
 		getJoint(user, SkeletonJoint.NECK);
@@ -104,15 +158,17 @@ public class testComponent extends Component {
 		if (jointHash.get(joint1).getConfidence() == 0
 				|| jointHash.get(joint2).getConfidence() == 0)
 			return;
-
+		
+		g.fillOval((int) pos1.getX() - 4, (int) pos1.getY() - 4, 8, 8);
+		g.fillOval((int) pos2.getX() - 4, (int) pos2.getY() - 4, 8, 8);
 		g.drawLine((int) pos1.getX(), (int) pos1.getY(), (int) pos2.getX(),
 				(int) pos2.getY());
 	}
 
 	public void drawSkeleton(Graphics g, int user) throws StatusException {
 		getJoints(user);
-		HashMap<SkeletonJoint, SkeletonJointPosition> dict = viewer.getJoints()
-				.get(new Integer(user));
+		HashMap<SkeletonJoint, SkeletonJointPosition> dict = tracker
+				.getJoints().get(new Integer(user));
 
 		drawLine(g, dict, SkeletonJoint.HEAD, SkeletonJoint.NECK);
 
