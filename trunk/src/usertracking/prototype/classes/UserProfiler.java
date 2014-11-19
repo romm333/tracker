@@ -44,7 +44,7 @@ public class UserProfiler {
 
 			// if(RightShoulderToTorso == TorsoToLeftShoulder &&
 			// TorsoToLeftShoulder == LeftShoulderToHead)
-			if (1.05 > vectorsAtt && vectorsAtt > 0.85) {
+			if (1.05 > vectorsAtt && vectorsAtt > 0.95) {
 				// System.out.println("HeadToRightShoulder: " +
 				// HeadToRightShoulder);
 				// System.out.println("RightShoulderToTorso: " +

@@ -91,11 +91,11 @@ public class SimpleTracker {
 			throws StatusException {
 		SkeletonJointPosition pos = skeletonCap.getSkeletonJointPosition(user,
 				joint);
-//		if (pos.getPosition().getZ() != 0) {
-//			return new SkeletonJointPosition(
-//					depthGen.convertRealWorldToProjective(pos.getPosition()),
-//					pos.getConfidence());
-//		}
+		if (pos.getPosition().getZ() != 0) {
+			return new SkeletonJointPosition(
+					depthGen.convertRealWorldToProjective(pos.getPosition()),
+					pos.getConfidence());
+		}
 
 		return pos;
 	}
@@ -206,7 +206,7 @@ public class SimpleTracker {
 			while (!isDone) {
 				if (skeletonCap.isSkeletonTracking(userId)) {
 					try {
-						Thread.sleep(3000);
+						Thread.sleep(5000);
 
 						Point3D torso = getJointPosition(
 								userId, SkeletonJoint.TORSO).getPosition();

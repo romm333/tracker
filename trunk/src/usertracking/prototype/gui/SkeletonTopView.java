@@ -13,7 +13,7 @@ import org.OpenNI.StatusException;
 
 import usertracking.prototype.classes.SimpleTracker;
 
-public class SkeletonSideFacade extends Component {
+public class SkeletonTopView extends Component {
 	/**
 	 * 
 	 */
@@ -26,7 +26,7 @@ public class SkeletonSideFacade extends Component {
 	private boolean printID = true;
 	private boolean printState = true;
 
-	public SkeletonSideFacade(SimpleTracker _traker) {
+	public SkeletonTopView(SimpleTracker _traker) {
 		this.tracker = _traker;
 
 		width = this.tracker.width;
@@ -39,7 +39,12 @@ public class SkeletonSideFacade extends Component {
 	}
 
 	@Override
-	public void paint(Graphics g) {
+	public void paint(Graphics g){ 
+		int x1 = this.getWidth()/ 2 - 35;
+		int y1 = this.getHeight() / 35;
+		g.setColor(Color.BLACK);
+		g.fillOval(x1, y1, 70, 8);
+		
 		drawSkeleton(g);
 	}
 
@@ -58,7 +63,7 @@ public class SkeletonSideFacade extends Component {
 
 				g.setColor(c);
 				if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
-					drawSkeleton(g, users[i]);
+					//drawSkeleton(g, users[i]);
 				}
 
 				if (printID) {
@@ -70,7 +75,10 @@ public class SkeletonSideFacade extends Component {
 						label = new String("" + users[i]);
 					} else if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
 						// Tracking
-						label = new String(users[i] + " - Tracking");
+						label = new String(users[i] + " - Distance: ");
+						g.drawString(label, (int) com.getX(), (int)com.getZ()/3 - this.getHeight());
+						g.fillRect((int) com.getX(), (int)com.getZ()/3 - this.getHeight(),100, 2);
+					
 					} else if (tracker.skeletonCap
 							.isSkeletonCalibrating(users[i])) {
 						// Calibrating
@@ -80,8 +88,8 @@ public class SkeletonSideFacade extends Component {
 						label = new String(users[i] + " - Looking for pose ("
 								+ tracker.calibPose + ")");
 					}
-
-					g.drawString(label, (int) com.getX(), (int) com.getY());
+					
+					
 				}
 			}
 		} catch (StatusException e) {
@@ -93,9 +101,6 @@ public class SkeletonSideFacade extends Component {
 	public void getJoint(int user, SkeletonJoint joint) throws StatusException {
 		SkeletonJointPosition pos = tracker.skeletonCap
 				.getSkeletonJointPosition(user, joint);
-		
-		
-		
 		if (pos.getPosition().getZ() != 0) {
 			tracker.getJoints()
 					.get(user)
@@ -110,21 +115,6 @@ public class SkeletonSideFacade extends Component {
 		}
 	}
 
-	public SkeletonJointPosition rotateJoint(SkeletonJointPosition pos){
-		double rotationAngle = 90;
-		
-		double zPr = pos.getPosition().getZ()*Math.cos(Math.toRadians(rotationAngle)) -pos.getPosition().getX()*Math.sin(Math.toRadians(rotationAngle));
-		double xPr = pos.getPosition().getZ()*Math.sin(Math.toRadians(rotationAngle)) + pos.getPosition().getX()*Math.cos(Math.toRadians(rotationAngle));
-		double yPr = pos.getPosition().getY();
-		
-		Point3D positions = new Point3D((float)xPr, (float)yPr, (float)zPr);
-		
-		SkeletonJointPosition newPosition = new SkeletonJointPosition(positions, pos.getConfidence());
-		return newPosition;
-		
-		
-	}
-	
 	public void getJoints(int user) throws StatusException {
 		getJoint(user, SkeletonJoint.HEAD);
 		getJoint(user, SkeletonJoint.NECK);
@@ -146,7 +136,6 @@ public class SkeletonSideFacade extends Component {
 		getJoint(user, SkeletonJoint.RIGHT_HIP);
 		getJoint(user, SkeletonJoint.RIGHT_KNEE);
 		getJoint(user, SkeletonJoint.RIGHT_FOOT);
-
 	}
 
 	void drawLine(Graphics g,
