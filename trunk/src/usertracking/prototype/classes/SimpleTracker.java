@@ -6,9 +6,12 @@ import java.awt.Color;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class SimpleTracker {
+public class SimpleTracker extends Observable{
 	private final String SAMPLE_XML_FILE = "../Data/SamplesConfig.xml";
 
 	private OutArg<ScriptNode> scriptNode;
@@ -37,6 +40,8 @@ public class SimpleTracker {
 	public int width;
 	public int height;
 
+	private List<Observer> attachedViews = new LinkedList<Observer>();
+	
 	public UserProfiler userProfiler;
 	HashMap<Integer, UserProfile> matchingUserProfiles;
 
@@ -86,7 +91,20 @@ public class SimpleTracker {
 			System.exit(1);
 		}
 	}
-
+	
+	@Override
+	public synchronized void addObserver(Observer o) {
+		attachedViews.add(o);
+	}
+	
+	@Override
+	public void notifyObservers() {
+		for(Observer oneview : attachedViews){
+			oneview.update(this, null);
+		}
+	}
+	
+	
 	public SkeletonJointPosition getJointPosition(int user, SkeletonJoint joint)
 			throws StatusException {
 		SkeletonJointPosition pos = skeletonCap.getSkeletonJointPosition(user,
@@ -168,10 +186,13 @@ public class SimpleTracker {
 					}
 				}
 			}
+			
+			notifyObservers();
+			
 		} catch (GeneralException e) {
 			e.printStackTrace();
 		}
-	}
+}
 
 	class NewUserObserver implements IObserver<UserEventArgs> {
 		@Override

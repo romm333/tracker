@@ -10,6 +10,9 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import usertracking.prototype.classes.*;
+import usertracking.prototype.gui.views.SkeletonFrontView;
+import usertracking.prototype.gui.views.SkeletonTextInfoView;
+import usertracking.prototype.gui.views.SkeletonTopView;
 
 public class TrackerViewBoardNew extends JFrame {
 
@@ -36,9 +39,6 @@ public class TrackerViewBoardNew extends JFrame {
 		trackerViewBoard.showTopMenu();
 		while (true) {
 			trackerViewBoard.tracker.updateDepth();
-
-			trackerViewBoard.topViewer.repaint();
-			trackerViewBoard.frontViewer.repaint();
 		}
 	}
 
@@ -58,12 +58,14 @@ public class TrackerViewBoardNew extends JFrame {
 		// trackers
 		tracker = new SimpleTracker();
 		topViewer = new SkeletonTopView(tracker, 330, 590);
-	
+		tracker.addObserver(topViewer);
+		
 		frontViewer = new SkeletonFrontView(tracker);
+		frontViewer.setSize(new Dimension(270, 460));
 		frontViewer.setPreferredSize(new Dimension(270, 460));
-
+		tracker.addObserver(frontViewer);
+		
 		infoViewer = new SkeletonTextInfoView(41, 16);
-
 		// Main Panels
 
 		// Panels

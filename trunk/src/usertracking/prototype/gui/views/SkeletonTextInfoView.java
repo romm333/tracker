@@ -1,7 +1,10 @@
-package usertracking.prototype.gui;
+package usertracking.prototype.gui.views;
 
 import java.io.PrintStream;
+
 import javax.swing.JTextArea;
+
+import usertracking.prototype.gui.utils.TextAreaOutputStream;
 
 public class SkeletonTextInfoView extends JTextArea {
 	/**

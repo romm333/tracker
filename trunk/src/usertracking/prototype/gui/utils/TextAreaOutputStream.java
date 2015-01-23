@@ -1,4 +1,4 @@
-package usertracking.prototype.gui;
+package usertracking.prototype.gui.utils;
 
 import java.awt.*;
 import java.io.*;
