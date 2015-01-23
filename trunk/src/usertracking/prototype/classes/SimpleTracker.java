@@ -2,6 +2,10 @@ package usertracking.prototype.classes;
 
 import org.OpenNI.*;
 
+import usertracking.prototype.profile.IUserProfile;
+import usertracking.prototype.profile.UserProfileByJoints;
+import usertracking.prototype.profile.UserProfiler;
+
 import java.awt.Color;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
@@ -43,9 +47,9 @@ public class SimpleTracker extends Observable{
 	private List<Observer> attachedViews = new LinkedList<Observer>();
 	
 	public UserProfiler userProfiler;
-	HashMap<Integer, UserProfile> matchingUserProfiles;
+	HashMap<Integer, IUserProfile> matchingUserProfiles;
 
-	public UserProfile getMatchingUserProfile(int uid) {
+	public IUserProfile getMatchingUserProfile(int uid) {
 		return matchingUserProfiles.get(uid);
 	}
 
@@ -81,7 +85,7 @@ public class SimpleTracker extends Observable{
 
 			skeletonCap.setSkeletonProfile(SkeletonProfile.ALL);
 
-			matchingUserProfiles = new HashMap<Integer, UserProfile>();
+			matchingUserProfiles = new HashMap<Integer, IUserProfile>();
 			userProfiler = new UserProfiler();
 
 			context.startGeneratingAll();
@@ -250,14 +254,13 @@ public class SimpleTracker extends Observable{
 						profileJoints.add(neck);
 						profileJoints.add(head);
 
-						UserProfile profile = new UserProfile();
-						profile.addProfileJoints(profileJoints);
-						profile.calculateVectorLength();
+						IUserProfile profile = new UserProfileByJoints();
+						profile.addUserFeatures(profileJoints);
+						profile.calculateProfileSignature();
 
 						profile.setProfileName("existingUser_" + userId);
 
-						UserProfile oneExistingProfile = userProfiler
-								.getSimilarProfile(profile);
+						IUserProfile oneExistingProfile = userProfiler.getSimilarProfile(profile);
 
 						if (oneExistingProfile == null) {
 							userProfiler.insertProfile(profile);
