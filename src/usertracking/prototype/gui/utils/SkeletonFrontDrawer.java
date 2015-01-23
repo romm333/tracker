@@ -13,7 +13,6 @@ public class SkeletonFrontDrawer extends AbstractSkeletonDrawer {
 
 	public SkeletonFrontDrawer(SimpleTracker _tracker) {
 		super(_tracker);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
