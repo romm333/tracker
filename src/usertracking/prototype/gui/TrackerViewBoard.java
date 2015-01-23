@@ -2,6 +2,7 @@ package usertracking.prototype.gui;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -9,6 +10,10 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import usertracking.prototype.classes.*;
+import usertracking.prototype.gui.views.SkeletonFrontView;
+import usertracking.prototype.gui.views.SkeletonSideView;
+import usertracking.prototype.gui.views.SkeletonTextInfoView;
+import usertracking.prototype.gui.views.SkeletonTopView;
 
 public class TrackerViewBoard extends JFrame {
 

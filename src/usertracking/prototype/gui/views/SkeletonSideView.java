@@ -1,8 +1,7 @@
-package usertracking.prototype.gui;
+package usertracking.prototype.gui.views;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.HashMap;
@@ -14,7 +13,7 @@ import org.OpenNI.StatusException;
 
 import usertracking.prototype.classes.SimpleTracker;
 
-public class SkeletonFrontView extends Component {
+public class SkeletonSideView extends Component {
 	/**
 	 * 
 	 */
@@ -27,7 +26,7 @@ public class SkeletonFrontView extends Component {
 	private boolean printID = true;
 	private boolean printState = true;
 
-	public SkeletonFrontView(SimpleTracker _traker) {
+	public SkeletonSideView(SimpleTracker _traker) {
 		this.tracker = _traker;
 
 		width = this.tracker.width;
@@ -94,6 +93,9 @@ public class SkeletonFrontView extends Component {
 	public void getJoint(int user, SkeletonJoint joint) throws StatusException {
 		SkeletonJointPosition pos = tracker.skeletonCap
 				.getSkeletonJointPosition(user, joint);
+		
+		
+		
 		if (pos.getPosition().getZ() != 0) {
 			tracker.getJoints()
 					.get(user)
@@ -108,6 +110,21 @@ public class SkeletonFrontView extends Component {
 		}
 	}
 
+	public SkeletonJointPosition rotateJoint(SkeletonJointPosition pos){
+		double rotationAngle = 90;
+		
+		double zPr = pos.getPosition().getZ()*Math.cos(Math.toRadians(rotationAngle)) -pos.getPosition().getX()*Math.sin(Math.toRadians(rotationAngle));
+		double xPr = pos.getPosition().getZ()*Math.sin(Math.toRadians(rotationAngle)) + pos.getPosition().getX()*Math.cos(Math.toRadians(rotationAngle));
+		double yPr = pos.getPosition().getY();
+		
+		Point3D positions = new Point3D((float)xPr, (float)yPr, (float)zPr);
+		
+		SkeletonJointPosition newPosition = new SkeletonJointPosition(positions, pos.getConfidence());
+		return newPosition;
+		
+		
+	}
+	
 	public void getJoints(int user) throws StatusException {
 		getJoint(user, SkeletonJoint.HEAD);
 		getJoint(user, SkeletonJoint.NECK);
