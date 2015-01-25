@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-public class SimpleTracker extends Observable{
+public class SimpleTracker extends Observable {
 	private final String SAMPLE_XML_FILE = "../Data/SamplesConfig.xml";
 
 	private OutArg<ScriptNode> scriptNode;
@@ -45,7 +45,7 @@ public class SimpleTracker extends Observable{
 	public int height;
 
 	private List<Observer> attachedViews = new LinkedList<Observer>();
-	
+
 	public UserProfiler userProfiler;
 	HashMap<Integer, IUserProfile> matchingUserProfiles;
 
@@ -74,7 +74,12 @@ public class SimpleTracker extends Observable{
 			poseDetectionCap = userGen.getPoseDetectionCapability();
 
 			userGen.getNewUserEvent().addObserver(new NewUserObserver());
+			userGen.getUserReenterEvent()
+					.addObserver(new UserReenterObserver());
+			userGen.getUserExitEvent().addObserver(new UserExitObserver());
+			
 			userGen.getLostUserEvent().addObserver(new LostUserObserver());
+
 			skeletonCap.getCalibrationCompleteEvent().addObserver(
 					new CalibrationCompleteObserver());
 			poseDetectionCap.getPoseDetectedEvent().addObserver(
@@ -95,20 +100,19 @@ public class SimpleTracker extends Observable{
 			System.exit(1);
 		}
 	}
-	
+
 	@Override
 	public synchronized void addObserver(Observer o) {
 		attachedViews.add(o);
 	}
-	
+
 	@Override
 	public void notifyObservers() {
-		for(Observer oneview : attachedViews){
+		for (Observer oneview : attachedViews) {
 			oneview.update(this, null);
 		}
 	}
-	
-	
+
 	public SkeletonJointPosition getJointPosition(int user, SkeletonJoint joint)
 			throws StatusException {
 		SkeletonJointPosition pos = skeletonCap.getSkeletonJointPosition(user,
@@ -190,20 +194,36 @@ public class SimpleTracker extends Observable{
 					}
 				}
 			}
-			
+
 			notifyObservers();
-			
+
 		} catch (GeneralException e) {
 			e.printStackTrace();
 		}
-}
+	}
+
+	class UserExitObserver implements IObserver<UserEventArgs> {
+		@Override
+		public void update(IObservable<UserEventArgs> observable,
+				UserEventArgs args) {
+			System.out.println("Exiting user " + args.getId());
+		}
+	}
+	
+	class UserReenterObserver implements IObserver<UserEventArgs> {
+		@Override
+		public void update(IObservable<UserEventArgs> observable,
+				UserEventArgs args) {
+			System.out.println("Reenter user " + args.getId());
+		}
+	}
 
 	class NewUserObserver implements IObserver<UserEventArgs> {
 		@Override
 		public void update(IObservable<UserEventArgs> observable,
 				UserEventArgs args) {
 			SimpleTracker.userState = "New user " + args.getId();
-			System.out.println("New user " + args.getId());
+			//System.out.println("New user " + args.getId());
 
 			try {
 				if (skeletonCap.needPoseForCalibration()) {
@@ -233,19 +253,17 @@ public class SimpleTracker extends Observable{
 					try {
 						Thread.sleep(5000);
 
-						Point3D torso = getJointPosition(
-								userId, SkeletonJoint.TORSO).getPosition();
+						Point3D torso = getJointPosition(userId,
+								SkeletonJoint.TORSO).getPosition();
 
-						Point3D neck = getJointPosition(
-								userId, SkeletonJoint.NECK).getPosition();
+						Point3D neck = getJointPosition(userId,
+								SkeletonJoint.NECK).getPosition();
 						Point3D rightShoulder = getJointPosition(userId,
-										SkeletonJoint.RIGHT_SHOULDER)
-								.getPosition();
+								SkeletonJoint.RIGHT_SHOULDER).getPosition();
 						Point3D leftShoulder = getJointPosition(userId,
-										SkeletonJoint.LEFT_SHOULDER)
-								.getPosition();
-						Point3D head = getJointPosition(
-								userId, SkeletonJoint.HEAD).getPosition();
+								SkeletonJoint.LEFT_SHOULDER).getPosition();
+						Point3D head = getJointPosition(userId,
+								SkeletonJoint.HEAD).getPosition();
 
 						List<Point3D> profileJoints = new ArrayList<Point3D>();
 						profileJoints.add(torso);
@@ -260,7 +278,8 @@ public class SimpleTracker extends Observable{
 
 						profile.setProfileName("existingUser_" + userId);
 
-						IUserProfile oneExistingProfile = userProfiler.getSimilarProfile(profile);
+						IUserProfile oneExistingProfile = userProfiler
+								.getSimilarProfile(profile);
 
 						if (oneExistingProfile == null) {
 							userProfiler.insertProfile(profile);
@@ -288,7 +307,7 @@ public class SimpleTracker extends Observable{
 		public void update(IObservable<UserEventArgs> observable,
 				UserEventArgs args) {
 			SimpleTracker.userState = "Lost user" + args.getId();
-			System.out.println("Lost user " + args.getId());
+			//System.out.println("Lost user " + args.getId());
 			joints.remove(args.getId());
 
 			if (matchingUserProfiles.containsKey(args.getId()))
@@ -304,7 +323,7 @@ public class SimpleTracker extends Observable{
 				CalibrationProgressEventArgs args) {
 			SimpleTracker.calibrationState = "Calibration complete: "
 					+ args.getStatus();
-			System.out.println("Calibration complete: " + args.getStatus());
+			//System.out.println("Calibration complete: " + args.getStatus());
 			try {
 				if (args.getStatus() == CalibrationProgressStatus.OK) {
 					SimpleTracker.trakingState = "starting tracking "
@@ -337,8 +356,8 @@ public class SimpleTracker extends Observable{
 		@Override
 		public void update(IObservable<PoseDetectionEventArgs> observable,
 				PoseDetectionEventArgs args) {
-			System.out.println("Pose " + args.getPose() + " detected for "
-					+ args.getUser());
+			//System.out.println("Pose " + args.getPose() + " detected for "
+					//+ args.getUser());
 			try {
 				poseDetectionCap.stopPoseDetection(args.getUser());
 				skeletonCap.requestSkeletonCalibration(args.getUser(), true);
