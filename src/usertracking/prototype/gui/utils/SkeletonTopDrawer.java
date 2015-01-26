@@ -16,7 +16,7 @@ public class SkeletonTopDrawer extends AbstractSkeletonDrawer {
 	}
 
 	@Override
-	public void drawLine(Graphics g,
+	public void drawLimb(Graphics g,
 			HashMap<SkeletonJoint, SkeletonJointPosition> jointHash,
 			SkeletonJoint joint1, SkeletonJoint joint2) {
 		Point3D pos1 = jointHash.get(joint1).getPosition();
@@ -26,15 +26,15 @@ public class SkeletonTopDrawer extends AbstractSkeletonDrawer {
 				|| jointHash.get(joint2).getConfidence() == 0)
 			return;
 
-		double Zcoord1 = pos1.getZ() / 2 - getTracker().height;
+		double Zcoord1 = pos1.getZ() / 3 - getTracker().height;
 
-		if (Zcoord1 < getTracker().height / 30 + 8)
-			Zcoord1 = getTracker().height / 30 + 8;
+		if (Zcoord1 < getTracker().height / 40 + 8)
+			Zcoord1 = getTracker().height / 40 + 8;
 
-		double Zcoord2 = pos2.getZ() / 2 - getTracker().height;
+		double Zcoord2 = pos2.getZ() / 3 - getTracker().height;
 
-		if (Zcoord2 < getTracker().height / 30 + 8)
-			Zcoord2 = getTracker().height / 30 + 8;
+		if (Zcoord2 < getTracker().height / 40 + 8)
+			Zcoord2 = getTracker().height / 40 + 8;
 
 		g.fillOval((int) pos1.getX() - 4, (int) Zcoord1 - 4, 8, 8);
 		g.fillOval((int) pos2.getX() - 4, (int) Zcoord2 - 4, 8, 8);

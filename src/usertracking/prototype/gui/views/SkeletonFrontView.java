@@ -4,13 +4,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
 import org.OpenNI.Point3D;
-import org.OpenNI.SkeletonJoint;
-import org.OpenNI.SkeletonJointPosition;
 import org.OpenNI.StatusException;
 
 import usertracking.prototype.classes.SimpleTracker;
@@ -64,7 +61,6 @@ public class SkeletonFrontView extends Component implements Observer{
 
 				g.setColor(c);
 				if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
-					//drawSkeleton(g, users[i]);
 					skeletonDrawer.drawSkeleton(g, users[i]);
 				}
 

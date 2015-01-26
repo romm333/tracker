@@ -65,33 +65,33 @@ public abstract class AbstractSkeletonDrawer {
 		HashMap<SkeletonJoint, SkeletonJointPosition> dict = getTracker()
 				.getJoints().get(new Integer(user));
 
-		drawLine(g, dict, SkeletonJoint.HEAD, SkeletonJoint.NECK);
+		drawLimb(g, dict, SkeletonJoint.HEAD, SkeletonJoint.NECK);
 
-		drawLine(g, dict, SkeletonJoint.LEFT_SHOULDER, SkeletonJoint.TORSO);
-		drawLine(g, dict, SkeletonJoint.RIGHT_SHOULDER, SkeletonJoint.TORSO);
+		drawLimb(g, dict, SkeletonJoint.LEFT_SHOULDER, SkeletonJoint.TORSO);
+		drawLimb(g, dict, SkeletonJoint.RIGHT_SHOULDER, SkeletonJoint.TORSO);
 
-		drawLine(g, dict, SkeletonJoint.NECK, SkeletonJoint.LEFT_SHOULDER);
-		drawLine(g, dict, SkeletonJoint.LEFT_SHOULDER, SkeletonJoint.LEFT_ELBOW);
-		drawLine(g, dict, SkeletonJoint.LEFT_ELBOW, SkeletonJoint.LEFT_HAND);
+		drawLimb(g, dict, SkeletonJoint.NECK, SkeletonJoint.LEFT_SHOULDER);
+		drawLimb(g, dict, SkeletonJoint.LEFT_SHOULDER, SkeletonJoint.LEFT_ELBOW);
+		drawLimb(g, dict, SkeletonJoint.LEFT_ELBOW, SkeletonJoint.LEFT_HAND);
 
-		drawLine(g, dict, SkeletonJoint.NECK, SkeletonJoint.RIGHT_SHOULDER);
-		drawLine(g, dict, SkeletonJoint.RIGHT_SHOULDER,
+		drawLimb(g, dict, SkeletonJoint.NECK, SkeletonJoint.RIGHT_SHOULDER);
+		drawLimb(g, dict, SkeletonJoint.RIGHT_SHOULDER,
 				SkeletonJoint.RIGHT_ELBOW);
-		drawLine(g, dict, SkeletonJoint.RIGHT_ELBOW, SkeletonJoint.RIGHT_HAND);
+		drawLimb(g, dict, SkeletonJoint.RIGHT_ELBOW, SkeletonJoint.RIGHT_HAND);
 
-		drawLine(g, dict, SkeletonJoint.LEFT_HIP, SkeletonJoint.TORSO);
-		drawLine(g, dict, SkeletonJoint.RIGHT_HIP, SkeletonJoint.TORSO);
-		drawLine(g, dict, SkeletonJoint.LEFT_HIP, SkeletonJoint.RIGHT_HIP);
+		drawLimb(g, dict, SkeletonJoint.LEFT_HIP, SkeletonJoint.TORSO);
+		drawLimb(g, dict, SkeletonJoint.RIGHT_HIP, SkeletonJoint.TORSO);
+		drawLimb(g, dict, SkeletonJoint.LEFT_HIP, SkeletonJoint.RIGHT_HIP);
 
-		drawLine(g, dict, SkeletonJoint.LEFT_HIP, SkeletonJoint.LEFT_KNEE);
-		drawLine(g, dict, SkeletonJoint.LEFT_KNEE, SkeletonJoint.LEFT_FOOT);
+		drawLimb(g, dict, SkeletonJoint.LEFT_HIP, SkeletonJoint.LEFT_KNEE);
+		drawLimb(g, dict, SkeletonJoint.LEFT_KNEE, SkeletonJoint.LEFT_FOOT);
 
-		drawLine(g, dict, SkeletonJoint.RIGHT_HIP, SkeletonJoint.RIGHT_KNEE);
-		drawLine(g, dict, SkeletonJoint.RIGHT_KNEE, SkeletonJoint.RIGHT_FOOT);
+		drawLimb(g, dict, SkeletonJoint.RIGHT_HIP, SkeletonJoint.RIGHT_KNEE);
+		drawLimb(g, dict, SkeletonJoint.RIGHT_KNEE, SkeletonJoint.RIGHT_FOOT);
 
 	}
 
-	public abstract void drawLine(Graphics g,
+	public abstract void drawLimb(Graphics g,
 			HashMap<SkeletonJoint, SkeletonJointPosition> jointHash,
 			SkeletonJoint joint1, SkeletonJoint joint2);
 

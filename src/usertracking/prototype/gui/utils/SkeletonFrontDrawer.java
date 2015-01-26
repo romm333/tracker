@@ -16,7 +16,7 @@ public class SkeletonFrontDrawer extends AbstractSkeletonDrawer {
 	}
 
 	@Override
-	public void drawLine(Graphics g,
+	public void drawLimb(Graphics g,
 			HashMap<SkeletonJoint, SkeletonJointPosition> jointHash,
 			SkeletonJoint joint1, SkeletonJoint joint2) {
 		Point3D pos1 = jointHash.get(joint1).getPosition();
