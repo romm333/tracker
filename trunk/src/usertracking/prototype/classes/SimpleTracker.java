@@ -163,7 +163,7 @@ public class SimpleTracker extends Observable {
 
 			DepthMetaData depthMD = depthGen.getMetaData();
 			SceneMetaData sceneMD = userGen.getUserPixels(0);
-
+			
 			ShortBuffer scene = sceneMD.getData().createShortBuffer();
 			ShortBuffer depth = depthMD.getData().createShortBuffer();
 			calcHist(depth);
@@ -214,7 +214,11 @@ public class SimpleTracker extends Observable {
 		@Override
 		public void update(IObservable<UserEventArgs> observable,
 				UserEventArgs args) {
-			System.out.println("Reenter user " + args.getId());
+		
+			IUserProfile currentProfile = getMatchingUserProfile(args.getId());
+			 
+			 if(currentProfile!=null)
+				 System.out.println("Reenter user " + currentProfile.getProfileName());
 		}
 	}
 

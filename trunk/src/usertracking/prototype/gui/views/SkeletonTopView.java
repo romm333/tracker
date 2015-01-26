@@ -5,14 +5,10 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
 import org.OpenNI.Point3D;
-import org.OpenNI.SkeletonJoint;
-import org.OpenNI.SkeletonJointPosition;
-import org.OpenNI.SkeletonProfile;
 import org.OpenNI.StatusException;
 
 import usertracking.prototype.classes.SimpleTracker;
@@ -55,6 +51,7 @@ public class SkeletonTopView extends Component implements Observer {
 
 	@Override
 	public void paint(Graphics g) {
+	
 		int x1 = this.getWidth() / 2 - 35;
 		int y1 = this.getHeight() / 35;
 		g.setColor(Color.BLACK);
