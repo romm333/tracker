@@ -60,6 +60,9 @@ public class SkeletonFrontView extends Component implements Observer{
 						255 - c.getBlue());
 
 				g.setColor(c);
+				
+				String label = null;
+				
 				if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
 					skeletonDrawer.drawSkeleton(g, users[i]);
 				}
@@ -68,12 +71,16 @@ public class SkeletonFrontView extends Component implements Observer{
 					Point3D com = tracker.depthGen
 							.convertRealWorldToProjective(tracker.userGen
 									.getUserCoM(users[i]));
-					String label = null;
+					
 					if (!printState) {
 						label = new String("" + users[i]);
 					} else if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
 						// Tracking
 						label = new String(users[i] + " - Tracking");
+						String foundProfile = tracker.getMatchingUserProfile(users[i]) != null ? tracker.getMatchingUserProfile(users[i]).getProfileName() : "" ;
+						if(foundProfile.length()>0){
+							label += " " + foundProfile; 
+						}
 					} else if (tracker.skeletonCap
 							.isSkeletonCalibrating(users[i])) {
 						// Calibrating

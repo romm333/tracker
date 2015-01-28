@@ -1,106 +1,52 @@
 package usertracking.prototype.profile;
 
-import java.util.List;
+import org.OpenNI.DepthGenerator;
+import org.OpenNI.SkeletonCapability;
+import org.OpenNI.SkeletonJoint;
+import org.OpenNI.SkeletonJointPosition;
+import org.OpenNI.StatusException;
 
-import org.OpenNI.Point3D;
-public class UserProfileByJoints implements IUserProfile{
-	private String profileName;
-	public double torsoToNeck;
-	public double torsoToLeftShoulder;
-	public double torsoToRigthShoulder;
-	public double torsoToHead;
-
-	public double LStH;
-	public double finalVector;
-
-	public String movingDirection = "";
-
-	private void addProfileJoints(List<Point3D> profileJoints) {
-
-		Point3D torsoCoords = profileJoints.get(0);
-		Point3D lefhShoulderCoords = profileJoints.get(1);
-		Point3D rightShoulderCoords = profileJoints.get(2);
-
-		Point3D neckCoords = profileJoints.get(3);
-		Point3D headCoords = profileJoints.get(4);
-
-		torsoToNeck = getLenght(torsoCoords, neckCoords);
-		torsoToLeftShoulder = getLenght(torsoCoords, lefhShoulderCoords);
-		torsoToRigthShoulder = getLenght(torsoCoords, rightShoulderCoords);
-		torsoToHead = getLenght(torsoCoords, headCoords);
-
-		if (neckCoords.getZ() < headCoords.getZ())
-			movingDirection = "MOVING BACK";
-		else
-			movingDirection = "MOVING FORWARD";
+public class UserProfileByJoints extends UserProfileBase implements IUserProfile{
+	public UserProfileByJoints(int uid, SkeletonCapability skeletonCap,
+			DepthGenerator depthGen) {
+		super(uid, skeletonCap, depthGen);
 	}
 
+	private double _profileSignature;
+	private String _profileName;
+	
 	public String getProfileName() {
-		return profileName;
+		return _profileName;
 	}
 
 	public void setProfileName(String profileName) {
-		this.profileName = profileName;
-	}
-
-	
-	public double getLenght(Point3D joint1, Point3D joint2) {
-		return Math.sqrt(Math.pow(joint1.getX() - joint2.getX(), 2)
-				+ Math.pow(joint1.getY() - joint2.getY(), 2)
-				+ Math.pow(joint1.getZ() - joint2.getZ(), 2));
-	}
-
-	public void calculateVectorLength() {
-		// double p = (HtRS + RStT + TtLS) / 2;
-		// finalVector = Math.sqrt(p * (p - HtRS) * (p - RStT) * (p - TtLS));
-
-		// double finalVector = 0;
-		// // left to right
-		// float hX = triangleTops.get(0).getX();
-		// float hY = triangleTops.get(0).getY();
-		// float hZ = triangleTops.get(0).getZ();
-		//
-		// float rsX = triangleTops.get(1).getX();
-		// float rsY = triangleTops.get(1).getY();
-		// float rsZ = triangleTops.get(1).getZ();
-		//
-		// float tX = triangleTops.get(2).getX();
-		// float tY = triangleTops.get(2).getY();
-		// float tZ = triangleTops.get(2).getZ();
-		//
-		// float lsX = triangleTops.get(3).getX();
-		// float lsY = triangleTops.get(3).getY();
-		// float lsZ = triangleTops.get(3).getZ();
-		//
-		// double HtRS = Math.sqrt(Math.pow((hX - rsX), 2) + Math.pow((hY -
-		// rsY), 2)
-		// + Math.pow((hZ - rsZ), 2));
-		// double RStT = Math.sqrt(Math.pow((rsX - tX), 2) + Math.pow((rsY -
-		// tY), 2)
-		// + Math.pow((rsZ - tZ), 2));
-		// double TtLS = Math.sqrt(Math.pow((tX - lsX), 2) + Math.pow((tY -
-		// lsY), 2)
-		// + Math.pow((tZ - lsZ), 2));
-		// double LStH = Math.sqrt(Math.pow((lsX - tX), 2) + Math.pow((lsY -
-		// tY), 2)
-		// + Math.pow((lsZ - tZ), 2));
-
-		
-		// return finalVector;
+		this._profileName = profileName;
 	}
 
 	@Override
 	public double getProfileFignature() {
-		return finalVector;
+		return _profileSignature;
 	}
 
-	@SuppressWarnings("unchecked")
-	public void addUserFeatures(List<?> featuresForProfiling) {
-		addProfileJoints((List<Point3D>)featuresForProfiling);
-	}
-
+	
 	@Override
 	public void calculateProfileSignature() {
-		finalVector = torsoToLeftShoulder + torsoToRigthShoulder;
+		try {
+			//upper body: left shoulder - right shoulder
+			SkeletonJointPosition leftShoulder = getJointPosition(get_uid(), SkeletonJoint.LEFT_SHOULDER);
+			SkeletonJointPosition rightShoulder = getJointPosition(get_uid(), SkeletonJoint.RIGHT_SHOULDER);
+			double shoulders = getLenght(leftShoulder.getPosition(), rightShoulder.getPosition());
+			
+			//lower body: left hip - right hip
+			SkeletonJointPosition leftHip = getJointPosition(get_uid(), SkeletonJoint.LEFT_HIP);
+			SkeletonJointPosition rightHip = getJointPosition(get_uid(), SkeletonJoint.RIGHT_HIP);
+			double hips = getLenght(leftHip.getPosition(), rightHip.getPosition());
+			
+			_profileSignature = shoulders + hips;
+			
+		} catch (StatusException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }
