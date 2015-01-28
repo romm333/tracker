@@ -3,6 +3,7 @@ package usertracking.prototype.classes;
 import org.OpenNI.*;
 
 import usertracking.prototype.profile.IUserProfile;
+import usertracking.prototype.profile.UserProfileByCentroids;
 import usertracking.prototype.profile.UserProfileByJoints;
 import usertracking.prototype.profile.UserProfiler;
 
@@ -226,7 +227,7 @@ public class SimpleTracker extends Observable {
 		@Override
 		public void update(IObservable<UserEventArgs> observable,
 				UserEventArgs args) {
-			SimpleTracker.userState = "New user " + args.getId();
+			
 			//System.out.println("New user " + args.getId());
 
 			try {
@@ -257,31 +258,30 @@ public class SimpleTracker extends Observable {
 					try {
 						Thread.sleep(5000);
 
-						Point3D torso = getJointPosition(userId,
-								SkeletonJoint.TORSO).getPosition();
+//						Point3D torso = getJointPosition(userId,
+//								SkeletonJoint.TORSO).getPosition();
+//
+//						Point3D neck = getJointPosition(userId,
+//								SkeletonJoint.NECK).getPosition();
+//						Point3D rightShoulder = getJointPosition(userId,
+//								SkeletonJoint.RIGHT_SHOULDER).getPosition();
+//						Point3D leftShoulder = getJointPosition(userId,
+//								SkeletonJoint.LEFT_SHOULDER).getPosition();
+//						Point3D head = getJointPosition(userId,
+//								SkeletonJoint.HEAD).getPosition();
+//
+//						List<Point3D> profileJoints = new ArrayList<Point3D>();
+//						profileJoints.add(torso);
+//						profileJoints.add(leftShoulder);
+//						profileJoints.add(rightShoulder);
+//						profileJoints.add(neck);
+//						profileJoints.add(head);
 
-						Point3D neck = getJointPosition(userId,
-								SkeletonJoint.NECK).getPosition();
-						Point3D rightShoulder = getJointPosition(userId,
-								SkeletonJoint.RIGHT_SHOULDER).getPosition();
-						Point3D leftShoulder = getJointPosition(userId,
-								SkeletonJoint.LEFT_SHOULDER).getPosition();
-						Point3D head = getJointPosition(userId,
-								SkeletonJoint.HEAD).getPosition();
-
-						List<Point3D> profileJoints = new ArrayList<Point3D>();
-						profileJoints.add(torso);
-						profileJoints.add(leftShoulder);
-						profileJoints.add(rightShoulder);
-						profileJoints.add(neck);
-						profileJoints.add(head);
-
-						IUserProfile profile = new UserProfileByJoints();
-						profile.addUserFeatures(profileJoints);
-						profile.calculateProfileSignature();
-
+						IUserProfile profile = new UserProfileByCentroids(userId, skeletonCap, depthGen);
 						profile.setProfileName("existingUser_" + userId);
-
+						profile.calculateProfileSignature();
+						
+						
 						IUserProfile oneExistingProfile = userProfiler
 								.getSimilarProfile(profile);
 
@@ -292,8 +292,9 @@ public class SimpleTracker extends Observable {
 						}
 
 						matchingUserProfiles.put(userId, profile);
-
-						System.out.println("profile inserted");
+						
+						System.out.println("profile inserted" + profile.getProfileFignature());
+					
 
 						isDone = true;
 
@@ -310,7 +311,7 @@ public class SimpleTracker extends Observable {
 		@Override
 		public void update(IObservable<UserEventArgs> observable,
 				UserEventArgs args) {
-			SimpleTracker.userState = "Lost user" + args.getId();
+			
 			//System.out.println("Lost user " + args.getId());
 			joints.remove(args.getId());
 

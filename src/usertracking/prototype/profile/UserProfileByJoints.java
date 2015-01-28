@@ -95,7 +95,6 @@ public class UserProfileByJoints implements IUserProfile{
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public void addUserFeatures(List<?> featuresForProfiling) {
 		addProfileJoints((List<Point3D>)featuresForProfiling);
 	}
