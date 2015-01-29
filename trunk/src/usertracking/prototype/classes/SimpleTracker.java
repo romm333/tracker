@@ -2,9 +2,10 @@ package usertracking.prototype.classes;
 
 import org.OpenNI.*;
 
+import usertracking.prototype.gui.utils.DataLogger;
 import usertracking.prototype.profile.IUserProfile;
 //import usertracking.prototype.profile.UserProfileByCentroids;
-import usertracking.prototype.profile.UserProfileByJoints;
+//import usertracking.prototype.profile.UserProfileByJoints;
 import usertracking.prototype.profile.UserProfiler;
 
 import java.awt.Color;
@@ -274,7 +275,9 @@ public class SimpleTracker extends Observable {
 							frameDiff++;
 							
 
-							String ff = "Frame id: " + String.valueOf(frameId) + " com location " +  String.valueOf(dd);
+							//String ff = "Frame id: " + String.valueOf(frameId) + " com location " +  String.valueOf(dd);
+							String ff = String.valueOf(dd);
+							
 							DataLogger.writeFile(ff);
 							System.out.println(frameDiff);
 						}
