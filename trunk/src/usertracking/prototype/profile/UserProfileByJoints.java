@@ -1,15 +1,15 @@
 package usertracking.prototype.profile;
 
 import org.OpenNI.DepthGenerator;
-import org.OpenNI.SkeletonCapability;
 import org.OpenNI.SkeletonJoint;
 import org.OpenNI.SkeletonJointPosition;
 import org.OpenNI.StatusException;
+import org.OpenNI.UserGenerator;
 
 public class UserProfileByJoints extends UserProfileBase implements IUserProfile{
-	public UserProfileByJoints(int uid, SkeletonCapability skeletonCap,
+	public UserProfileByJoints(int uid, UserGenerator userGen,
 			DepthGenerator depthGen) {
-		super(uid, skeletonCap, depthGen);
+		super(uid, userGen, depthGen);
 	}
 
 	private double _profileSignature;
@@ -38,11 +38,11 @@ public class UserProfileByJoints extends UserProfileBase implements IUserProfile
 			double shoulders = getLenght(leftShoulder.getPosition(), rightShoulder.getPosition());
 			
 			//lower body: left hip - right hip
-			SkeletonJointPosition leftHip = getJointPosition(get_uid(), SkeletonJoint.LEFT_HIP);
-			SkeletonJointPosition rightHip = getJointPosition(get_uid(), SkeletonJoint.RIGHT_HIP);
-			double hips = getLenght(leftHip.getPosition(), rightHip.getPosition());
+//			SkeletonJointPosition leftHip = getJointPosition(get_uid(), SkeletonJoint.LEFT_HIP);
+//			SkeletonJointPosition rightHip = getJointPosition(get_uid(), SkeletonJoint.RIGHT_HIP);
+//			double hips = getLenght(leftHip.getPosition(), rightHip.getPosition());
 			
-			_profileSignature = shoulders + hips;
+			_profileSignature = shoulders;
 			
 		} catch (StatusException e) {
 			e.printStackTrace();
