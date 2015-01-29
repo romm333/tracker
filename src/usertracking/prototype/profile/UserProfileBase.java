@@ -11,7 +11,7 @@ public abstract class UserProfileBase {
 	private UserGenerator _userGen;
 	private DepthGenerator _depthGen;
 	private int _uid;
-	
+
 	public UserProfileBase(int uid, UserGenerator userGen,
 			DepthGenerator depthGen) {
 		_uid = uid;
@@ -29,6 +29,13 @@ public abstract class UserProfileBase {
 					pos.getConfidence());
 		}
 
+		return pos;
+	}
+
+	public SkeletonJointPosition getRealJointPosition(int user, SkeletonJoint joint)
+			throws StatusException {
+		SkeletonJointPosition pos = _userGen.getSkeletonCapability()
+				.getSkeletonJointPosition(user, joint);
 		return pos;
 	}
 

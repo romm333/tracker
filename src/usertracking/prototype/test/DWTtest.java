@@ -1,7 +1,5 @@
 package usertracking.prototype.test;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import usertracking.prototype.gui.utils.DataLogger;

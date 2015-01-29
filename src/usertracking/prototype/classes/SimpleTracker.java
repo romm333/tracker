@@ -4,6 +4,7 @@ import org.OpenNI.*;
 
 import usertracking.prototype.gui.utils.DataLogger;
 import usertracking.prototype.profile.IUserProfile;
+import usertracking.prototype.profile.UserProfileByJoints;
 //import usertracking.prototype.profile.UserProfileByCentroids;
 //import usertracking.prototype.profile.UserProfileByJoints;
 import usertracking.prototype.profile.UserProfiler;
@@ -234,61 +235,31 @@ public class SimpleTracker extends Observable {
 		}
 		int prevFrameId = Integer.MIN_VALUE;
 		int frameDiff = 0;
+		
+		
+		long start_time = System.currentTimeMillis();
+		long time_diff = 0;
+		
 		public void run() {
 			
-				
-
+			
 			while (!isDone) {
 				if (skeletonCap.isSkeletonTracking(userId)) {
 					try {
-					
-
-						// IUserProfile profile = new
-						// UserProfileByCentroids(userId, skeletonCap,
-						// depthGen);
-//						IUserProfile profile = new UserProfileByJoints(userId,userGen, depthGen);
-//						profile.setProfileName("existingUser_" + userId);
-//						profile.calculateProfileSignature();
-//
-//						IUserProfile oneExistingProfile = userProfiler
-//								.getSimilarProfile(profile);
-//
-//						if (oneExistingProfile == null) {
-//							userProfiler.insertProfile(profile);
-//						} else {
-//							profile = oneExistingProfile;
-//						}
-//
-//						matchingUserProfiles.put(userId, profile);
-//
-//						System.out.println("profile inserted "
-//								+ profile.getProfileFignature());
-//
-//						isDone = true;
-						int frameId = userGen.getFrameID();
+						UserProfileByJoints profile = new UserProfileByJoints(userId,userGen, depthGen);
 						
-						double dd = userGen.getUserCoM(userId).getZ();
+						String csvString = DataLogger.getCoordsAsCSV(profile, 1);
+						long current_time = System.currentTimeMillis();
+						time_diff = current_time - start_time;
 						
+						DataLogger.writeFile(csvString);
 						
+						System.out.println(csvString);
 						
-						
-						if(prevFrameId != frameId) {
-							prevFrameId = frameId;
-							frameDiff++;
-							
-
-							//String ff = "Frame id: " + String.valueOf(frameId) + " com location " +  String.valueOf(dd);
-							String ff = String.valueOf(dd);
-							
-							DataLogger.writeFile(ff);
-							System.out.println(frameDiff);
-						}
-						
-						if(frameDiff == 1500){
+						if(time_diff > 30000){
 							isDone = true;
-							System.out.println("Coordinates saved");	
+							System.out.println("Coordinates Saved");
 						}
-						
 						
 					} catch (Exception e) {
 						e.printStackTrace();
