@@ -270,6 +270,8 @@ public class SimpleTracker extends Observable {
 						double dd = userGen.getUserCoM(userId).getZ();
 						
 						
+						
+						
 						if(prevFrameId != frameId) {
 							prevFrameId = frameId;
 							frameDiff++;
