@@ -2,19 +2,19 @@ package usertracking.prototype.profile;
 
 import org.OpenNI.DepthGenerator;
 import org.OpenNI.Point3D;
-import org.OpenNI.SkeletonCapability;
 import org.OpenNI.SkeletonJoint;
 import org.OpenNI.SkeletonJointPosition;
 import org.OpenNI.StatusException;
+import org.OpenNI.UserGenerator;
 
 public class UserProfileByCentroids extends UserProfileBase implements IUserProfile{
 
 	private double _profileSignature;
 	private String _profileName;
 	
-	public UserProfileByCentroids(int uid, SkeletonCapability skeletonCap,
+	public UserProfileByCentroids(int uid, UserGenerator userGen,
 			DepthGenerator depthGen) {
-		super(uid, skeletonCap, depthGen);
+		super(uid, userGen, depthGen);
 	}
 
 	@Override
