@@ -10,12 +10,14 @@ import org.OpenNI.SkeletonJointPosition;
 import org.OpenNI.StatusException;
 
 import usertracking.prototype.profile.UserProfileBase;
-import usertracking.prototype.profile.UserProfileByJoints;
 
 public class DataLogger {
-	public static void writeFile(String content) {
+	public static void writeFile(String content, String fileName) {
 		try {
-			FileWriter fstream = new FileWriter("out.txt", true);
+			if (fileName==null || fileName.equals(""))
+				fileName="out.txt";
+			
+			FileWriter fstream = new FileWriter(fileName, true);
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(content);
 			out.newLine();
@@ -83,20 +85,28 @@ public class DataLogger {
 			double RightHipToLeftHip = profile.getLenght(left_hip.getPosition(),right_hip.getPosition());
 			double HeadToNeck = profile.getLenght(neck.getPosition(),head.getPosition());
 			
+			double rightForearm = profile.getLenght(right_elbow.getPosition(),right_hand.getPosition());
+			double rightShoulderJoint = profile.getLenght(right_shoulder.getPosition(),right_elbow.getPosition());
+			
+			double leftForearm = profile.getLenght(left_elbow.getPosition(),left_hand.getPosition());
+			double leftShoulderJoint = profile.getLenght(left_shoulder.getPosition(),left_elbow.getPosition());
+			
+			double torsoToNeck = profile.getLenght(neck.getPosition(),torso.getPosition());
 			
 			switch (groupID) {
 			case 1:
 				return LeftShoulderToNeck +","+NeckToRightShoulder+","+RightShoulderToTorso+","+TorsoToLeftShoulder;
 			case 2:
 				return LeftShoulderToNeck +","+NeckToRightShoulder+","+RightShoulderToTorso+","+TorsoToLeftShoulder+","+
-			TorsoToRightHip + "," + RightHipToLeftHip +"," + TorsoToRightHip;
+			TorsoToRightHip + "," + RightHipToLeftHip +"," + TorsoToLeftHip;
 			case 3:
-				break;
+				return LeftShoulderToNeck +","+NeckToRightShoulder+","+RightShoulderToTorso+","+TorsoToLeftShoulder+","+
+				TorsoToRightHip + "," + RightHipToLeftHip +"," + TorsoToLeftHip+"," +rightForearm+"," +rightShoulderJoint+"," +leftForearm+"," +leftShoulderJoint + 
+				"," + HeadToNeck + ", " + torsoToNeck;
 			default:
 				break;
 			}
 		} catch (StatusException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
