@@ -19,7 +19,7 @@ public class removeDublicates {
 			
 		}
 		
-		DataLogger.writeFile(ret);
+		DataLogger.writeFile(ret, null);
 	}
 
 }

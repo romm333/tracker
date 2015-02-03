@@ -234,33 +234,39 @@ public class SimpleTracker extends Observable {
 			userId = user;
 		}
 		int prevFrameId = Integer.MIN_VALUE;
-		int frameDiff = 0;
+	
 		
 		
 		long start_time = System.currentTimeMillis();
 		long time_diff = 0;
+		int frameID = Integer.MIN_VALUE;
 		
 		public void run() {
-			
-			
+
 			while (!isDone) {
 				if (skeletonCap.isSkeletonTracking(userId)) {
 					try {
-						UserProfileByJoints profile = new UserProfileByJoints(userId,userGen, depthGen);
-						
-						String csvString = DataLogger.getCoordsAsCSV(profile, 1);
+						int buffFrameId = userGen.getFrameID();
+						UserProfileByJoints profile = new UserProfileByJoints(
+								userId, userGen, depthGen);
+
+						String csvString = DataLogger
+								.getCoordsAsCSV(profile, 3);
 						long current_time = System.currentTimeMillis();
 						time_diff = current_time - start_time;
 						
-						DataLogger.writeFile(csvString);
+						if (buffFrameId != frameID) {
+							DataLogger.writeFile(csvString, String.valueOf(userId) + ".csv");
+
+							System.out.println(csvString);
+							frameID = buffFrameId;
+						}
 						
-						System.out.println(csvString);
-						
-						if(time_diff > 30000){
+						if (time_diff > 30000) {
 							isDone = true;
 							System.out.println("Coordinates Saved");
 						}
-						
+
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
