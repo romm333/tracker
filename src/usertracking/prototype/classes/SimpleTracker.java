@@ -8,6 +8,8 @@ import usertracking.prototype.profile.JointCluster;
 import usertracking.prototype.profile.JointClusters;
 import usertracking.prototype.profile.JointVector;
 import usertracking.prototype.profile.ProfileKMeans;
+import usertracking.prototype.profile.ProfileMath;
+import usertracking.prototype.profile.UserProfileByJointClusters;
 import usertracking.prototype.profile.UserProfileByJoints;
 //import usertracking.prototype.profile.UserProfileByCentroids;
 //import usertracking.prototype.profile.UserProfileByJoints;
@@ -52,9 +54,11 @@ public class SimpleTracker extends Observable {
 	public int height;
 
 	private List<Observer> attachedViews = new LinkedList<Observer>();
+	
+	public List<UserProfileByJointClusters> listOfClusters = new ArrayList<UserProfileByJointClusters>();
 
 	public UserProfiler userProfiler;
-	HashMap<Integer, IUserProfile> matchingUserProfiles;
+	HashMap<Integer, UserProfileByJointClusters> matchingUserProfiles;
 
 	public IUserProfile getMatchingUserProfile(int uid) {
 		return matchingUserProfiles.get(uid);
@@ -97,7 +101,7 @@ public class SimpleTracker extends Observable {
 
 			skeletonCap.setSkeletonProfile(SkeletonProfile.ALL);
 
-			matchingUserProfiles = new HashMap<Integer, IUserProfile>();
+			matchingUserProfiles = new HashMap<Integer, UserProfileByJointClusters>();
 			userProfiler = new UserProfiler();
 
 			context.startGeneratingAll();
@@ -264,27 +268,50 @@ public class SimpleTracker extends Observable {
 						if (buffFrameId != frameID) {
 							String[] params = csvString.split(",");
 							double a = Double.parseDouble(params[2]);
-									double b = Double.parseDouble(params[2]);
-											double c = Double.parseDouble(params[2]);
-													double d = Double.parseDouble(params[2]);
+									double b = Double.parseDouble(params[4]);
+											double c = Double.parseDouble(params[6]);
+													double d = Double.parseDouble(params[12]);
 							
 							JointVector jVector = new JointVector(a, b, c, d);
 							profileJointVectors.add(jVector);
 							
+							//DataLogger.writeFile(csvString, String.valueOf(userId) + ".csv");
+							//System.out.println(csvString);
 							
-							DataLogger.writeFile(csvString, String.valueOf(userId) + ".csv");
-
-							System.out.println(csvString);
 							frameID = buffFrameId;
 						}
 						
-						if (time_diff > 10000) {
+						if (time_diff > 15000) {
 							isDone = true;
-							System.out.println("Coordinates Saved");
+							
 							
 							ProfileKMeans kMeans = new ProfileKMeans(profileJointVectors, 2);
 							List<JointCluster> userJointClusters = kMeans.getJointsClusters();
 							
+							UserProfileByJointClusters newProfileBuClusters = new UserProfileByJointClusters(userId, userGen, depthGen);
+							newProfileBuClusters.setProfileName("EXISTING USER PROFILE" + userId);
+							newProfileBuClusters.setProfileJointVectors(userJointClusters);
+							
+							
+							for(UserProfileByJointClusters oneProfile : listOfClusters){
+								List<JointCluster> availableProfileClusters = oneProfile.getProfileJointClusters();
+								for(int i = 0; i < availableProfileClusters.size();i++ ){
+									JointVector vector1 = availableProfileClusters.get(i).getCentroid();
+									JointVector vector2 = newProfileBuClusters.getProfileJointClusters().get(i).getCentroid();
+									
+									JointVector result = kMeans.getStandardDeviationVector(vector1, vector2);
+									//System.out.println(oneProfile.getProfileName() + " "+result.a + " " + result.b + " " + result.c + " " + result.d);
+									
+									if(result.a < 1.5 && result.b < 1.5 &&  result.c < 1.5 &&  result.d < 1.5){
+										System.out.println("FOUND " + oneProfile.getProfileName() + " "+result.a + " " + result.b + " " + result.c + " " + result.d);
+										return;
+									}
+								}
+							}
+							
+							listOfClusters.add(newProfileBuClusters);
+							matchingUserProfiles.put(userId, newProfileBuClusters);
+							System.out.println("Coordinates Saved");
 						}
 
 					} catch (Exception e) {

@@ -77,10 +77,7 @@ public class SkeletonFrontView extends Component implements Observer{
 					} else if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
 						// Tracking
 						label = new String(users[i] + " - Tracking");
-						String foundProfile = tracker.getMatchingUserProfile(users[i]) != null ? tracker.getMatchingUserProfile(users[i]).getProfileName() : "" ;
-						if(foundProfile.length()>0){
-							label += " " + foundProfile; 
-						}
+				
 					} else if (tracker.skeletonCap
 							.isSkeletonCalibrating(users[i])) {
 						// Calibrating
