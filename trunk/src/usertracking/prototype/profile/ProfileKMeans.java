@@ -45,8 +45,8 @@ public class ProfileKMeans {
 
 	private JointVector getPointByLine(String line) {
 		String[] abcd = line.split(",");
-		return new JointVector(Double.parseDouble(abcd[0]),
-				Double.parseDouble(abcd[1]), Double.parseDouble(abcd[2]),Double.parseDouble(abcd[3]));
+		return new JointVector(Double.parseDouble(abcd[2]),
+				Double.parseDouble(abcd[4]), Double.parseDouble(abcd[6]),Double.parseDouble(abcd[12]));
 	}
 
 	/**
@@ -105,14 +105,55 @@ public class ProfileKMeans {
 		}
 		return jointClusters;
 	}
-
+	
+	public JointVector getStandardDeviationVector(JointVector vector1, JointVector vector2){
+		ProfileMath pMath = new ProfileMath();
+		
+		List<Float> listA = new ArrayList<Float>(2);
+		float A1 = (float)vector1.a;
+		float A2 = (float)vector2.a;
+		
+		listA.add(A1);
+		listA.add(A2);
+		
+		double variationA = pMath.getVariationCoefficient(listA);
+		
+		List<Float> listB = new ArrayList<Float>(2);
+		float B1 = (float)vector1.b;
+		float B2 = (float)vector2.b;
+		
+		listB.add(B1);
+		listB.add(B2);
+		
+		double variationB = pMath.getVariationCoefficient(listB);
+		
+		List<Float> listC = new ArrayList<Float>(2);
+	 	float C1 = (float)vector1.c;
+		float C2 = (float)vector2.c;
+		
+		listC.add(C1);
+		listC.add(C2);
+		double variationC = pMath.getVariationCoefficient(listC);
+				
+		List<Float> listD = new ArrayList<Float>(2);
+		float D1 = (float)vector1.d;
+		float D2 = (float)vector2.d;
+		
+		listD.add(D1);
+		listD.add(D2);
+		double variationD = pMath.getVariationCoefficient(listD);
+		
+		JointVector jointVector = new JointVector(variationA, variationB, variationD, variationC);
+		return jointVector;
+	}
+	
 	public static void main(String[] args) {
-		String pointsFilePath = "profiles/group1_real1.txt";
+		String pointsFilePath = "profiles/1.csv";
 		ProfileKMeans kMeans = new ProfileKMeans(pointsFilePath, 2);
-		List<JointCluster> pointsClusters = kMeans.getJointsClusters();
+		List<JointCluster> user1Joints = kMeans.getJointsClusters();
 		for (int i = 0; i < kMeans.k; i++) {
 			System.out.println("Cluster " + i + ": "
-					+ pointsClusters.get(i).getCentroid());
+					+ user1Joints.get(i).getCentroid());
 			//System.out.println("Cluster " + i + ": " + pointsClusters.get(i));
 		}
 		
@@ -129,27 +170,35 @@ public class ProfileKMeans {
 		
 		System.out.println();
 		
-		String pointsFilePath3 = "profiles/group1_real2.txt";
+		
+		String pointsFilePath3 = "profiles/2.csv";
 		ProfileKMeans kMeans3 = new ProfileKMeans(pointsFilePath3, 2);
-		List<JointCluster> pointsClusters3 = kMeans3.getJointsClusters();
+		List<JointCluster> user2Joints = kMeans3.getJointsClusters();
 		for (int i = 0; i < kMeans3.k; i++) {
 			System.out.println("Cluster " + i + ": "
-					+ pointsClusters3.get(i).getCentroid());
+					+ user2Joints.get(i).getCentroid());
 			//System.out.println("Cluster " + i + ": " + pointsClusters.get(i));
 		}
 		
 		System.out.println();
 		
-//		for(int i=0; i < kMeans.k;i++){
-//			Point centroid1 = kMeans.getPointsClusters().get(i).getCentroid();
-//			
-//			for(int j=0; j<kMeans3.k;j++){
-//				Point centroid3 = kMeans3.getPointsClusters().get(j).getCentroid();
-//				
-//				double diff = (centroid1.x / centroid3.x);
-//				System.out.println("centroid diff " + diff + " "+centroid1.x + " " +centroid3.x );
-//			}
-//		}
+		List<JointVector> user1VectorsCollection = new ArrayList<JointVector>(2);
+		user1VectorsCollection.add(user1Joints.get(0).getCentroid());
+		user1VectorsCollection.add(user1Joints.get(1).getCentroid());
+		
+		List<JointVector> user2VectorsCollection = new ArrayList<JointVector>(2);
+		user2VectorsCollection.add(user2Joints.get(0).getCentroid());
+		user2VectorsCollection.add(user2Joints.get(1).getCentroid());
+		
+		
+		for(JointVector vector1 : user1VectorsCollection){
+			for(JointVector vector2 : user2VectorsCollection){
+				JointVector result = kMeans3.getStandardDeviationVector(vector1,vector2);
+				
+				System.out.println(vector1.a +" "+ vector2.a +" "+ result.a + " " + result.b + " " + result.c + " " + result.d);
+			}
+		}
+		
 	}
 }
 
