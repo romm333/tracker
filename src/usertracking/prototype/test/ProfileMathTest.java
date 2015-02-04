@@ -60,7 +60,7 @@ public class ProfileMathTest {
 //		System.out.println(variationCoef2);
 //		System.out.println(variationCoef3);
 		
-		HashMap<Integer, List<Float>> ppp = DataUtils.getValues("C:\\JDT\\workspaces\\diplomka\\UserTracking.Prototype\\1.csv");
+		HashMap<Integer, List<Float>> ppp = DataUtils.getValues("profiles/1.csv");
 		for(Integer oneInt : ppp.keySet()){
 			
 			double average = pMath.getAverage(ppp.get(oneInt));
