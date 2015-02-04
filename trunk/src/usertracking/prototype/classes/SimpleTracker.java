@@ -4,6 +4,10 @@ import org.OpenNI.*;
 
 import usertracking.prototype.gui.utils.DataLogger;
 import usertracking.prototype.profile.IUserProfile;
+import usertracking.prototype.profile.JointCluster;
+import usertracking.prototype.profile.JointClusters;
+import usertracking.prototype.profile.JointVector;
+import usertracking.prototype.profile.ProfileKMeans;
 import usertracking.prototype.profile.UserProfileByJoints;
 //import usertracking.prototype.profile.UserProfileByCentroids;
 //import usertracking.prototype.profile.UserProfileByJoints;
@@ -11,6 +15,7 @@ import usertracking.prototype.profile.UserProfiler;
 
 import java.awt.Color;
 import java.nio.ShortBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -234,12 +239,12 @@ public class SimpleTracker extends Observable {
 			userId = user;
 		}
 		int prevFrameId = Integer.MIN_VALUE;
-	
-		
 		
 		long start_time = System.currentTimeMillis();
 		long time_diff = 0;
 		int frameID = Integer.MIN_VALUE;
+		
+		private List<JointVector> profileJointVectors = new ArrayList<JointVector>();
 		
 		public void run() {
 
@@ -252,19 +257,34 @@ public class SimpleTracker extends Observable {
 
 						String csvString = DataLogger
 								.getCoordsAsCSV(profile, 3);
+						
 						long current_time = System.currentTimeMillis();
 						time_diff = current_time - start_time;
 						
 						if (buffFrameId != frameID) {
+							String[] params = csvString.split(",");
+							double a = Double.parseDouble(params[2]);
+									double b = Double.parseDouble(params[2]);
+											double c = Double.parseDouble(params[2]);
+													double d = Double.parseDouble(params[2]);
+							
+							JointVector jVector = new JointVector(a, b, c, d);
+							profileJointVectors.add(jVector);
+							
+							
 							DataLogger.writeFile(csvString, String.valueOf(userId) + ".csv");
 
 							System.out.println(csvString);
 							frameID = buffFrameId;
 						}
 						
-						if (time_diff > 30000) {
+						if (time_diff > 10000) {
 							isDone = true;
 							System.out.println("Coordinates Saved");
+							
+							ProfileKMeans kMeans = new ProfileKMeans(profileJointVectors, 2);
+							List<JointCluster> userJointClusters = kMeans.getJointsClusters();
+							
 						}
 
 					} catch (Exception e) {

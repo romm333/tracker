@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class ProfileKMeans {
 	private static final Random random = new Random();
-	public final List<JointVector> allPoints;
+	public final List<JointVector> allJointVectors;
 	public final int k;
 	private JointClusters jointClusters; // the k Clusters
 
@@ -40,9 +40,19 @@ public class ProfileKMeans {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.allPoints = Collections.unmodifiableList(points);
+		this.allJointVectors = Collections.unmodifiableList(points);
 	}
 
+	public ProfileKMeans(List<JointVector> userJointVectors, int k) {
+		if (k < 2)
+			new Exception("The value of k should be 2 or more.")
+					.printStackTrace();
+		
+		this.k = k;
+		this.allJointVectors = Collections.unmodifiableList(userJointVectors);
+	}
+
+	
 	private JointVector getPointByLine(String line) {
 		String[] abcd = line.split(",");
 		return new JointVector(Double.parseDouble(abcd[2]),
@@ -53,7 +63,7 @@ public class ProfileKMeans {
 	 * step 1: get random seeds as initial centroids of the k clusters
 	 */
 	private void getInitialKRandomSeeds() {
-		jointClusters = new JointClusters(allPoints);
+		jointClusters = new JointClusters(allJointVectors);
 		List<JointVector> kRandomPoints = getKRandomPoints();
 		for (int i = 0; i < k; i++) {
 			kRandomPoints.get(i).setIndex(i);
@@ -63,8 +73,8 @@ public class ProfileKMeans {
 
 	private List<JointVector> getKRandomPoints() {
 		List<JointVector> kRandomPoints = new ArrayList<JointVector>();
-		boolean[] alreadyChosen = new boolean[allPoints.size()];
-		int size = allPoints.size();
+		boolean[] alreadyChosen = new boolean[allJointVectors.size()];
+		int size = allJointVectors.size();
 		for (int i = 0; i < k; i++) {
 			int index = -1, r = random.nextInt(size--) + 1;
 			for (int j = 0; j < r; j++) {
@@ -72,7 +82,7 @@ public class ProfileKMeans {
 				while (alreadyChosen[index])
 					index++;
 			}
-			kRandomPoints.add(allPoints.get(index));
+			kRandomPoints.add(allJointVectors.get(index));
 			alreadyChosen[index] = true;
 		}
 		return kRandomPoints;
