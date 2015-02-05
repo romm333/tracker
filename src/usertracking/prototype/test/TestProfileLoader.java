@@ -4,14 +4,14 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import usertracking.prototype.profile.LoadProfilesFromFiles;
+import usertracking.prototype.profile.ProfileDataFromFiles;
 import usertracking.prototype.profile.ProfileCache;
 
 public class TestProfileLoader {
 
 	@Test
 	public void test() {
-		ProfileCache cache = new LoadProfilesFromFiles();
+		ProfileCache cache = new ProfileDataFromFiles();
 		cache.loadProfiles();
 		
 		

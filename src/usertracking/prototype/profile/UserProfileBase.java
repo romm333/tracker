@@ -19,6 +19,10 @@ public abstract class UserProfileBase {
 		_depthGen = depthGen;
 	}
 
+	public UserProfileBase() {
+		//default constructor
+	}
+
 	public SkeletonJointPosition getJointPosition(int user, SkeletonJoint joint)
 			throws StatusException {
 		SkeletonJointPosition pos = _userGen.getSkeletonCapability()

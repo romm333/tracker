@@ -5,10 +5,10 @@ import org.OpenNI.*;
 import usertracking.prototype.gui.utils.DataLogger;
 import usertracking.prototype.profile.IUserProfile;
 import usertracking.prototype.profile.JointCluster;
-import usertracking.prototype.profile.JointClusters;
 import usertracking.prototype.profile.JointVector;
+import usertracking.prototype.profile.ProfileCache;
+import usertracking.prototype.profile.ProfileDataFromFiles;
 import usertracking.prototype.profile.ProfileKMeans;
-import usertracking.prototype.profile.ProfileMath;
 import usertracking.prototype.profile.UserProfileByJointClusters;
 import usertracking.prototype.profile.UserProfileByJoints;
 //import usertracking.prototype.profile.UserProfileByCentroids;
@@ -55,7 +55,7 @@ public class SimpleTracker extends Observable {
 
 	private List<Observer> attachedViews = new LinkedList<Observer>();
 	
-	public List<UserProfileByJointClusters> listOfClusters = new ArrayList<UserProfileByJointClusters>();
+	public ProfileCache listOfClusters = new ProfileDataFromFiles().loadProfiles();
 
 	public UserProfiler userProfiler;
 	HashMap<Integer, UserProfileByJointClusters> matchingUserProfiles;
@@ -273,6 +273,7 @@ public class SimpleTracker extends Observable {
 													double d = Double.parseDouble(params[12]);
 							
 							JointVector jVector = new JointVector(a, b, c, d);
+							//collect new user profile joints
 							profileJointVectors.add(jVector);
 							
 							//DataLogger.writeFile(csvString, String.valueOf(userId) + ".csv");

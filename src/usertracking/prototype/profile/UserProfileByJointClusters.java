@@ -12,6 +12,10 @@ public class UserProfileByJointClusters extends UserProfileBase implements
 	private List<JointCluster> profileJointClusters = new ArrayList<JointCluster>();
 	private String _profileName;
 	
+	public UserProfileByJointClusters(){
+		
+	}
+	
 	public UserProfileByJointClusters(int uid, UserGenerator userGen,
 			DepthGenerator depthGen) {
 		super(uid, userGen, depthGen);
