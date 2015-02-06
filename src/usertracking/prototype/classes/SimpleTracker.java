@@ -276,8 +276,8 @@ public class SimpleTracker extends Observable {
 							//collect new user profile joints
 							profileJointVectors.add(jVector);
 							
-							//DataLogger.writeFile(csvString, String.valueOf(userId) + ".csv");
-							//System.out.println(csvString);
+							DataLogger.writeFile(csvString, String.valueOf(userId) + ".csv");
+							System.out.println(csvString);
 							
 							frameID = buffFrameId;
 						}
@@ -293,22 +293,24 @@ public class SimpleTracker extends Observable {
 							newProfileBuClusters.setProfileName("EXISTING USER PROFILE" + userId);
 							newProfileBuClusters.setProfileJointVectors(userJointClusters);
 							
-							
-							for(UserProfileByJointClusters oneProfile : listOfClusters){
-								List<JointCluster> availableProfileClusters = oneProfile.getProfileJointClusters();
-								for(int i = 0; i < availableProfileClusters.size();i++ ){
-									JointVector vector1 = availableProfileClusters.get(i).getCentroid();
-									JointVector vector2 = newProfileBuClusters.getProfileJointClusters().get(i).getCentroid();
-									
-									JointVector result = kMeans.getStandardDeviationVector(vector1, vector2);
-									//System.out.println(oneProfile.getProfileName() + " "+result.a + " " + result.b + " " + result.c + " " + result.d);
-									
-									if(result.a < 1.5 && result.b < 1.5 &&  result.c < 1.5 &&  result.d < 1.5){
-										System.out.println("FOUND " + oneProfile.getProfileName() + " "+result.a + " " + result.b + " " + result.c + " " + result.d);
-										return;
-									}
-								}
-							}
+//							
+//							for(UserProfileByJointClusters oneProfile : listOfClusters){
+//								List<JointCluster> availableProfileClusters = oneProfile.getProfileJointClusters();
+//								for(int i = 0; i < availableProfileClusters.size();i++ ){
+//									JointVector vector1 = availableProfileClusters.get(i).getCentroid();
+//									JointVector vector2 = newProfileBuClusters.getProfileJointClusters().get(i).getCentroid();
+//									
+//									
+//									
+//									JointVector result = kMeans.getStandardDeviationVector(vector1, vector2);
+//									//System.out.println(oneProfile.getProfileName() + " "+result.a + " " + result.b + " " + result.c + " " + result.d);
+//									
+//									if(result.a < 1.5 && result.b < 1.5 &&  result.c < 1.5 &&  result.d < 1.5){
+//										System.out.println("FOUND " + oneProfile.getProfileName() + " "+result.a + " " + result.b + " " + result.c + " " + result.d);
+//										return;
+//									}
+//								}
+//							}
 							
 							listOfClusters.add(newProfileBuClusters);
 							matchingUserProfiles.put(userId, newProfileBuClusters);
