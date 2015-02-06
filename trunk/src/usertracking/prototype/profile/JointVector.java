@@ -12,11 +12,11 @@ public class JointVector {
 		this.d = d;
 	}
 	
-	public Double getSquareOfDistance(JointVector nextJointLength){
-		return  (a - nextJointLength.a) * (a - nextJointLength.a)
-				+ (b - nextJointLength.b) *  (b - nextJointLength.b) 
-				+ (c - nextJointLength.c) *  (c - nextJointLength.c)
-				+ (d - nextJointLength.d) *  (d - nextJointLength.d);
+	public Double getSquareOfDistance(JointVector nextJointVector){
+		return  (a - nextJointVector.a) * (a - nextJointVector.a)
+				+ (b - nextJointVector.b) *  (b - nextJointVector.b) 
+				+ (c - nextJointVector.c) *  (c - nextJointVector.c)
+				+ (d - nextJointVector.d) *  (d - nextJointVector.d);
 	}
 
 	public int getIndex() {
