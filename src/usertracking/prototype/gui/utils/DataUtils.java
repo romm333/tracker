@@ -4,6 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +39,31 @@ public class DataUtils {
 		return retList;
 	}
 
+	
+	public static float[][] readFileToArrays(String path, String splitOption) {
+		try {
+			Path file_path = Paths.get("profiles", "roman2.csv");
+
+			
+			List<String> lines = Files.readAllLines(file_path, StandardCharsets.US_ASCII);
+			float[][] ret = new float[lines.size()][];
+
+			for (int i = 0; i < lines.size(); i++) {
+				String[] splits = lines.get(i).split(splitOption);
+				float [] parsedValues = new float[splits.length];
+				for (int j = 0; j < splits.length; j++) {
+					parsedValues[j] = Float.parseFloat(splits[j]);
+				}
+				ret[i] = parsedValues;
+			}
+
+			return ret;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public static List<String> getUniqueValues(String dataFilePath) {
 		List<String> retList = new ArrayList<String>();
 

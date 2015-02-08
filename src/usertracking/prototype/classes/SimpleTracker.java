@@ -1,6 +1,8 @@
 package usertracking.prototype.classes;
 
 import org.OpenNI.*;
+import org.OpenNI.Recorder;
+
 
 import usertracking.prototype.gui.utils.DataLogger;
 import usertracking.prototype.profile.IUserProfile;
@@ -25,12 +27,13 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class SimpleTracker extends Observable {
-	private final String SAMPLE_XML_FILE = "../Data/SamplesConfig.xml";
+	private final String SAMPLE_XML_FILE = "sensorConfig/SamplesConfig.xml";
 
 	private OutArg<ScriptNode> scriptNode;
 	private Context context;
 	public DepthGenerator depthGen;
 	public UserGenerator userGen;
+	
 	public SkeletonCapability skeletonCap;
 	public PoseDetectionCapability poseDetectionCap;
 	public String calibPose = null;
@@ -63,7 +66,9 @@ public class SimpleTracker extends Observable {
 	public IUserProfile getMatchingUserProfile(int uid) {
 		return matchingUserProfiles.get(uid);
 	}
-
+	
+	public Recorder recorder;
+	
 	public SimpleTracker() {
 		try {
 			scriptNode = new OutArg<ScriptNode>();
@@ -78,8 +83,10 @@ public class SimpleTracker extends Observable {
 
 			imgbytes = new byte[width * height * 3];
 			histogram = new float[10000];
-
+			
+						
 			userGen = UserGenerator.create(context);
+			
 			skeletonCap = userGen.getSkeletonCapability();
 
 			poseDetectionCap = userGen.getPoseDetectionCapability();
@@ -105,6 +112,7 @@ public class SimpleTracker extends Observable {
 			userProfiler = new UserProfiler();
 
 			context.startGeneratingAll();
+		
 
 		} catch (GeneralException e) {
 			e.printStackTrace();
@@ -158,6 +166,9 @@ public class SimpleTracker extends Observable {
 		try {
 
 			context.waitAnyUpdateAll();
+			
+			
+			//recorder.Record();
 
 			DepthMetaData depthMD = depthGen.getMetaData();
 			SceneMetaData sceneMD = userGen.getUserPixels(0);
@@ -275,14 +286,15 @@ public class SimpleTracker extends Observable {
 							JointVector jVector = new JointVector(a, b, c, d);
 							//collect new user profile joints
 							profileJointVectors.add(jVector);
-							
-							DataLogger.writeFile(csvString, String.valueOf(userId) + ".csv");
-							System.out.println(csvString);
-							
+							if (time_diff > 8000) {
+								DataLogger.writeFile(csvString,
+										String.valueOf(userId) + ".csv");
+								System.out.println(csvString);
+							}
 							frameID = buffFrameId;
 						}
 						
-						if (time_diff > 15000) {
+						if (time_diff > 20000) {
 							isDone = true;
 							
 							

@@ -44,6 +44,8 @@ public class DataLogger {
 		return null;
 	}
 
+	
+	
 	public static String getCoordsAsCSV(UserProfileBase profile, int groupID) {
 		// group 1 left-shoulder, neck,right shoulder,torso
 		// group 2 left-shoulder, neck,right shoulder,torso. lefht hip, right
