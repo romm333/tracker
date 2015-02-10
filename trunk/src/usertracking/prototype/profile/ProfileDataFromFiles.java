@@ -8,7 +8,7 @@ public class ProfileDataFromFiles extends ProfileCache {
 	private static final long serialVersionUID = -4318685451015038353L;
 
 	@Override
-	public ProfileDataFromFiles loadProfiles() {
+	public ProfileCache loadProfiles() {
 		String profileFolder = "profiles";
 		
 		File folder = new File(profileFolder);

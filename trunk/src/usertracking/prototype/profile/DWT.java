@@ -123,6 +123,9 @@ public class DWT {
 		return (f - g) * (f - g);
 	}
 	
+	public double getWrapingDistance() {
+		return wrapingDistance;
+	}
 	
 	public static void main(String[] args){
 		float[] n2 = {1.3f, 3.7f, 4.1f, 3.3f};
