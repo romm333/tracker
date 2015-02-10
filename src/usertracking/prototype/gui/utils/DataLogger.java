@@ -9,6 +9,7 @@ import org.OpenNI.SkeletonJoint;
 import org.OpenNI.SkeletonJointPosition;
 import org.OpenNI.StatusException;
 
+import usertracking.prototype.profile.ProfileJointGroup;
 import usertracking.prototype.profile.UserProfileBase;
 
 public class DataLogger {
@@ -46,7 +47,7 @@ public class DataLogger {
 
 	
 	
-	public static String getCoordsAsCSV(UserProfileBase profile, int groupID) {
+	public static String getCoordsAsCSV(UserProfileBase profile, ProfileJointGroup group) {
 		// group 1 left-shoulder, neck,right shoulder,torso
 		// group 2 left-shoulder, neck,right shoulder,torso. lefht hip, right
 		// hip,
@@ -95,13 +96,13 @@ public class DataLogger {
 			
 			double torsoToNeck = profile.getLenght(neck.getPosition(),torso.getPosition());
 			
-			switch (groupID) {
-			case 1:
+			switch (group) {
+			case UPPER:
 				return LeftShoulderToNeck +","+NeckToRightShoulder+","+RightShoulderToTorso+","+TorsoToLeftShoulder;
-			case 2:
+			case CENTER:
 				return LeftShoulderToNeck +","+NeckToRightShoulder+","+RightShoulderToTorso+","+TorsoToLeftShoulder+","+
 			TorsoToRightHip + "," + RightHipToLeftHip +"," + TorsoToLeftHip;
-			case 3:
+			case FULL:
 				return LeftShoulderToNeck +","+NeckToRightShoulder+","+RightShoulderToTorso+","+TorsoToLeftShoulder+","+
 				TorsoToRightHip + "," + RightHipToLeftHip +"," + TorsoToLeftHip+"," +rightForearm+"," +rightShoulderJoint+"," +leftForearm+"," +leftShoulderJoint + 
 				"," + HeadToNeck + ", " + torsoToNeck;

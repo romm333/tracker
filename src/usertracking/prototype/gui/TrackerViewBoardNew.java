@@ -13,6 +13,7 @@ import usertracking.prototype.classes.*;
 import usertracking.prototype.gui.views.SkeletonFrontView;
 import usertracking.prototype.gui.views.SkeletonTextInfoView;
 import usertracking.prototype.gui.views.SkeletonTopView;
+import usertracking.prototype.profile.UserProfileObserver;
 
 public class TrackerViewBoardNew extends JFrame {
 
@@ -64,6 +65,9 @@ public class TrackerViewBoardNew extends JFrame {
 		frontViewer.setSize(new Dimension(270, 460));
 		frontViewer.setPreferredSize(new Dimension(270, 460));
 		tracker.addObserver(frontViewer);
+		
+		UserProfileObserver userProfileObserver = new UserProfileObserver(tracker);
+		tracker.addObserver(userProfileObserver);
 		
 		infoViewer = new SkeletonTextInfoView(41, 16);
 		// Main Panels

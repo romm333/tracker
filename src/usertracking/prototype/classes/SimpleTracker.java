@@ -1,8 +1,6 @@
 package usertracking.prototype.classes;
 
 import org.OpenNI.*;
-import org.OpenNI.Recorder;
-
 
 import usertracking.prototype.gui.utils.DataLogger;
 import usertracking.prototype.profile.IUserProfile;
@@ -10,9 +8,11 @@ import usertracking.prototype.profile.JointCluster;
 import usertracking.prototype.profile.JointVector;
 import usertracking.prototype.profile.ProfileCache;
 import usertracking.prototype.profile.ProfileDataFromFiles;
+import usertracking.prototype.profile.ProfileJointGroup;
 import usertracking.prototype.profile.ProfileKMeans;
 import usertracking.prototype.profile.UserProfileByJointClusters;
 import usertracking.prototype.profile.UserProfileByJoints;
+import usertracking.prototype.profile.UserProfileObserver;
 //import usertracking.prototype.profile.UserProfileByCentroids;
 //import usertracking.prototype.profile.UserProfileByJoints;
 import usertracking.prototype.profile.UserProfiler;
@@ -56,7 +56,7 @@ public class SimpleTracker extends Observable {
 	public int width;
 	public int height;
 
-	private List<Observer> attachedViews = new LinkedList<Observer>();
+	private List<Observer> attachedObservers = new LinkedList<Observer>();
 	
 	public ProfileCache listOfClusters = new ProfileDataFromFiles().loadProfiles();
 
@@ -122,12 +122,12 @@ public class SimpleTracker extends Observable {
 
 	@Override
 	public synchronized void addObserver(Observer o) {
-		attachedViews.add(o);
+		attachedObservers.add(o);
 	}
 
 	@Override
 	public void notifyObservers() {
-		for (Observer oneview : attachedViews) {
+		for (Observer oneview : attachedObservers) {
 			oneview.update(this, null);
 		}
 	}
@@ -271,7 +271,7 @@ public class SimpleTracker extends Observable {
 								userId, userGen, depthGen);
 
 						String csvString = DataLogger
-								.getCoordsAsCSV(profile, 3);
+								.getCoordsAsCSV(profile, ProfileJointGroup.FULL);
 						
 						long current_time = System.currentTimeMillis();
 						time_diff = current_time - start_time;
@@ -366,11 +366,7 @@ public class SimpleTracker extends Observable {
 					skeletonCap.startTracking(args.getUser());
 					joints.put(new Integer(args.getUser()),
 							new HashMap<SkeletonJoint, SkeletonJointPosition>());
-
-					UserProfileThread upThread = new UserProfileThread(
-							args.getUser());
-					upThread.start();
-
+				
 				} else if (args.getStatus() != CalibrationProgressStatus.MANUAL_ABORT) {
 					if (skeletonCap.needPoseForCalibration()) {
 						poseDetectionCap.startPoseDetection(calibPose,
@@ -382,7 +378,7 @@ public class SimpleTracker extends Observable {
 				}
 			} catch (StatusException e) {
 				e.printStackTrace();
-			}
+			} 
 		}
 	}
 
