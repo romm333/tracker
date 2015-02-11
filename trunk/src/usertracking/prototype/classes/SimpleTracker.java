@@ -366,6 +366,9 @@ public class SimpleTracker extends Observable {
 					skeletonCap.startTracking(args.getUser());
 					joints.put(new Integer(args.getUser()),
 							new HashMap<SkeletonJoint, SkeletonJointPosition>());
+					
+//					UserProfileThread thread = new UserProfileThread(args.getUser());
+//					thread.start();
 				
 				} else if (args.getStatus() != CalibrationProgressStatus.MANUAL_ABORT) {
 					if (skeletonCap.needPoseForCalibration()) {

@@ -42,7 +42,7 @@ public class DataUtils {
 	
 	public static float[][] readFileToArrays(String path, String fileName, String splitOption) {
 		try {
-			Path file_path = Paths.get("profiles", "roman2.csv");
+			Path file_path = Paths.get("profiles", "1.csv");
 
 			
 			List<String> lines = Files.readAllLines(file_path, StandardCharsets.US_ASCII);

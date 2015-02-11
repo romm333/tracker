@@ -13,6 +13,7 @@ import usertracking.prototype.classes.*;
 import usertracking.prototype.gui.views.SkeletonFrontView;
 import usertracking.prototype.gui.views.SkeletonTextInfoView;
 import usertracking.prototype.gui.views.SkeletonTopView;
+import usertracking.prototype.profile.UserKMeansProfileObserver;
 import usertracking.prototype.profile.UserProfileObserver;
 
 public class TrackerViewBoardNew extends JFrame {
@@ -45,7 +46,7 @@ public class TrackerViewBoardNew extends JFrame {
 
 	private void prepareGUI() {
 
-		this.setSize(900, 600);
+		this.setSize(1300, 600);
 		this.setLayout(new BorderLayout());
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent windowEvent) {
@@ -66,7 +67,7 @@ public class TrackerViewBoardNew extends JFrame {
 		frontViewer.setPreferredSize(new Dimension(270, 460));
 		tracker.addObserver(frontViewer);
 		
-		UserProfileObserver userProfileObserver = new UserProfileObserver(tracker);
+		UserKMeansProfileObserver userProfileObserver = new UserKMeansProfileObserver(tracker);
 		tracker.addObserver(userProfileObserver);
 		
 		infoViewer = new SkeletonTextInfoView(41, 16);
@@ -84,12 +85,12 @@ public class TrackerViewBoardNew extends JFrame {
 
 		rightPanel = new JPanel();
 		rightPanel.setBackground(Color.gray);
-		rightPanel.setPreferredSize(new Dimension(560, 600));
+		rightPanel.setPreferredSize(new Dimension(860, 600));
 
-		rightPanel.setMinimumSize(new Dimension(560, 600));
+		rightPanel.setMinimumSize(new Dimension(860, 600));
 		rightPanel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1,
 				Color.BLACK));
-		rightPanel.setLayout(new BorderLayout(560, 600));
+		rightPanel.setLayout(new BorderLayout(860, 600));
 
 		JScrollPane scrollPane = new JScrollPane(infoViewer);
 		scrollPane
