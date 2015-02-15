@@ -1,4 +1,4 @@
-package usertracking.prototype.profile;
+package usertracking.prototype.kmeans;
 
 import java.util.ArrayList;
 import java.util.List;

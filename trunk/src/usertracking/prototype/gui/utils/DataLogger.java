@@ -9,8 +9,8 @@ import org.OpenNI.SkeletonJoint;
 import org.OpenNI.SkeletonJointPosition;
 import org.OpenNI.StatusException;
 
+import failures.UserProfileBase;
 import usertracking.prototype.profile.ProfileJointGroup;
-import usertracking.prototype.profile.UserProfileBase;
 
 public class DataLogger {
 	public static void writeFile(String content, String fileName) {

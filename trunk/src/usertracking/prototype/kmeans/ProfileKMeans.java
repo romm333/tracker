@@ -1,4 +1,4 @@
-package usertracking.prototype.profile;
+package usertracking.prototype.kmeans;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
+import usertracking.prototype.profile.ProfileMath;
 
 
 public class ProfileKMeans {

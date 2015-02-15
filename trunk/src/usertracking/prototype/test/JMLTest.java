@@ -13,7 +13,7 @@ import net.sf.javaml.tools.data.FileHandler;
 
 import org.junit.Test;
 
-import usertracking.prototype.profile.KMeansT;
+import usertracking.prototype.kmeans.KMeansT;
 
 public class JMLTest {
 

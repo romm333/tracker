@@ -1,8 +1,10 @@
-package usertracking.prototype.profile;
+package failures;
 
 import org.OpenNI.DepthGenerator;
 import org.OpenNI.Point3D;
 import org.OpenNI.UserGenerator;
+
+import usertracking.prototype.profile.IUserProfile;
 
 public class UserProfileByCom extends UserProfileBase implements IUserProfile {
 

@@ -1,4 +1,4 @@
-package usertracking.prototype.profile;
+package failures;
 
 import org.OpenNI.DepthGenerator;
 import org.OpenNI.Point3D;

@@ -2,17 +2,11 @@ package usertracking.prototype.classes;
 
 import org.OpenNI.*;
 
+import failures.UserProfileByJoints;
 import usertracking.prototype.gui.utils.DataLogger;
+import usertracking.prototype.kmeans.JointVector;
 import usertracking.prototype.profile.IUserProfile;
-import usertracking.prototype.profile.JointCluster;
-import usertracking.prototype.profile.JointVector;
-import usertracking.prototype.profile.ProfileCache;
-import usertracking.prototype.profile.ProfileDataFromFiles;
 import usertracking.prototype.profile.ProfileJointGroup;
-import usertracking.prototype.profile.ProfileKMeans;
-import usertracking.prototype.profile.UserProfileByJointClusters;
-import usertracking.prototype.profile.UserProfileByJoints;
-import usertracking.prototype.profile.UserProfileObserver;
 //import usertracking.prototype.profile.UserProfileByCentroids;
 //import usertracking.prototype.profile.UserProfileByJoints;
 import usertracking.prototype.profile.UserProfiler;
@@ -43,12 +37,6 @@ public class SimpleTracker extends Observable {
 	private float histogram[];
 	public DepthMetaData depthMD;
 
-	public static String calibrationState = "";
-
-	public static String userState = "";
-
-	public static String trakingState = "";
-
 	public HashMap<Integer, HashMap<SkeletonJoint, SkeletonJointPosition>> getJoints() {
 		return joints;
 	}
@@ -58,10 +46,10 @@ public class SimpleTracker extends Observable {
 
 	private List<Observer> attachedObservers = new LinkedList<Observer>();
 	
-	public ProfileCache listOfClusters = new ProfileDataFromFiles().loadProfiles();
+	
 
 	public UserProfiler userProfiler;
-	HashMap<Integer, UserProfileByJointClusters> matchingUserProfiles;
+	HashMap<Integer, IUserProfile> matchingUserProfiles;
 
 	public IUserProfile getMatchingUserProfile(int uid) {
 		return matchingUserProfiles.get(uid);
@@ -108,7 +96,7 @@ public class SimpleTracker extends Observable {
 
 			skeletonCap.setSkeletonProfile(SkeletonProfile.ALL);
 
-			matchingUserProfiles = new HashMap<Integer, UserProfileByJointClusters>();
+			
 			userProfiler = new UserProfiler();
 
 			context.startGeneratingAll();
@@ -215,8 +203,8 @@ public class SimpleTracker extends Observable {
 		@Override
 		public void update(IObservable<UserEventArgs> observable,
 				UserEventArgs args) {
-			System.out.println("Exiting user " + args.getId());
-			userGen.getLostUserEvent();
+			//System.out.println("Exiting user " + args.getId());
+			//userGen.getLostUserEvent();
 
 		}
 	}
@@ -296,36 +284,6 @@ public class SimpleTracker extends Observable {
 						
 						if (time_diff > 20000) {
 							isDone = true;
-							
-							
-							ProfileKMeans kMeans = new ProfileKMeans(profileJointVectors, 2);
-							List<JointCluster> userJointClusters = kMeans.getJointsClusters();
-							
-							UserProfileByJointClusters newProfileBuClusters = new UserProfileByJointClusters(userId, userGen, depthGen);
-							newProfileBuClusters.setProfileName("EXISTING USER PROFILE" + userId);
-							newProfileBuClusters.setProfileJointVectors(userJointClusters);
-							
-//							
-//							for(UserProfileByJointClusters oneProfile : listOfClusters){
-//								List<JointCluster> availableProfileClusters = oneProfile.getProfileJointClusters();
-//								for(int i = 0; i < availableProfileClusters.size();i++ ){
-//									JointVector vector1 = availableProfileClusters.get(i).getCentroid();
-//									JointVector vector2 = newProfileBuClusters.getProfileJointClusters().get(i).getCentroid();
-//									
-//									
-//									
-//									JointVector result = kMeans.getStandardDeviationVector(vector1, vector2);
-//									//System.out.println(oneProfile.getProfileName() + " "+result.a + " " + result.b + " " + result.c + " " + result.d);
-//									
-//									if(result.a < 1.5 && result.b < 1.5 &&  result.c < 1.5 &&  result.d < 1.5){
-//										System.out.println("FOUND " + oneProfile.getProfileName() + " "+result.a + " " + result.b + " " + result.c + " " + result.d);
-//										return;
-//									}
-//								}
-//							}
-							
-							listOfClusters.add(newProfileBuClusters);
-							matchingUserProfiles.put(userId, newProfileBuClusters);
 							System.out.println("Coordinates Saved");
 						}
 
@@ -367,8 +325,10 @@ public class SimpleTracker extends Observable {
 					joints.put(new Integer(args.getUser()),
 							new HashMap<SkeletonJoint, SkeletonJointPosition>());
 					
-//					UserProfileThread thread = new UserProfileThread(args.getUser());
-//					thread.start();
+					//UserProfileThread thread = new UserProfileThread(args.getUser());
+					//thread.start();
+					
+				
 				
 				} else if (args.getStatus() != CalibrationProgressStatus.MANUAL_ABORT) {
 					if (skeletonCap.needPoseForCalibration()) {

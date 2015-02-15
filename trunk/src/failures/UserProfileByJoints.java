@@ -1,10 +1,12 @@
-package usertracking.prototype.profile;
+package failures;
 
 import org.OpenNI.DepthGenerator;
 import org.OpenNI.SkeletonJoint;
 import org.OpenNI.SkeletonJointPosition;
 import org.OpenNI.StatusException;
 import org.OpenNI.UserGenerator;
+
+import usertracking.prototype.profile.IUserProfile;
 
 public class UserProfileByJoints extends UserProfileBase implements IUserProfile{
 	public UserProfileByJoints(int uid, UserGenerator userGen,

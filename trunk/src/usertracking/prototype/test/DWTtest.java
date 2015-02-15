@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import usertracking.prototype.gui.utils.DataLogger;
 import usertracking.prototype.gui.utils.DataUtils;
-import usertracking.prototype.profile.DWT;
+import usertracking.prototype.kmeans.DWT;
 
 public class DWTtest {
 
