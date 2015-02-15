@@ -11,9 +11,12 @@ import net.sf.javaml.tools.data.FileHandler;
 
 import org.OpenNI.StatusException;
 
+import failures.UserProfileByJoints;
 import usertracking.prototype.classes.SimpleTracker;
 import usertracking.prototype.gui.utils.DataLogger;
 import usertracking.prototype.gui.utils.DataUtils;
+import usertracking.prototype.kmeans.DWT;
+import usertracking.prototype.kmeans.KMeansT;
 
 public class UserProfileObserver implements Observer {
 	private SimpleTracker tracker;

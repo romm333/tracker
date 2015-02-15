@@ -2,6 +2,7 @@ package usertracking.prototype.profile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
@@ -11,19 +12,26 @@ import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.Instance;
 import net.sf.javaml.tools.data.FileHandler;
 
+import org.OpenNI.SkeletonJoint;
+import org.OpenNI.SkeletonJointPosition;
 import org.OpenNI.StatusException;
 
+import failures.UserProfileByJoints;
 import usertracking.prototype.classes.SimpleTracker;
 import usertracking.prototype.gui.utils.DataLogger;
 import usertracking.prototype.gui.utils.DataUtils;
+import usertracking.prototype.kmeans.DWT;
+import usertracking.prototype.kmeans.JointCluster;
+import usertracking.prototype.kmeans.JointVector;
+import usertracking.prototype.kmeans.ProfileKMeans;
 
 public class UserKMeansProfileObserver implements Observer {
 	private SimpleTracker tracker;
 	private Dataset data;
 	private float[][] existingProfileData;
 	private DWT dwt1;
-	String pointsFilePath = "profiles/1.csv";
-	ProfileKMeans profileKmeans = new ProfileKMeans(pointsFilePath,2);
+	String pointsFilePath = "profiles/2.csv";
+	ProfileKMeans profileKmeans = new ProfileKMeans(pointsFilePath,8);
 
 	public List<JointVector> centroids;
 	public UserKMeansProfileObserver(SimpleTracker _traker) {
@@ -79,16 +87,20 @@ public class UserKMeansProfileObserver implements Observer {
 					for (int k = 0; k < existingProfileData.length; k++) {
 						dwt1 = new DWT(existingProfileData[1], jointData);
 						
-						if(dwt1.getWrapingDistance() <= 10 ){
+						if(dwt1.getWrapingDistance() <= 1 ){
 						
 							System.out.println("*********USER " + users[i] + " RECOGNIZED*********");
 							System.out.println(dwt1.getWrapingDistance());
 							
 						}
 						
-						System.out.println(centroids.get(k).toString());
+						//System.out.println(dwt1.getWrapingDistance());
 					}
 					
+					HashMap<SkeletonJoint, SkeletonJointPosition> dict = tracker.getJoints().get(users[i]);
+					
+					int f = 1;
+					f++;
 				}
 			}
 		} catch (StatusException e) {

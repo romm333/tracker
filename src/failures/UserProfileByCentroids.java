@@ -1,4 +1,4 @@
-package usertracking.prototype.profile;
+package failures;
 
 import org.OpenNI.DepthGenerator;
 import org.OpenNI.Point3D;
@@ -6,6 +6,8 @@ import org.OpenNI.SkeletonJoint;
 import org.OpenNI.SkeletonJointPosition;
 import org.OpenNI.StatusException;
 import org.OpenNI.UserGenerator;
+
+import usertracking.prototype.profile.IUserProfile;
 
 public class UserProfileByCentroids extends UserProfileBase implements IUserProfile{
 

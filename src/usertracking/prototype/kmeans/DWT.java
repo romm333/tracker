@@ -1,4 +1,4 @@
-package usertracking.prototype.profile;
+package usertracking.prototype.kmeans;
 
 public class DWT {
 	protected float seq1[];

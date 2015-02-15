@@ -1,4 +1,4 @@
-package usertracking.prototype.profile;
+package usertracking.prototype.kmeans;
 
 public class JointVector {
 	
@@ -18,7 +18,11 @@ public class JointVector {
 				+ (c - nextJointVector.c) *  (c - nextJointVector.c)
 				+ (d - nextJointVector.d) *  (d - nextJointVector.d);
 	}
-
+	
+	public Double getJointVectorLenght() {
+		return this.a + this.b + this.c + this.d;
+	}
+	
 	public int getIndex() {
 		return index;
 	}
