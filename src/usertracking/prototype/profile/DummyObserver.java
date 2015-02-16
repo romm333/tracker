@@ -81,6 +81,8 @@ public class DummyObserver implements Observer {
 
 						List<SkeletonJointPosition> interestingJoints = new LinkedList<SkeletonJointPosition>();
 						
+												
+						
 						interestingJoints.add(headPosition);
 						interestingJoints.add(neckPosition);
 						interestingJoints.add(torsoPosition);
@@ -97,28 +99,23 @@ public class DummyObserver implements Observer {
 
 						interestingJoints.add(leftElbow);
 						interestingJoints.add(rightElbow);
-|
+
 						interestingJoints.add(lehtHand);
 						interestingJoints.add(rightHand);
 
-						if (headPosition.getConfidence() > 0
-								&& neckPosition.getConfidence() > 0
-								&& torsoPosition.getConfidence() > 0
-								//&& waist.getConfidence() > 0
-								&& leftShoulder.getConfidence() > 0
-								&& rightShoulder.getConfidence() > 0 
-								&& leftHeap.getConfidence() > 0
-								&& rightHeap.getConfidence() > 0 
-								&& leftKnee.getConfidence() > 0
-								&& rightKnee.getConfidence() > 0 
-								&& leftElbow.getConfidence() > 0
-								&& rightElbow.getConfidence() > 0 
-								//&& leftCollar.getConfidence() > 0
-								//&& rightCollar.getConfidence() > 0 
-								//&& leftAnkle.getConfidence() > 0
-								//&& rightAnkle.getConfidence() > 0 
-								&& lehtHand.getConfidence() > 0
-								&& rightHand.getConfidence() > 0) {
+						if (headPosition.getConfidence() == 1.0
+								&& neckPosition.getConfidence()== 1.0
+								&& torsoPosition.getConfidence()== 1.0
+								&& leftShoulder.getConfidence()== 1.0
+								&& rightShoulder.getConfidence()== 1.0 
+								&& leftHeap.getConfidence()== 1.0
+								&& rightHeap.getConfidence()== 1.0 
+								&& leftKnee.getConfidence()== 1.0
+								&& rightKnee.getConfidence()== 1.0 
+								&& leftElbow.getConfidence()== 1.0
+								&& rightElbow.getConfidence()== 1.0 
+								&& lehtHand.getConfidence()== 1.0
+								&& rightHand.getConfidence()== 1.0) {
 
 							String tt = getPositionString(interestingJoints);
 

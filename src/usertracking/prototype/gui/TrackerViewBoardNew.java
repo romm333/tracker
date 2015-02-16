@@ -27,9 +27,8 @@ public class TrackerViewBoardNew extends JFrame {
 	private SkeletonTextInfoView infoViewer;
 
 	JPanel leftPanel;
-	JPanel centerPanel;
+	JPanel middlePanel;
 	JPanel rightPanel;
-	JPanel bottomPanel;
 
 	public TrackerViewBoardNew() {
 		super("Tracker View Board");
@@ -63,14 +62,16 @@ public class TrackerViewBoardNew extends JFrame {
 		tracker.addObserver(topViewer);
 		
 		frontViewer = new SkeletonFrontView(tracker);
-		frontViewer.setSize(new Dimension(270, 460));
-		frontViewer.setPreferredSize(new Dimension(270, 460));
+		frontViewer.setSize(new Dimension(340, 590));
+		frontViewer.setPreferredSize(new Dimension(340, 590));
+		frontViewer.setMaximumSize(new Dimension(340, 590));
 		tracker.addObserver(frontViewer);
 		
 		DummyObserver userProfileObserver = new DummyObserver(tracker);
 		tracker.addObserver(userProfileObserver);
 		
-		infoViewer = new SkeletonTextInfoView(41, 16);
+		infoViewer = new SkeletonTextInfoView(56, 34);
+		infoViewer.setSize(new Dimension(590,600));
 		// Main Panels
 
 		// Panels
@@ -83,38 +84,39 @@ public class TrackerViewBoardNew extends JFrame {
 				Color.BLACK));
 		leftPanel.add(topViewer);
 
-		rightPanel = new JPanel();
-		rightPanel.setBackground(Color.gray);
-		rightPanel.setPreferredSize(new Dimension(860, 600));
+		middlePanel = new JPanel();
+		middlePanel.setBackground(Color.gray);
+		middlePanel.setPreferredSize(new Dimension(342, 600));
 
-		rightPanel.setMinimumSize(new Dimension(860, 600));
-		rightPanel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1,
+		middlePanel.setMinimumSize(new Dimension(342, 600));
+		middlePanel.setMaximumSize(new Dimension(342, 600));
+		middlePanel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1,
 				Color.BLACK));
-		rightPanel.setLayout(new BorderLayout(860, 600));
+		middlePanel.setLayout(new BorderLayout(342, 600));
+		middlePanel.add(frontViewer);
 
 		JScrollPane scrollPane = new JScrollPane(infoViewer);
 		scrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		
+		
+		rightPanel = new JPanel();
+		rightPanel.setBackground(Color.gray);
+		rightPanel.setPreferredSize(new Dimension(620, 600));
 
-		JPanel rightTop = new JPanel();
-		rightTop.setBackground(Color.gray);
-		rightTop.setPreferredSize(new Dimension(520, 330));
-		rightTop.add(frontViewer);
-		rightTop.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0,
+		rightPanel.setMinimumSize(new Dimension(620, 600));
+		rightPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 1,
 				Color.BLACK));
-
-		JPanel rightBottom = new JPanel();
-		rightBottom.setBackground(Color.red);
-		rightBottom.setPreferredSize(new Dimension(500, 220));
-		rightBottom.setLayout(new BorderLayout());
-		rightBottom.add(scrollPane, BorderLayout.CENTER);
-
-		rightPanel.add(rightTop, BorderLayout.PAGE_START);
-		rightPanel.add(rightBottom, BorderLayout.PAGE_END);
-
+	        
+	     
+		scrollPane.setMinimumSize(new Dimension(640, 600));
+		rightPanel.add(scrollPane);
+				
 		// Main window adding
 		this.add(leftPanel, BorderLayout.LINE_START);
+		this.add(middlePanel, BorderLayout.CENTER);
 		this.add(rightPanel, BorderLayout.LINE_END);
+		
 		this.setResizable(false);
 		this.setVisible(true);
 	}
