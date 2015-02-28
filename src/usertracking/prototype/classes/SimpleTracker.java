@@ -76,7 +76,8 @@ public class SimpleTracker extends Observable {
 			userGen = UserGenerator.create(context);
 			
 			skeletonCap = userGen.getSkeletonCapability();
-
+			
+			
 			poseDetectionCap = userGen.getPoseDetectionCapability();
 
 			userGen.getNewUserEvent().addObserver(new NewUserObserver());
@@ -90,7 +91,8 @@ public class SimpleTracker extends Observable {
 					new CalibrationCompleteObserver());
 			poseDetectionCap.getPoseDetectedEvent().addObserver(
 					new PoseDetectedObserver());
-
+			
+			
 			calibPose = skeletonCap.getSkeletonCalibrationPose();
 			joints = new HashMap<Integer, HashMap<SkeletonJoint, SkeletonJointPosition>>();
 
@@ -300,12 +302,8 @@ public class SimpleTracker extends Observable {
 		@Override
 		public void update(IObservable<UserEventArgs> observable,
 				UserEventArgs args) {
-
 			System.out.println("Lost user " + args.getId());
-			joints.remove(args.getId());
-
-			// if (matchingUserProfiles.containsKey(args.getId()))
-			// matchingUserProfiles.remove(args.getId());
+			//joints.remove(args.getId());
 		}
 	}
 
@@ -322,11 +320,12 @@ public class SimpleTracker extends Observable {
 
 					System.out.println("starting tracking " + args.getUser());
 					skeletonCap.startTracking(args.getUser());
+					if(!joints.containsKey(args.getUser()))
 					joints.put(new Integer(args.getUser()),
 							new HashMap<SkeletonJoint, SkeletonJointPosition>());
 					
-					//UserProfileThread thread = new UserProfileThread(args.getUser());
-					//thread.start();
+					poseDetectionCap.startPoseDetection("Psi",args.getUser());
+					//poseDetectionCap.startPoseDetection("Wave",args.getUser());
 					
 				
 				
@@ -349,14 +348,14 @@ public class SimpleTracker extends Observable {
 		@Override
 		public void update(IObservable<PoseDetectionEventArgs> observable,
 				PoseDetectionEventArgs args) {
-			// System.out.println("Pose " + args.getPose() + " detected for "
-			// + args.getUser());
-			try {
-				poseDetectionCap.stopPoseDetection(args.getUser());
-				skeletonCap.requestSkeletonCalibration(args.getUser(), true);
-			} catch (StatusException e) {
-				e.printStackTrace();
-			}
+			 System.out.println("Pose " + args.getPose() + " detected for "
+			 + args.getUser());
+//			try {
+//				poseDetectionCap.stopPoseDetection(args.getUser());
+//				skeletonCap.requestSkeletonCalibration(args.getUser(), true);
+//			} catch (StatusException e) {
+//				e.printStackTrace();
+//			}
 		}
 	}
 }
