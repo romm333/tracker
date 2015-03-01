@@ -1,6 +1,5 @@
 package usertracking.prototype.profile;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,14 +14,10 @@ import org.OpenNI.SkeletonJoint;
 import org.OpenNI.SkeletonJointPosition;
 import org.OpenNI.StatusException;
 
-import failures.UserProfileBase;
 import usertracking.prototype.classes.SimpleTracker;
 
 public class DummyObserver implements Observer {
 	private SimpleTracker tracker;
-	private long start_time = System.currentTimeMillis();
-	private long time_diff = 0;
-
 	public DummyObserver(SimpleTracker _tracker) {
 		this.tracker = _tracker;
 	}
@@ -34,7 +29,7 @@ public class DummyObserver implements Observer {
 			int buffFrameId = -1;
 			int[] users = tracker.userGen.getUsers();
 			for (int i = 0; i < users.length; ++i) {
-				if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
+				if (tracker.skeletonCap.isSkeletonTracking(users[i]) && tracker.isRecognitionRequestedForUser(users[i])) {
 					HashMap<SkeletonJoint, SkeletonJointPosition> dict = tracker
 							.getJoints().get(users[i]);
 					if (dict.size() > 0) {
@@ -180,17 +175,23 @@ public class DummyObserver implements Observer {
 							
 							
 							Point3D TC = getTriangleCentroid(torsoPos,leftShoulderPos,rightShoulderPos);
-							Point3D LHC = getTriangleCentroid(leftShoulderPos,leftElbowPos,leftHandPos);
-							Point3D RHC = getTriangleCentroid(rightShoulderPos,rightElbowPos,rightHandPos);
+							Point3D LSHC = getTriangleCentroid(leftShoulderPos,leftElbowPos,leftHandPos);
+							Point3D RSHC = getTriangleCentroid(rightShoulderPos,rightElbowPos,rightHandPos);
+							
+							Point3D TLSLS = getTriangleCentroid(torsoPos,leftShoulderPos,leftHipPos);
+							Point3D TRSRH = getTriangleCentroid(torsoPos,rightShoulderPos,rightHipPos);
+							
 
 							Point3D TH = getTriangleCentroid(torsoPos,rightHipPos,leftHipPos);
 							
 							double TC_TH = getLenght(TC, TH);
+							double TLSLS_TRSRH = getLenght(TLSLS, TRSRH);
 							
 							
-							double TC_LCH = getLenght(TC, LHC);
-							double TC_RCH = getLenght(TC, RHC);
-							double LCH_RCH = getLenght(LHC,RHC);
+							
+							double TC_LSHC = getLenght(TC, LSHC);
+							double TC_RSHC = getLenght(TC, RSHC);
+							double LSHC_RSHC = getLenght(LSHC,RSHC);
 							
 							try {
 								SceneAnalyzer analyzer = SceneAnalyzer
@@ -199,7 +200,7 @@ public class DummyObserver implements Observer {
 								
 								
 								
-								//System.out.println(users[i] + ", " + TC_TH);
+								System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
 								
 								
 								
