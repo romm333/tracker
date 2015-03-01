@@ -31,7 +31,9 @@ public class SimpleTracker extends Observable {
 	public SkeletonCapability skeletonCap;
 	public PoseDetectionCapability poseDetectionCap;
 	public String calibPose = null;
-	HashMap<Integer, HashMap<SkeletonJoint, SkeletonJointPosition>> joints;
+	 HashMap<Integer, HashMap<SkeletonJoint, SkeletonJointPosition>> joints;
+	
+	List<Integer> profiledUsers;
 
 	private byte[] imgbytes;
 	private float histogram[];
@@ -45,15 +47,6 @@ public class SimpleTracker extends Observable {
 	public int height;
 
 	private List<Observer> attachedObservers = new LinkedList<Observer>();
-	
-	
-
-	public UserProfiler userProfiler;
-	HashMap<Integer, IUserProfile> matchingUserProfiles;
-
-	public IUserProfile getMatchingUserProfile(int uid) {
-		return matchingUserProfiles.get(uid);
-	}
 	
 	public Recorder recorder;
 	
@@ -79,10 +72,10 @@ public class SimpleTracker extends Observable {
 			
 			
 			poseDetectionCap = userGen.getPoseDetectionCapability();
+			profiledUsers = new LinkedList<Integer>();
 
 			userGen.getNewUserEvent().addObserver(new NewUserObserver());
-			userGen.getUserReenterEvent()
-					.addObserver(new UserReenterObserver());
+			
 			userGen.getUserExitEvent().addObserver(new UserExitObserver());
 
 			userGen.getLostUserEvent().addObserver(new LostUserObserver());
@@ -98,9 +91,6 @@ public class SimpleTracker extends Observable {
 
 			skeletonCap.setSkeletonProfile(SkeletonProfile.ALL);
 
-			
-			userProfiler = new UserProfiler();
-
 			context.startGeneratingAll();
 		
 
@@ -108,6 +98,10 @@ public class SimpleTracker extends Observable {
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+	
+	public boolean isRecognitionRequestedForUser(int uid){
+		return profiledUsers.contains(uid);
 	}
 
 	@Override
@@ -205,16 +199,9 @@ public class SimpleTracker extends Observable {
 		@Override
 		public void update(IObservable<UserEventArgs> observable,
 				UserEventArgs args) {
-			//System.out.println("Exiting user " + args.getId());
-			//userGen.getLostUserEvent();
+			System.out.println("Exiting user " + args.getId());
+			profiledUsers.remove((Integer)args.getId());
 
-		}
-	}
-
-	class UserReenterObserver implements IObserver<UserEventArgs> {
-		@Override
-		public void update(IObservable<UserEventArgs> observable,
-				UserEventArgs args) {
 		}
 	}
 
@@ -236,74 +223,13 @@ public class SimpleTracker extends Observable {
 		}
 	}
 
-	class UserProfileThread extends Thread {
-		private int userId;
-		private boolean isDone = false;
-
-		public UserProfileThread(int user) {
-			userId = user;
-		}
-		int prevFrameId = Integer.MIN_VALUE;
-		
-		long start_time = System.currentTimeMillis();
-		long time_diff = 0;
-		int frameID = Integer.MIN_VALUE;
-		
-		private List<JointVector> profileJointVectors = new ArrayList<JointVector>();
-		
-		public void run() {
-
-			while (!isDone) {
-				if (skeletonCap.isSkeletonTracking(userId)) {
-					try {
-						int buffFrameId = userGen.getFrameID();
-						UserProfileByJoints profile = new UserProfileByJoints(
-								userId, userGen, depthGen);
-
-						String csvString = DataLogger
-								.getCoordsAsCSV(profile, ProfileJointGroup.FULL);
-						
-						long current_time = System.currentTimeMillis();
-						time_diff = current_time - start_time;
-						
-						if (buffFrameId != frameID) {
-							String[] params = csvString.split(",");
-							double a = Double.parseDouble(params[2]);
-									double b = Double.parseDouble(params[4]);
-											double c = Double.parseDouble(params[6]);
-													double d = Double.parseDouble(params[12]);
-							
-							JointVector jVector = new JointVector(a, b, c, d);
-							//collect new user profile joints
-							profileJointVectors.add(jVector);
-							if (time_diff > 8000) {
-								DataLogger.writeFile(csvString,
-										String.valueOf(userId) + ".csv");
-								System.out.println(csvString);
-							}
-							frameID = buffFrameId;
-						}
-						
-						if (time_diff > 20000) {
-							isDone = true;
-							System.out.println("Coordinates Saved");
-						}
-
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-				}
-			}
-		}
-	}
-
-	class LostUserObserver implements IObserver<UserEventArgs> {
+		class LostUserObserver implements IObserver<UserEventArgs> {
 		@Override
 		public void update(IObservable<UserEventArgs> observable,
 				UserEventArgs args) {
 			System.out.println("Lost user " + args.getId());
-			//joints.remove(args.getId());
+			joints.remove(args.getId());
+			profiledUsers.remove((Integer)args.getId());
 		}
 	}
 
@@ -325,10 +251,8 @@ public class SimpleTracker extends Observable {
 							new HashMap<SkeletonJoint, SkeletonJointPosition>());
 					
 					poseDetectionCap.startPoseDetection("Psi",args.getUser());
-					//poseDetectionCap.startPoseDetection("Wave",args.getUser());
 					
-				
-				
+			
 				} else if (args.getStatus() != CalibrationProgressStatus.MANUAL_ABORT) {
 					if (skeletonCap.needPoseForCalibration()) {
 						poseDetectionCap.startPoseDetection(calibPose,
@@ -350,6 +274,15 @@ public class SimpleTracker extends Observable {
 				PoseDetectionEventArgs args) {
 			 System.out.println("Pose " + args.getPose() + " detected for "
 			 + args.getUser());
+			 profiledUsers.add(args.getUser());
+			 
+			 
+			 try {
+				String[] s = poseDetectionCap.getAllAvailablePoses();
+			} catch (StatusException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 //			try {
 //				poseDetectionCap.stopPoseDetection(args.getUser());
 //				skeletonCap.requestSkeletonCalibration(args.getUser(), true);
