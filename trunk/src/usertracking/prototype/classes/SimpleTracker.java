@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-
+ 
 public class SimpleTracker extends Observable {
 	private final String SAMPLE_XML_FILE = "sensorConfig/SamplesConfig.xml";
 
