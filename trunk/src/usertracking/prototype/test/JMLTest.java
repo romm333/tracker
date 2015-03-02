@@ -20,12 +20,12 @@ public class JMLTest {
 	@Test
 	public void test() throws IOException {
 		 /* Load a dataset */
-        Dataset data = FileHandler.loadDataset(new File("profiles/1.csv"), 4, ",");
+        Dataset data = FileHandler.loadDataset(new File("profiles/1.csv"), 3, ",");
         /*
          * Create a new instance of the KMeans algorithm, with no options
          * specified. By default this will generate 4 clusters.
          */
-        KMeansT km = new KMeansT();
+        KMeansT km = new KMeansT(2);
         /*
          * Cluster the data, it will be returned as an array of data sets, with
          * each dataset representing a cluster
