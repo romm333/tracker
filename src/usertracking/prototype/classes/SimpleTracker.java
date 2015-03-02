@@ -24,6 +24,7 @@ public class SimpleTracker extends Observable {
 	 HashMap<Integer, HashMap<SkeletonJoint, SkeletonJointPosition>> joints;
 	
 	List<Integer> profiledUsers;
+	HashMap<Integer, Double> recognizedUsers;
 
 	private byte[] imgbytes;
 	private float histogram[];
@@ -63,6 +64,7 @@ public class SimpleTracker extends Observable {
 			
 			poseDetectionCap = userGen.getPoseDetectionCapability();
 			profiledUsers = new LinkedList<Integer>();
+			recognizedUsers = new HashMap<Integer, Double>();
 
 			userGen.getNewUserEvent().addObserver(new NewUserObserver());
 			
@@ -92,6 +94,14 @@ public class SimpleTracker extends Observable {
 	
 	public boolean isRecognitionRequestedForUser(int uid){
 		return profiledUsers.contains(uid);
+	}
+	
+	public boolean isUserRecognized(int uid){
+		return recognizedUsers.containsKey(uid);
+	}
+	
+	public void setRecognizedUser(int uid, double distance){
+		recognizedUsers.put(uid, distance);
 	}
 
 	@Override
@@ -191,6 +201,7 @@ public class SimpleTracker extends Observable {
 				UserEventArgs args) {
 			System.out.println("Exiting user " + args.getId());
 			profiledUsers.remove((Integer)args.getId());
+			recognizedUsers.remove((Integer)args.getId());
 
 		}
 	}
@@ -220,6 +231,7 @@ public class SimpleTracker extends Observable {
 			System.out.println("Lost user " + args.getId());
 			joints.remove(args.getId());
 			profiledUsers.remove((Integer)args.getId());
+			recognizedUsers.remove((Integer)args.getId());
 		}
 	}
 

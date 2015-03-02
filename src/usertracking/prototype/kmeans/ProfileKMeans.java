@@ -171,8 +171,7 @@ public class ProfileKMeans {
 		
 		System.out.println();
 		
-		JointVector jv = new JointVector(314.5382008834994, 415.0587600966366, 210.95147052954732,210.95147052954732);
-		
+		JointVector jv = new JointVector(305.3569416516529, 373.06668553774654, 194.83763499833842,194.83763499833842);		
 		for (int i = 0; i < kMeans.k; i++) {
 			double dd = user1Joints.get(i).getCentroid().getSquareOfDistance(jv);
 			System.out.println(dd);
