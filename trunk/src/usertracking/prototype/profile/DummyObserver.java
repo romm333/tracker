@@ -15,12 +15,27 @@ import org.OpenNI.SkeletonJointPosition;
 import org.OpenNI.StatusException;
 
 import usertracking.prototype.classes.SimpleTracker;
+import usertracking.prototype.kmeans.JointCluster;
+import usertracking.prototype.kmeans.JointVector;
+import usertracking.prototype.kmeans.ProfileKMeans;
 
 public class DummyObserver implements Observer {
 	private SimpleTracker tracker;
+	
+	private ProfileKMeans profileData;
+	private List<JointCluster> user1Joints;
+	
+	
+	
 	public DummyObserver(SimpleTracker _tracker) {
 		this.tracker = _tracker;
+		profileData = new ProfileKMeans("profiles/1.csv", 3);
+		user1Joints = profileData.getJointsClusters();
+		
+		
 	}
+	
+	
  
 	@Override
 	public void update(Observable arg0, Object arg1) {
@@ -29,7 +44,7 @@ public class DummyObserver implements Observer {
 			int buffFrameId = -1;
 			int[] users = tracker.userGen.getUsers();
 			for (int i = 0; i < users.length; ++i) {
-				if (tracker.skeletonCap.isSkeletonTracking(users[i]) && tracker.isRecognitionRequestedForUser(users[i])) {
+				if (tracker.skeletonCap.isSkeletonTracking(users[i]) && tracker.isRecognitionRequestedForUser(users[i]) && !tracker.isUserRecognized(users[i])) {
 					HashMap<SkeletonJoint, SkeletonJointPosition> dict = tracker
 							.getJoints().get(users[i]);
 					if (dict.size() > 0) {
@@ -198,9 +213,20 @@ public class DummyObserver implements Observer {
 								
 								
 								
-								System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
+								//System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
+								double[] distances = new double[3];
+								JointVector jv = new JointVector(TC_TH, shoulders, TLSLS_TRSRH,TLSLS_TRSRH);		
 								
+								for (int k = 0; k < profileData.k; k++) {
+									double dd = user1Joints.get(k).getCentroid().getSquareOfDistance(jv);
+									distances[k] = dd;
+									//System.out.println(dd);
+								}
 								
+								double minDistance = Math.min(Math.min(distances[0],distances[1]), distances[2]);
+								System.out.println("Recognized user distance to profile centroid:" + minDistance);
+								
+								tracker.setRecognizedUser(users[i], minDistance);
 								
 //								System.out.println(theFloor.getPoint().getZ()
 //										+ ", " + theFloor.getPoint().getY()
