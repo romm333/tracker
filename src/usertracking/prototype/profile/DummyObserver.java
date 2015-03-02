@@ -21,7 +21,7 @@ public class DummyObserver implements Observer {
 	public DummyObserver(SimpleTracker _tracker) {
 		this.tracker = _tracker;
 	}
-
+ 
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
