@@ -14,7 +14,6 @@ import usertracking.prototype.gui.views.SkeletonFrontView;
 import usertracking.prototype.gui.views.SkeletonTextInfoView;
 import usertracking.prototype.gui.views.SkeletonTopView;
 import usertracking.prototype.profile.DummyObserver;
-import usertracking.prototype.profile.UserKMeansProfileObserver;
 
 public class TrackerViewBoardNew extends JFrame {
 

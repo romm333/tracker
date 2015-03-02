@@ -2,18 +2,8 @@ package usertracking.prototype.classes;
 
 import org.OpenNI.*;
 
-import failures.UserProfileByJoints;
-import usertracking.prototype.gui.utils.DataLogger;
-import usertracking.prototype.kmeans.JointVector;
-import usertracking.prototype.profile.IUserProfile;
-import usertracking.prototype.profile.ProfileJointGroup;
-//import usertracking.prototype.profile.UserProfileByCentroids;
-//import usertracking.prototype.profile.UserProfileByJoints;
-import usertracking.prototype.profile.UserProfiler;
-
 import java.awt.Color;
 import java.nio.ShortBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -276,14 +266,7 @@ public class SimpleTracker extends Observable {
 			 + args.getUser());
 			 profiledUsers.add(args.getUser());
 			 
-			 
-			 try {
-				String[] s = poseDetectionCap.getAllAvailablePoses();
-			} catch (StatusException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-//			try {
+			//try {
 //				poseDetectionCap.stopPoseDetection(args.getUser());
 //				skeletonCap.requestSkeletonCalibration(args.getUser(), true);
 //			} catch (StatusException e) {

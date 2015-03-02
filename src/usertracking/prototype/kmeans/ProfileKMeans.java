@@ -57,8 +57,8 @@ public class ProfileKMeans {
 	
 	private JointVector getPointByLine(String line) {
 		String[] abcd = line.split(",");
-		return new JointVector(Double.parseDouble(abcd[2]),
-				Double.parseDouble(abcd[4]), Double.parseDouble(abcd[6]),Double.parseDouble(abcd[12]));
+		return new JointVector(Double.parseDouble(abcd[0]),
+				Double.parseDouble(abcd[1]), Double.parseDouble(abcd[2]),Double.parseDouble(abcd[2]));
 	}
 
 	/**
@@ -160,8 +160,8 @@ public class ProfileKMeans {
 	}
 	
 	public static void main(String[] args) {
-		String pointsFilePath = "profiles/roman1.csv";
-		ProfileKMeans kMeans = new ProfileKMeans(pointsFilePath, 2);
+		String pointsFilePath = "profiles/1.csv";
+		ProfileKMeans kMeans = new ProfileKMeans(pointsFilePath, 3);
 		List<JointCluster> user1Joints = kMeans.getJointsClusters();
 		for (int i = 0; i < kMeans.k; i++) {
 			System.out.println("Cluster " + i + ": "
@@ -171,64 +171,12 @@ public class ProfileKMeans {
 		
 		System.out.println();
 		
-		String pointsFilePath2 = "profiles/roman2.csv";
-		ProfileKMeans kMeans2 = new ProfileKMeans(pointsFilePath2, 2);
-		List<JointCluster> user2Joints = kMeans2.getJointsClusters();
-		for (int i = 0; i < kMeans2.k; i++) {
-			System.out.println("Cluster " + i + ": "
-					+ user2Joints.get(i).getCentroid() + " " + user2Joints.get(i).getJointVectors().size());
-			//System.out.println("Cluster " + i + ": " + pointsClusters.get(i));
+		JointVector jv = new JointVector(314.5382008834994, 415.0587600966366, 210.95147052954732,210.95147052954732);
+		
+		for (int i = 0; i < kMeans.k; i++) {
+			double dd = user1Joints.get(i).getCentroid().getSquareOfDistance(jv);
+			System.out.println(dd);
 		}
-		
-		System.out.println();
-		
-		String pointsFilePath3 = "profiles/roman3.csv";
-		ProfileKMeans kMeans3 = new ProfileKMeans(pointsFilePath3, 2);
-		List<JointCluster> user3Joints = kMeans3.getJointsClusters();
-		for (int i = 0; i < kMeans2.k; i++) {
-			System.out.println("Cluster " + i + ": "
-					+ user3Joints.get(i).getCentroid() + " " + user3Joints.get(i).getJointVectors().size());
-			user3Joints.get(i).getJointVectors().size();
-			//System.out.println("Cluster " + i + ": " + pointsClusters.get(i));
-		}
-		
-	
-		
-//		
-//		
-//		
-//		System.out.println();
-//		
-//		List<JointVector> user1VectorsCollection = new ArrayList<JointVector>(2);
-//		user1VectorsCollection.add(user1Joints.get(0).getCentroid());
-//		user1VectorsCollection.add(user1Joints.get(1).getCentroid());
-//		
-//		List<JointVector> user2VectorsCollection = new ArrayList<JointVector>(2);
-//		user2VectorsCollection.add(user2Joints.get(0).getCentroid());
-//		user2VectorsCollection.add(user2Joints.get(1).getCentroid());
-//
-//		List<JointVector> user3VectorsCollection = new ArrayList<JointVector>(2);
-//		user3VectorsCollection.add(user3Joints.get(0).getCentroid());
-//		user3VectorsCollection.add(user3Joints.get(1).getCentroid());
-//		
-//		JointVector testVector = user3Joints.get(1).getCentroid();
-//		
-//		JointVector centroid1 = user1Joints.get(1).getCentroid();
-//		JointVector centroid2 = user2Joints.get(1).getCentroid();
-//		
-//		double dd = testVector.getSquareOfDistance(centroid1);
-//		double dd1 = testVector.getSquareOfDistance(centroid2);
-//		
-//		System.out.println(dd + " " + dd1);
-		
-//		for(JointVector vector1 : user1VectorsCollection){
-//			for(JointVector vector2 : user2VectorsCollection){
-//				JointVector result = kMeans3.getStandardDeviationVector(vector1,vector2);
-//				
-//				System.out.println(vector1.a +" "+ vector2.a +" "+ result.a + " " + result.b + " " + result.c + " " + result.d);
-//			}
-//		}
-		
 	}
 }
 

@@ -3,6 +3,8 @@ package usertracking.prototype.profile;
 import java.util.LinkedList;
 import java.util.List;
 
+import failures.IUserProfile;
+
 public class UserProfiler {
 
 	private List<IUserProfile> profileList = new LinkedList<IUserProfile>();

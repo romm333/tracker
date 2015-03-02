@@ -40,8 +40,6 @@ public class DummyObserver implements Observer {
 								.get(SkeletonJoint.NECK);
 						SkeletonJointPosition torsoPosition = dict
 								.get(SkeletonJoint.TORSO);
-//						SkeletonJointPosition waist = dict
-//								.get(SkeletonJoint.WAIST);
 
 						SkeletonJointPosition leftShoulder = dict
 								.get(SkeletonJoint.LEFT_SHOULDER);

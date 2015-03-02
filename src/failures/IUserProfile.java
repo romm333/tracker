@@ -1,4 +1,4 @@
-package usertracking.prototype.profile;
+package failures;
 
 public interface IUserProfile {
 	public double getProfileFignature();

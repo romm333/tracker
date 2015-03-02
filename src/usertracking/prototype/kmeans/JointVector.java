@@ -13,10 +13,7 @@ public class JointVector {
 	}
 	
 	public Double getSquareOfDistance(JointVector nextJointVector){
-		return  (a - nextJointVector.a) * (a - nextJointVector.a)
-				+ (b - nextJointVector.b) *  (b - nextJointVector.b) 
-				+ (c - nextJointVector.c) *  (c - nextJointVector.c)
-				+ (d - nextJointVector.d) *  (d - nextJointVector.d);
+		return  Math.pow((a - nextJointVector.a),2) + Math.pow((b - nextJointVector.b), 2) + Math.pow((c - nextJointVector.c),2);
 	}
 	
 	public Double getJointVectorLenght() {
