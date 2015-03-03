@@ -4,10 +4,12 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.TitledBorder;
 
 import usertracking.prototype.classes.*;
 import usertracking.prototype.gui.views.SkeletonFrontView;
@@ -28,6 +30,8 @@ public class TrackerViewBoardNew extends JFrame {
 	JPanel leftPanel;
 	JPanel middlePanel;
 	JPanel rightPanel;
+	JPanel controllPanel;
+	
 
 	public TrackerViewBoardNew() {
 		super("Tracker View Board");
@@ -67,49 +71,92 @@ public class TrackerViewBoardNew extends JFrame {
 		tracker.addObserver(frontViewer);
 		
 		DummyObserver userProfileObserver = new DummyObserver(tracker);
-		tracker.addObserver(userProfileObserver);
 		
-		infoViewer = new SkeletonTextInfoView(56, 34);
-		infoViewer.setSize(new Dimension(590,600));
+		tracker.addObserver(userProfileObserver);
+		infoViewer = new SkeletonTextInfoView(56, 30);
+	
 		// Main Panels
 
 		// Panels
 		leftPanel = new JPanel();
-		leftPanel.setBackground(Color.gray);
+		leftPanel.setBackground(Color.black);
 		leftPanel.setPreferredSize(new Dimension(332, 600));
 
 		leftPanel.setMinimumSize(new Dimension(332, 600));
-		leftPanel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1,
-				Color.BLACK));
+		
+		TitledBorder tb = BorderFactory.createTitledBorder("Top View");
+		tb.setTitleColor(Color.white);
+		
+		leftPanel.setBorder(tb);
 		leftPanel.add(topViewer);
 
 		middlePanel = new JPanel();
-		middlePanel.setBackground(Color.gray);
+		middlePanel.setBackground(Color.black);
 		middlePanel.setPreferredSize(new Dimension(342, 600));
 
 		middlePanel.setMinimumSize(new Dimension(342, 600));
 		middlePanel.setMaximumSize(new Dimension(342, 600));
-		middlePanel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1,
-				Color.BLACK));
+		
+		
+		tb = BorderFactory.createTitledBorder("Front View");
+		tb.setTitleColor(Color.white);
+		middlePanel.setBorder(tb); 
+		
 		middlePanel.setLayout(new BorderLayout(342, 600));
 		middlePanel.add(frontViewer);
 
 		JScrollPane scrollPane = new JScrollPane(infoViewer);
 		scrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setBorder(BorderFactory.createTitledBorder("Coordinates"));
 		
+		scrollPane.setPreferredSize(new Dimension(640,500));
 		
 		rightPanel = new JPanel();
-		rightPanel.setBackground(Color.gray);
 		rightPanel.setPreferredSize(new Dimension(620, 600));
-
+		rightPanel.setLayout(new BorderLayout());
+		
 		rightPanel.setMinimumSize(new Dimension(620, 600));
 		rightPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 1,
 				Color.BLACK));
 	        
-	     
-		scrollPane.setMinimumSize(new Dimension(640, 600));
-		rightPanel.add(scrollPane);
+		controllPanel = new JPanel();
+		controllPanel.setPreferredSize(new Dimension(640,50));
+		controllPanel.setBorder(BorderFactory.createTitledBorder("Controls"));
+		
+		 JCheckBox cbRecMode = new JCheckBox("Recording mode");
+		 
+		ItemListener recordingModeListener = new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED)
+					tracker.setInRecordingMode(true);
+				else
+					tracker.setInRecordingMode(false);
+			}
+		};
+		 
+		cbRecMode.addItemListener(recordingModeListener);
+		
+		JCheckBox cbProfileMode = new JCheckBox("Profiling mode");
+		 
+		ItemListener profileModeListener = new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED)
+					tracker.setInProfilingMode(true);
+				else
+					tracker.setInProfilingMode(false);
+			}
+		};
+		 
+		    cbProfileMode.addItemListener(profileModeListener);
+		
+		controllPanel.add(cbRecMode);
+		controllPanel.add(cbProfileMode);
+		
+		rightPanel.add(controllPanel, BorderLayout.NORTH);
+		rightPanel.add(scrollPane, BorderLayout.SOUTH);
 				
 		// Main window adding
 		this.add(leftPanel, BorderLayout.LINE_START);

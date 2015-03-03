@@ -212,22 +212,44 @@ public class DummyObserver implements Observer {
 								Plane3D theFloor = analyzer.getFloor();
 								
 								
-								
-								//System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
-								double[] distances = new double[3];
-								JointVector jv = new JointVector(TC_TH, shoulders, TLSLS_TRSRH,TLSLS_TRSRH);		
-								
-								for (int k = 0; k < profileData.k; k++) {
-									double dd = user1Joints.get(k).getCentroid().getSquareOfDistance(jv);
-									distances[k] = dd;
-									//System.out.println(dd);
+								if (tracker.isInRecordingMode()) {
+									System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
 								}
 								
-								double minDistance = Math.min(Math.min(distances[0],distances[1]), distances[2]);
-								System.out.println("Recognized user distance to profile centroid:" + minDistance);
-								
-								tracker.setRecognizedUser(users[i], minDistance);
-								
+								if (tracker.isInProfilingMode()) {
+									double[] distances = new double[3];
+									JointVector jv = new JointVector(TC_TH,
+											shoulders, TLSLS_TRSRH, TLSLS_TRSRH);
+
+									for (int k = 0; k < profileData.k; k++) {
+										double dd = user1Joints.get(k)
+												.getCentroid()
+												.getSquareOfDistance(jv);
+										distances[k] = dd;
+										// System.out.println(dd);
+									}
+
+									double minDistance = Math.min(Math.min(
+											distances[0], distances[1]),
+											distances[2]);
+
+									int profileIndex = -1;
+									for (int j = 0; j < 3; j++) {
+										if (distances[j] == minDistance) {
+											profileIndex = j;
+										}
+									}
+
+									System.out
+											.println("Recognized user distance to profile centroid:"
+													+ minDistance
+													+ ", "
+													+ user1Joints.get(
+															profileIndex)
+															.getCentroid());
+									tracker.setRecognizedUser(users[i],
+											minDistance);
+								}
 //								System.out.println(theFloor.getPoint().getZ()
 //										+ ", " + theFloor.getPoint().getY()
 //										+ ", " + torsoPos.getY() + ", " + headPos.getY());

@@ -54,7 +54,7 @@ public class SkeletonTopView extends Component implements Observer {
 	
 		int x1 = this.getWidth() / 2 - 35;
 		int y1 = this.getHeight() / 35;
-		g.setColor(Color.BLACK);
+		g.setColor(Color.white);
 		g.fillOval(x1, y1, 70, 8);
 
 		drawSkeleton(g);
