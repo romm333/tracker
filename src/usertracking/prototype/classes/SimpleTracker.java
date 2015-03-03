@@ -29,6 +29,9 @@ public class SimpleTracker extends Observable {
 	private byte[] imgbytes;
 	private float histogram[];
 	public DepthMetaData depthMD;
+	
+	private boolean isInProfilingMode;
+	private boolean isInRecordingMode;
 
 	public HashMap<Integer, HashMap<SkeletonJoint, SkeletonJointPosition>> getJoints() {
 		return joints;
@@ -195,6 +198,22 @@ public class SimpleTracker extends Observable {
 		}
 	}
 
+	public boolean isInProfilingMode() {
+		return isInProfilingMode;
+	}
+
+	public void setInProfilingMode(boolean isInProfilingMode) {
+		this.isInProfilingMode = isInProfilingMode;
+	}
+
+	public boolean isInRecordingMode() {
+		return isInRecordingMode;
+	}
+
+	public void setInRecordingMode(boolean isInRecordingMode) {
+		this.isInRecordingMode = isInRecordingMode;
+	}
+
 	class UserExitObserver implements IObserver<UserEventArgs> {
 		@Override
 		public void update(IObservable<UserEventArgs> observable,
@@ -248,7 +267,6 @@ public class SimpleTracker extends Observable {
 
 					System.out.println("starting tracking " + args.getUser());
 					skeletonCap.startTracking(args.getUser());
-					if(!joints.containsKey(args.getUser()))
 					joints.put(new Integer(args.getUser()),
 							new HashMap<SkeletonJoint, SkeletonJointPosition>());
 					
