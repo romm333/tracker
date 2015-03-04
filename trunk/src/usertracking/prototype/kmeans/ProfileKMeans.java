@@ -161,7 +161,7 @@ public class ProfileKMeans {
 	
 	public static void main(String[] args) {
 		String pointsFilePath = "profiles/1.csv";
-		ProfileKMeans kMeans = new ProfileKMeans(pointsFilePath, 3);
+		ProfileKMeans kMeans = new ProfileKMeans(pointsFilePath, 4);
 		List<JointCluster> user1Joints = kMeans.getJointsClusters();
 		for (int i = 0; i < kMeans.k; i++) {
 			System.out.println("Cluster " + i + ": "

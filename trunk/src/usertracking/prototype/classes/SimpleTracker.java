@@ -74,12 +74,10 @@ public class SimpleTracker extends Observable {
 			userGen.getUserExitEvent().addObserver(new UserExitObserver());
 
 			userGen.getLostUserEvent().addObserver(new LostUserObserver());
-
+			
+			
 			skeletonCap.getCalibrationCompleteEvent().addObserver(
 					new CalibrationCompleteObserver());
-			poseDetectionCap.getPoseDetectedEvent().addObserver(
-					new PoseDetectedObserver());
-			
 			
 			calibPose = skeletonCap.getSkeletonCalibrationPose();
 			joints = new HashMap<Integer, HashMap<SkeletonJoint, SkeletonJointPosition>>();
@@ -221,7 +219,6 @@ public class SimpleTracker extends Observable {
 			System.out.println("Exiting user " + args.getId());
 			profiledUsers.remove((Integer)args.getId());
 			recognizedUsers.remove((Integer)args.getId());
-
 		}
 	}
 
