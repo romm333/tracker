@@ -216,65 +216,54 @@ public class DummyObserver implements Observer {
 							double TC_RSHC = getLenght(TC, RSHC);
 							double LSHC_RSHC = getLenght(LSHC,RSHC);
 							
-							try {
-								SceneAnalyzer analyzer = SceneAnalyzer
-										.create(tracker.userGen.getContext());
-								Plane3D theFloor = analyzer.getFloor();
-								
-								
-								if (tracker.isInRecordingMode()) {
-									//System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
-									System.out.println(users[i] + ", " + torsoLS + ", " + torsoRS + ", " + shoulders + ", " +  rightKneeToHip + ", " + leftKneeToHip);
+							if (tracker.isInRecordingMode()) {
+								System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
+								//System.out.println(users[i] + ", " + torsoLS + ", " + torsoRS + ", " + shoulders + ", " +  rightKneeToHip + ", " + leftKneeToHip);
+							}
+							
+							if (tracker.isInProfilingMode()) {
+								double[] distances = new double[4];
+								JointVector jv = new JointVector(TC_TH,
+										shoulders, TLSLS_TRSRH, TLSLS_TRSRH);
+
+								for (int k = 0; k < profileData.k; k++) {
+									double dd = user1Joints.get(k)
+											.getCentroid()
+											.getSquareOfDistance(jv);
+									distances[k] = dd;
+									System.out.println(dd + ", " + user1Joints.get(k)
+											.getCentroid());
+									System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
 								}
-								
-								if (tracker.isInProfilingMode()) {
-									double[] distances = new double[4];
-									JointVector jv = new JointVector(TC_TH,
-											shoulders, TLSLS_TRSRH, TLSLS_TRSRH);
 
-									for (int k = 0; k < profileData.k; k++) {
-										double dd = user1Joints.get(k)
-												.getCentroid()
-												.getSquareOfDistance(jv);
-										distances[k] = dd;
-										System.out.println(dd + ", " + user1Joints.get(k)
-												.getCentroid());
-										System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
+								double minDistance = Math.min(Math.min(
+										distances[0], distances[1]),
+										Math.min(distances[2],distances[3]));
+
+								int profileIndex = -1;
+								for (int j = 0; j < 4; j++) {
+									if (distances[j] == minDistance) {
+										profileIndex = j;
 									}
-
-									double minDistance = Math.min(Math.min(
-											distances[0], distances[1]),
-											Math.min(distances[2],distances[3]));
-
-									int profileIndex = -1;
-									for (int j = 0; j < 4; j++) {
-										if (distances[j] == minDistance) {
-											profileIndex = j;
-										}
-									}
-
-									System.out
-											.println("Recognized user distance to profile centroid:"
-													+ minDistance
-													+ ", "
-													+ user1Joints.get(
-															profileIndex)
-															.getCentroid());
-									tracker.setRecognizedUser(users[i],
-											minDistance);
 								}
+
+								System.out
+										.println("Recognized user distance to profile centroid:"
+												+ minDistance
+												+ ", "
+												+ user1Joints.get(
+														profileIndex)
+														.getCentroid());
+								tracker.setRecognizedUser(users[i],
+										minDistance);
+							}
 //								System.out.println(theFloor.getPoint().getZ()
 //										+ ", " + theFloor.getPoint().getY()
 //										+ ", " + torsoPos.getY() + ", " + headPos.getY());
-								
-								//System.out.println(users[i] + ", " + theFloor.getPoint().getY() + ", " + theFloor.getNormal().getX() + ", " + theFloor.getNormal().getX() +", "+ headPos.getY() + ", " + theFloor.getNormal().getZ() + ", " + neckPos.getY() + ", " + torsoPos.getY() + ", " + rightHipPos.getY()+ ", " + rightFootPos.getY());
-								
-								buffFrameId = frameId;
-
-							} catch (GeneralException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+							
+							//System.out.println(users[i] + ", " + theFloor.getPoint().getY() + ", " + theFloor.getNormal().getX() + ", " + theFloor.getNormal().getX() +", "+ headPos.getY() + ", " + theFloor.getNormal().getZ() + ", " + neckPos.getY() + ", " + torsoPos.getY() + ", " + rightHipPos.getY()+ ", " + rightFootPos.getY());
+							
+							buffFrameId = frameId;
 						}
 //						if (headPosition.getConfidence() == 1.0
 //								&& torsoPosition.getConfidence()== 1.0
