@@ -29,9 +29,13 @@ public class DummyObserver implements Observer {
 	
 	public DummyObserver(SimpleTracker _tracker) {
 		this.tracker = _tracker;
-		profileData = new ProfileKMeans("profiles/1.csv", 3);
+		profileData = new ProfileKMeans("profiles/1.csv", 4);
 		user1Joints = profileData.getJointsClusters();
 		
+		for (int i = 0; i < profileData.k; i++) {
+			System.out.println("Cluster " + i + ": "
+					+ user1Joints.get(i).getCentroid() + " " + user1Joints.get(i).getJointVectors().size());
+		}
 		
 	}
 	
@@ -120,7 +124,8 @@ public class DummyObserver implements Observer {
 						int frameId = tracker.depthGen.getFrameID();
 						
 						
-						if (torsoPosition.getConfidence() == 1.0 && headPosition.getConfidence() == 1.0 && rightFoot.getConfidence() == 1.0 && buffFrameId != frameId) {
+						if (torsoPosition.getConfidence() == 1.0 && headPosition.getConfidence() == 1.0 && rightFoot.getConfidence() == 1.0 && leftElbow.getConfidence()== 1.0
+								&& rightElbow.getConfidence()== 1.0 && buffFrameId != frameId) {
 							 
 							Point3D torsoPos = tracker.depthGen
 									.convertProjectiveToRealWorld(torsoPosition
@@ -144,6 +149,9 @@ public class DummyObserver implements Observer {
 							
 							Point3D rightKneePos = tracker.depthGen
 									.convertProjectiveToRealWorld(rightKnee
+											.getPosition());
+							Point3D leftKneePos = tracker.depthGen
+									.convertProjectiveToRealWorld(leftKnee
 											.getPosition());
 	
 							Point3D rightFootPos = tracker.depthGen
@@ -186,6 +194,8 @@ public class DummyObserver implements Observer {
 							double rightShoulderToHand = getLenght(rightShoulderPos, rightHandPos);
 							double rightHandToShoulder = getLenght(rightShoulderPos, rightHandPos);
 							
+							double rightKneeToHip = getLenght(rightHipPos, rightKneePos);
+							double leftKneeToHip = getLenght(leftHipPos, leftKneePos);
 							
 							Point3D TC = getTriangleCentroid(torsoPos,leftShoulderPos,rightShoulderPos);
 							Point3D LSHC = getTriangleCentroid(leftShoulderPos,leftElbowPos,leftHandPos);
@@ -213,11 +223,12 @@ public class DummyObserver implements Observer {
 								
 								
 								if (tracker.isInRecordingMode()) {
-									System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
+									//System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
+									System.out.println(users[i] + ", " + torsoLS + ", " + torsoRS + ", " + shoulders + ", " +  rightKneeToHip + ", " + leftKneeToHip);
 								}
 								
 								if (tracker.isInProfilingMode()) {
-									double[] distances = new double[3];
+									double[] distances = new double[4];
 									JointVector jv = new JointVector(TC_TH,
 											shoulders, TLSLS_TRSRH, TLSLS_TRSRH);
 
@@ -226,15 +237,17 @@ public class DummyObserver implements Observer {
 												.getCentroid()
 												.getSquareOfDistance(jv);
 										distances[k] = dd;
-										// System.out.println(dd);
+										System.out.println(dd + ", " + user1Joints.get(k)
+												.getCentroid());
+										System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
 									}
 
 									double minDistance = Math.min(Math.min(
 											distances[0], distances[1]),
-											distances[2]);
+											Math.min(distances[2],distances[3]));
 
 									int profileIndex = -1;
-									for (int j = 0; j < 3; j++) {
+									for (int j = 0; j < 4; j++) {
 										if (distances[j] == minDistance) {
 											profileIndex = j;
 										}
