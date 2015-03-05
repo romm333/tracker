@@ -97,6 +97,9 @@ public class DummyObserver implements Observer {
 						
 						SkeletonJointPosition rightFoot = dict
 								.get(SkeletonJoint.RIGHT_FOOT);
+						
+						SkeletonJointPosition waist = dict
+								.get(SkeletonJoint.WAIST);
 
 						List<SkeletonJointPosition> interestingJoints = new LinkedList<SkeletonJointPosition>();
 						
@@ -210,14 +213,15 @@ public class DummyObserver implements Observer {
 							double TC_TH = getLenght(TC, TH);
 							double TLSLS_TRSRH = getLenght(TLSLS, TRSRH);
 							
-							
-							
 							double TC_LSHC = getLenght(TC, LSHC);
 							double TC_RSHC = getLenght(TC, RSHC);
 							double LSHC_RSHC = getLenght(LSHC,RSHC);
 							
+							double angleBetweenHips = AngleBetween(shoulders,rightShoulderToElbow);
+							
 							if (tracker.isInRecordingMode()) {
-								System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
+								System.out.println(users[i] + ", " + angleBetweenHips);
+								//System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
 								//System.out.println(users[i] + ", " + torsoLS + ", " + torsoRS + ", " + shoulders + ", " +  rightKneeToHip + ", " + leftKneeToHip);
 							}
 							
@@ -296,7 +300,12 @@ public class DummyObserver implements Observer {
 			e.printStackTrace();
 		}
 	}
-
+	
+	public double AngleBetween(double jointLenght1, double  jointLenght2)
+	{
+	  return 2.0d * Math.atan(jointLenght1 - jointLenght2/jointLenght1 + jointLenght2);
+	}
+	
 	public static double getLenght(Point3D joint1, Point3D joint2) {
 		return Math.sqrt(Math.pow(joint1.getX() - joint2.getX(), 2)
 				+ Math.pow(joint1.getY() - joint2.getY(), 2)
