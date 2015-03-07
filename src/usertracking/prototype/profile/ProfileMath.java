@@ -7,7 +7,7 @@ import javax.vecmath.Vector3d;
 import org.OpenNI.Point3D;
 
 public class ProfileMath {
-	public double getStandardDeviation(List<Float> arrayOfNumbers) {
+	public static double getStandardDeviation(List<Float> arrayOfNumbers) {
 		double result = 0;
 		for (double oneNumber : arrayOfNumbers) {
 			result += oneNumber;
@@ -24,7 +24,8 @@ public class ProfileMath {
 		return  Math.sqrt(finalsumX / (arrayOfNumbers.size()));
 	}
 
-	public double getAverage(List<Float> numbers) {
+
+	public static double getAverage(List<Float> numbers) {
 		double result = 0;
 		for (double oneNumber : numbers) {
 			result += oneNumber;
@@ -33,7 +34,7 @@ public class ProfileMath {
 		return result / numbers.size();
 	}
 
-	public double getVariationCoefficient(List<Float> arrayOfNumbers) {
+	public static double getVariationCoefficient(List<Float> arrayOfNumbers) {
 		double result = 0;
 		for (double oneNumber : arrayOfNumbers) {
 			result += oneNumber;
@@ -52,14 +53,14 @@ public class ProfileMath {
 		return (standardVariation/average) * 100;
 	}
 	
-	public static Vector3d getVector3d(Point3D point1, Point3D point2){
-		float fromX = point1.getX();
-		float fromY = point1.getY();
-		float fromZ = point1.getZ();
+	public static Vector3d getVector3d(Point3D startPoint, Point3D endPoint){
+		float fromX = startPoint.getX();
+		float fromY = startPoint.getY();
+		float fromZ = startPoint.getZ();
 		
-		float toX = point2.getX();
-		float toY = point2.getY();
-		float toZ = point2.getZ();
+		float toX = endPoint.getX();
+		float toY = endPoint.getY();
+		float toZ = endPoint.getZ();
 		
 		float resultX = toX - fromX;
 		float resultY = toY - fromY;
@@ -88,5 +89,17 @@ public class ProfileMath {
 	
 	public static double getVectorAngleDeg(Vector3d vector1, Vector3d vector2){
 		return  Math.toDegrees(vector1.angle(vector2));
+	}
+	
+	public static Point3D getTriangleCentroid(Point3D top1, Point3D top2,
+			Point3D top3) {
+		Point3D retPoint = new Point3D();
+		
+		float X = (top1.getX() + top2.getX() + top3.getX()) / 3;
+		float Y = (top1.getY() + top2.getY() + top3.getY()) / 3;
+		float Z = (top1.getZ() + top2.getZ() + top3.getZ()) / 3;
+
+		retPoint.setPoint(X, Y, Z);
+		return retPoint;
 	}
 }

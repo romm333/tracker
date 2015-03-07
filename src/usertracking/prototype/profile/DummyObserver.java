@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.vecmath.Vector3d;
+
 import org.OpenNI.GeneralException;
 import org.OpenNI.Plane3D;
 import org.OpenNI.Point3D;
@@ -49,218 +51,196 @@ public class DummyObserver implements Observer {
 			int[] users = tracker.userGen.getUsers();
 			for (int i = 0; i < users.length; ++i) {
 				if (tracker.skeletonCap.isSkeletonTracking(users[i]) && tracker.isRecognitionRequestedForUser(users[i]) && !tracker.isUserRecognized(users[i])) {
-					HashMap<SkeletonJoint, SkeletonJointPosition> dict = tracker
-							.getJoints().get(users[i]);
-					if (dict.size() > 0) {
-
-						SkeletonJointPosition headPosition = dict
-								.get(SkeletonJoint.HEAD);
-						SkeletonJointPosition neckPosition = dict
-								.get(SkeletonJoint.NECK);
-						SkeletonJointPosition torsoPosition = dict
-								.get(SkeletonJoint.TORSO);
-
-						SkeletonJointPosition leftShoulder = dict
-								.get(SkeletonJoint.LEFT_SHOULDER);
-						SkeletonJointPosition rightShoulder = dict
-								.get(SkeletonJoint.RIGHT_SHOULDER);
-
-						SkeletonJointPosition leftHip = dict
-								.get(SkeletonJoint.LEFT_HIP);
-						SkeletonJointPosition rightHip = dict
-								.get(SkeletonJoint.RIGHT_HIP);
-
-						SkeletonJointPosition leftKnee = dict
-								.get(SkeletonJoint.LEFT_KNEE);
-						SkeletonJointPosition rightKnee = dict
-								.get(SkeletonJoint.RIGHT_KNEE);
-
-						SkeletonJointPosition leftElbow = dict
-								.get(SkeletonJoint.LEFT_ELBOW);
-						SkeletonJointPosition rightElbow = dict
-								.get(SkeletonJoint.RIGHT_ELBOW);
-
-						SkeletonJointPosition leftCollar = dict
-								.get(SkeletonJoint.LEFT_COLLAR);
-						SkeletonJointPosition rightCollar = dict
-								.get(SkeletonJoint.LEFT_COLLAR);
-
-						SkeletonJointPosition leftAnkle = dict
-								.get(SkeletonJoint.LEFT_ANKLE);
-						SkeletonJointPosition rightAnkle = dict
-								.get(SkeletonJoint.RIGHT_ANKLE);
-
-						SkeletonJointPosition lehtHand = dict
-								.get(SkeletonJoint.LEFT_HAND);
-						SkeletonJointPosition rightHand = dict
-								.get(SkeletonJoint.RIGHT_HAND);
 						
-						SkeletonJointPosition rightFoot = dict
-								.get(SkeletonJoint.RIGHT_FOOT);
-						
-						SkeletonJointPosition waist = dict
-								.get(SkeletonJoint.WAIST);
+						SkeletonJointPosition headPosition = tracker.skeletonCap.getSkeletonJointPosition(users[i],SkeletonJoint.HEAD);
+								
+						SkeletonJointPosition neckPosition = tracker.skeletonCap.getSkeletonJointPosition(users[i],SkeletonJoint.NECK);
+						SkeletonJointPosition torsoPosition = tracker.skeletonCap.getSkeletonJointPosition(users[i],SkeletonJoint.TORSO);
 
-						List<SkeletonJointPosition> interestingJoints = new LinkedList<SkeletonJointPosition>();
+						SkeletonJointPosition leftShoulder = tracker.skeletonCap.getSkeletonJointPosition(users[i],SkeletonJoint.LEFT_SHOULDER);
+						SkeletonJointPosition rightShoulder = tracker.skeletonCap.getSkeletonJointPosition(users[i],SkeletonJoint.RIGHT_SHOULDER);
+
+						SkeletonJointPosition leftHip = tracker.skeletonCap.getSkeletonJointPosition(users[i],SkeletonJoint.LEFT_HIP);
+						SkeletonJointPosition rightHip = tracker.skeletonCap.getSkeletonJointPosition(users[i],SkeletonJoint.RIGHT_HIP);
+
+						SkeletonJointPosition leftKnee = tracker.skeletonCap.getSkeletonJointPosition(users[i],SkeletonJoint.LEFT_KNEE);
+						SkeletonJointPosition rightKnee = tracker.skeletonCap.getSkeletonJointPosition(users[i],SkeletonJoint.RIGHT_KNEE);
+
+						SkeletonJointPosition leftElbow = tracker.skeletonCap.getSkeletonJointPosition(users[i],SkeletonJoint.LEFT_ELBOW);
+						SkeletonJointPosition rightElbow = tracker.skeletonCap.getSkeletonJointPosition(users[i],SkeletonJoint.RIGHT_ELBOW);
+
+						SkeletonJointPosition lehtHand = tracker.skeletonCap.getSkeletonJointPosition(users[i],SkeletonJoint.LEFT_HAND);
+						SkeletonJointPosition rightHand = tracker.skeletonCap.getSkeletonJointPosition(users[i],SkeletonJoint.RIGHT_HAND);
+						
+						SkeletonJointPosition rightFoot = tracker.skeletonCap.getSkeletonJointPosition(users[i],SkeletonJoint.RIGHT_FOOT);
+						SkeletonJointPosition leftFoot = tracker.skeletonCap.getSkeletonJointPosition(users[i],SkeletonJoint.LEFT_FOOT);
 						
 												
-						
-						//interestingJoints.add(headPosition);
-						//interestingJoints.add(neckPosition);
-						interestingJoints.add(torsoPosition);
-					
-						interestingJoints.add(leftShoulder);
-						interestingJoints.add(rightShoulder);
-
-						interestingJoints.add(leftHip);
-						interestingJoints.add(rightHip);
-
-						interestingJoints.add(leftKnee);
-						interestingJoints.add(rightKnee);
-
-						interestingJoints.add(leftElbow);
-						interestingJoints.add(rightElbow);
-
-						//interestingJoints.add(lehtHand);
-						//interestingJoints.add(rightHand);
-						
 						int frameId = tracker.depthGen.getFrameID();
 						
 						
 						if (torsoPosition.getConfidence() == 1.0 && headPosition.getConfidence() == 1.0 && rightFoot.getConfidence() == 1.0 && leftElbow.getConfidence()== 1.0
 								&& rightElbow.getConfidence()== 1.0 && buffFrameId != frameId) {
 							 
-							Point3D torsoPos = tracker.depthGen
-									.convertProjectiveToRealWorld(torsoPosition
-											.getPosition());
+							Point3D torsoPos = torsoPosition.getPosition();
 
-							Point3D neckPos = tracker.depthGen
-									.convertProjectiveToRealWorld(neckPosition
-											.getPosition());
-							Point3D headPos = tracker.depthGen
-									.convertProjectiveToRealWorld(headPosition
-											.getPosition());
-								
-							
-							Point3D rightHipPos = tracker.depthGen
-									.convertProjectiveToRealWorld(rightHip
-											.getPosition());
+							Point3D neckPos = neckPosition.getPosition();
+							Point3D headPos = headPosition.getPosition();
+							Point3D rightHipPos = rightHip.getPosition();
 
-							Point3D leftHipPos = tracker.depthGen
-									.convertProjectiveToRealWorld(leftHip
-											.getPosition());
-							
-							Point3D rightKneePos = tracker.depthGen
-									.convertProjectiveToRealWorld(rightKnee
-											.getPosition());
-							Point3D leftKneePos = tracker.depthGen
-									.convertProjectiveToRealWorld(leftKnee
-											.getPosition());
+							Point3D leftHipPos = leftHip.getPosition();
+							Point3D rightKneePos = rightKnee.getPosition();
+							Point3D leftKneePos =leftKnee.getPosition();
 	
-							Point3D rightFootPos = tracker.depthGen
-									.convertProjectiveToRealWorld(rightFoot
-											.getPosition());
-	
-							Point3D rightShoulderPos = tracker.depthGen
-									.convertProjectiveToRealWorld(rightShoulder
-											.getPosition());
-
-							Point3D leftShoulderPos = tracker.depthGen
-									.convertProjectiveToRealWorld(leftShoulder
-											.getPosition());
+							Point3D rightFootPos = rightFoot.getPosition();
+							Point3D rightShoulderPos = rightShoulder.getPosition();
+							Point3D leftShoulderPos = leftShoulder.getPosition();
 							
-							Point3D leftElbowPos = tracker.depthGen
-									.convertProjectiveToRealWorld(leftElbow
-											.getPosition());
+							Point3D leftElbowPos = leftElbow.getPosition();
+							Point3D rightElbowPos = rightElbow.getPosition();
 							
-							Point3D rightElbowPos = tracker.depthGen
-									.convertProjectiveToRealWorld(rightElbow
-											.getPosition());
+							Point3D leftHandPos = lehtHand.getPosition();
+							Point3D rightHandPos = rightHand.getPosition();
 							
-							Point3D leftHandPos = tracker.depthGen
-									.convertProjectiveToRealWorld(lehtHand
-											.getPosition());
+							//vectors 
+							Vector3d vShoulders = ProfileMath.getVector3d(leftShoulderPos,rightShoulderPos);
+							Vector3d vHips = ProfileMath.getVector3d(leftHipPos,rightHipPos);
 							
-							Point3D rightHandPos = tracker.depthGen
-									.convertProjectiveToRealWorld(rightHand
-											.getPosition());
+							Vector3d vHeadNeck = ProfileMath.getVector3d(neckPos,headPos);
+							Vector3d vHeadTorso = ProfileMath.getVector3d(headPos,torsoPos);
+							Vector3d vNeckTorso = ProfileMath.getVector3d(neckPos,torsoPos);
 							
-							double shoulders = getLenght(rightShoulderPos, leftShoulderPos);
-							double torsoLS = getLenght(torsoPos, leftShoulderPos);
-							double torsoRS = getLenght(torsoPos, rightShoulderPos);
 							
-							double leftShoulderToElbow = getLenght(leftShoulderPos, leftElbowPos);
-							double lefttShoulderToHand = getLenght(leftShoulderPos, leftHandPos);
-							double leftHandToShoulder = getLenght(leftShoulderPos, leftHandPos);
+							//left 
+							Vector3d vLeftShoulderNeck = ProfileMath.getVector3d(neckPos, leftShoulderPos);
+							Vector3d vLeftTorsoShoulder = ProfileMath.getVector3d(torsoPos, leftShoulderPos);
 							
-							double rightShoulderToElbow = getLenght(rightShoulderPos, rightElbowPos);
-							double rightShoulderToHand = getLenght(rightShoulderPos, rightHandPos);
-							double rightHandToShoulder = getLenght(rightShoulderPos, rightHandPos);
+							Vector3d vLeftElbowShoulder = ProfileMath.getVector3d(leftElbowPos, leftShoulderPos);
+							Vector3d vLeftShoulderHand = ProfileMath.getVector3d(leftShoulderPos, leftHandPos);
 							
-							double rightKneeToHip = getLenght(rightHipPos, rightKneePos);
-							double leftKneeToHip = getLenght(leftHipPos, leftKneePos);
+							Vector3d vLeftTorsoHip = ProfileMath.getVector3d(torsoPos, leftHipPos);
+							Vector3d vLeftSholderHip = ProfileMath.getVector3d(leftShoulderPos, leftHipPos);
 							
-							Point3D TC = getTriangleCentroid(torsoPos,leftShoulderPos,rightShoulderPos);
-							Point3D LSHC = getTriangleCentroid(leftShoulderPos,leftElbowPos,leftHandPos);
-							Point3D RSHC = getTriangleCentroid(rightShoulderPos,rightElbowPos,rightHandPos);
+							//right 
+							Vector3d vRightShoulderNeck = ProfileMath.getVector3d(neckPos, rightShoulderPos);
+							Vector3d vRightTorsoShoulder = ProfileMath.getVector3d(torsoPos, rightShoulderPos);
 							
-							Point3D TLSLS = getTriangleCentroid(torsoPos,leftShoulderPos,leftHipPos);
-							Point3D TRSRH = getTriangleCentroid(torsoPos,rightShoulderPos,rightHipPos);
+							Vector3d vRightElbowShoulder = ProfileMath.getVector3d(leftElbowPos, rightShoulderPos);
+							Vector3d vRightShoulderHand = ProfileMath.getVector3d(leftShoulderPos, rightHandPos);
 							
-
-							Point3D TH = getTriangleCentroid(torsoPos,rightHipPos,leftHipPos);
+							Vector3d vRightTorsoHip = ProfileMath.getVector3d(torsoPos, rightHipPos);
+							Vector3d vRightSholderHip = ProfileMath.getVector3d(rightShoulderPos, rightHipPos);
 							
-							double TC_TH = getLenght(TC, TH);
-							double TLSLS_TRSRH = getLenght(TLSLS, TRSRH);
+							double shoulders = vShoulders.length();
+							double neck = vHeadNeck.length();
+							double neckTorso = vNeckTorso.length();
+							double headTorso = vHeadTorso.length();
 							
-							double TC_LSHC = getLenght(TC, LSHC);
-							double TC_RSHC = getLenght(TC, RSHC);
-							double LSHC_RSHC = getLenght(LSHC,RSHC);
 							
-							double angleBetweenHips = AngleBetween(shoulders,rightShoulderToElbow);
+							double leftShoulderNeck = vLeftShoulderNeck.length(); 
+							double leftTorsoShoulder = vLeftTorsoShoulder.length();
+							double leftElbowShoulder = vLeftElbowShoulder.length();
+							
+							double leftShoulderHand = vLeftShoulderHand.length();
+							double leftTorsoHip = vLeftTorsoHip.length();
+							
+							double rightShoulderNeck = vRightShoulderNeck.length();
+							double rightTorsoShoulder = vRightTorsoShoulder.length();
+							double rightElbowShoulder = vRightElbowShoulder.length();
+							
+							double rightShoulderHand = vRightShoulderHand.length();
+							double rightTorsoHip = vRightTorsoHip.length();
+							
+							double anglLeftSh_leftElbow = ProfileMath.getVectorAngleDeg(vLeftShoulderNeck, vLeftElbowShoulder);
+							double anglLeftSh_torso = ProfileMath.getVectorAngleDeg(vLeftShoulderNeck, vLeftTorsoShoulder);
+							double anglNeck_rightShouler = ProfileMath.getVectorAngleDeg(vHeadNeck, vRightShoulderNeck);
+							
+							double anglLeftHip_RightHip = ProfileMath.getVectorAngleDeg(vLeftTorsoHip, vRightTorsoHip);
+							double anglLeftSh_leftHip = ProfileMath.getVectorAngleDeg(vLeftShoulderNeck, vLeftSholderHip);
+							double anglRightSh_rightHip = ProfileMath.getVectorAngleDeg(vRightShoulderNeck, vRightShoulderNeck);
+							
+							
+							
+//							double torsoLS = getLenght(torsoPos, leftShoulderPos);
+//							double torsoRS = getLenght(torsoPos, rightShoulderPos);
+//							
+//							double leftShoulderToElbow = getLenght(leftShoulderPos, leftElbowPos);
+//							double lefttShoulderToHand = getLenght(leftShoulderPos, leftHandPos);
+//							double leftHandToShoulder = getLenght(leftShoulderPos, leftHandPos);
+//							
+//							double rightShoulderToElbow = getLenght(rightShoulderPos, rightElbowPos);
+//							double rightShoulderToHand = getLenght(rightShoulderPos, rightHandPos);
+//							double rightHandToShoulder = getLenght(rightShoulderPos, rightHandPos);
+//							
+//							double rightKneeToHip = getLenght(rightHipPos, rightKneePos);
+//							double leftKneeToHip = getLenght(leftHipPos, leftKneePos);
+//							
+//							Point3D TC = ProfileMath.getTriangleCentroid(torsoPos,leftShoulderPos,rightShoulderPos);
+//							Point3D LSHC = ProfileMath.getTriangleCentroid(leftShoulderPos,leftElbowPos,leftHandPos);
+//							Point3D RSHC = ProfileMath.getTriangleCentroid(rightShoulderPos,rightElbowPos,rightHandPos);
+//							
+//							Point3D TLSLS = ProfileMath.getTriangleCentroid(torsoPos,leftShoulderPos,leftHipPos);
+//							Point3D TRSRH = ProfileMath.getTriangleCentroid(torsoPos,rightShoulderPos,rightHipPos);
+//							
+//
+//							Point3D TH = ProfileMath.getTriangleCentroid(torsoPos,rightHipPos,leftHipPos);
+//							
+//							double TC_TH = getLenght(TC, TH);
+//							double TLSLS_TRSRH = getLenght(TLSLS, TRSRH);
+//							
+//							double TC_LSHC = getLenght(TC, LSHC);
+//							double TC_RSHC = getLenght(TC, RSHC);
+//							double LSHC_RSHC = getLenght(LSHC,RSHC);
+							
 							
 							if (tracker.isInRecordingMode()) {
-								System.out.println(users[i] + ", " + angleBetweenHips);
+								System.out.println(users[i] + ", " + neck + ", " + neckTorso + ", " + headTorso + ", " + shoulders + ", " + anglNeck_rightShouler + ", " + vLeftSholderHip.length() + ", " + vRightSholderHip.length()); 
+								
+								
+								//System.out.println(users[i] + ", " + leftElbowShoulder + ", " + anglLeftSh_leftElbow + ", " + leftTorsoShoulder + ", " + leftShoulderNeck);
+								
+								//System.out.println(users[i] + ", " + torsoPos.getX() + ", " + torsoPos.getY() + ", " + torsoPos.getZ());
+								//System.out.println(users[i] + ", " + vLeftShoulderNeck + ", " + vLeftElbowShoulder);
 								//System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
 								//System.out.println(users[i] + ", " + torsoLS + ", " + torsoRS + ", " + shoulders + ", " +  rightKneeToHip + ", " + leftKneeToHip);
 							}
 							
-							if (tracker.isInProfilingMode()) {
-								double[] distances = new double[4];
-								JointVector jv = new JointVector(TC_TH,
-										shoulders, TLSLS_TRSRH, TLSLS_TRSRH);
-
-								for (int k = 0; k < profileData.k; k++) {
-									double dd = user1Joints.get(k)
-											.getCentroid()
-											.getSquareOfDistance(jv);
-									distances[k] = dd;
-									System.out.println(dd + ", " + user1Joints.get(k)
-											.getCentroid());
-									System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
-								}
-
-								double minDistance = Math.min(Math.min(
-										distances[0], distances[1]),
-										Math.min(distances[2],distances[3]));
-
-								int profileIndex = -1;
-								for (int j = 0; j < 4; j++) {
-									if (distances[j] == minDistance) {
-										profileIndex = j;
-									}
-								}
-
-								System.out
-										.println("Recognized user distance to profile centroid:"
-												+ minDistance
-												+ ", "
-												+ user1Joints.get(
-														profileIndex)
-														.getCentroid());
-								tracker.setRecognizedUser(users[i],
-										minDistance);
-							}
+//							if (tracker.isInProfilingMode()) {
+//								double[] distances = new double[4];
+//								JointVector jv = new JointVector(TC_TH,
+//										shoulders, TLSLS_TRSRH, TLSLS_TRSRH);
+//
+//								for (int k = 0; k < profileData.k; k++) {
+//									double dd = user1Joints.get(k)
+//											.getCentroid()
+//											.getSquareOfDistance(jv);
+//									distances[k] = dd;
+//									System.out.println(dd + ", " + user1Joints.get(k)
+//											.getCentroid());
+//									System.out.println(users[i] + ", " + TC_TH + ", " + shoulders + ", " + TLSLS_TRSRH);
+//								}
+//
+//								double minDistance = Math.min(Math.min(
+//										distances[0], distances[1]),
+//										Math.min(distances[2],distances[3]));
+//
+//								int profileIndex = -1;
+//								for (int j = 0; j < 4; j++) {
+//									if (distances[j] == minDistance) {
+//										profileIndex = j;
+//									}
+//								}
+//
+//								System.out
+//										.println("Recognized user distance to profile centroid:"
+//												+ minDistance
+//												+ ", "
+//												+ user1Joints.get(
+//														profileIndex)
+//														.getCentroid());
+//								tracker.setRecognizedUser(users[i],
+//										minDistance);
+//							}
 //								System.out.println(theFloor.getPoint().getZ()
 //										+ ", " + theFloor.getPoint().getY()
 //										+ ", " + torsoPos.getY() + ", " + headPos.getY());
@@ -293,54 +273,10 @@ public class DummyObserver implements Observer {
 
 					}
 				}
-			}
 
 		} catch (StatusException e) {
 
 			e.printStackTrace();
 		}
 	}
-	
-	public double AngleBetween(double jointLenght1, double  jointLenght2)
-	{
-	  return 2.0d * Math.atan(jointLenght1 - jointLenght2/jointLenght1 + jointLenght2);
 	}
-	
-	public static double getLenght(Point3D joint1, Point3D joint2) {
-		return Math.sqrt(Math.pow(joint1.getX() - joint2.getX(), 2)
-				+ Math.pow(joint1.getY() - joint2.getY(), 2)
-				+ Math.pow(joint1.getZ() - joint2.getZ(), 2));
-	}
-	
-	
-	public static Point3D getTriangleCentroid(Point3D joint1, Point3D joint2,
-			Point3D joint3) {
-		Point3D retPoint = new Point3D();
-		
-		float X = (joint1.getX() + joint2.getX() + joint3.getX()) / 3;
-		float Y = (joint1.getY() + joint2.getY() + joint3.getY()) / 3;
-		float Z = (joint1.getZ() + joint2.getZ() + joint3.getZ()) / 3;
-
-		retPoint.setPoint(X, Y, Z);
-		return retPoint;
-	}
-	
-	
-	private String getPositionString(SkeletonJointPosition pos) {
-
-		String ret = String.valueOf(pos.getPosition().getX()) + ","
-				+ String.valueOf(pos.getPosition().getY()) + ","
-				+ String.valueOf(pos.getPosition().getZ());
-		return ret;
-	}
-
-	private String getPositionString(List<SkeletonJointPosition> positions) {
-
-		String ret = "";
-		for (SkeletonJointPosition onePosition : positions) {
-			ret += getPositionString(onePosition) + ",";
-		}
-
-		return ret;
-	}
-}
