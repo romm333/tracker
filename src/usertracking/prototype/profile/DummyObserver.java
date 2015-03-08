@@ -41,8 +41,6 @@ public class DummyObserver implements Observer {
 		
 	}
 	
-	
- 
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
@@ -93,8 +91,8 @@ public class DummyObserver implements Observer {
 							Point3D leftKneePos =leftKnee.getPosition();
 	
 							Point3D rightFootPos = rightFoot.getPosition();
-							Point3D rightShoulderPos = rightShoulder.getPosition();
-							Point3D leftShoulderPos = leftShoulder.getPosition();
+							Point3D rightSholderPos = rightShoulder.getPosition();
+							Point3D leftSholderPos = leftShoulder.getPosition();
 							
 							Point3D leftElbowPos = leftElbow.getPosition();
 							Point3D rightElbowPos = rightElbow.getPosition();
@@ -103,7 +101,7 @@ public class DummyObserver implements Observer {
 							Point3D rightHandPos = rightHand.getPosition();
 							
 							//vectors 
-							Vector3d vShoulders = ProfileMath.getVector3d(leftShoulderPos,rightShoulderPos);
+							Vector3d vShoulders = ProfileMath.getVector3d(leftSholderPos,rightSholderPos);
 							Vector3d vHips = ProfileMath.getVector3d(leftHipPos,rightHipPos);
 							
 							Vector3d vHeadNeck = ProfileMath.getVector3d(neckPos,headPos);
@@ -112,26 +110,28 @@ public class DummyObserver implements Observer {
 							
 							
 							//left 
-							Vector3d vLeftShoulderNeck = ProfileMath.getVector3d(neckPos, leftShoulderPos);
-							Vector3d vLeftTorsoShoulder = ProfileMath.getVector3d(torsoPos, leftShoulderPos);
+							Vector3d vLeftShoulderNeck = ProfileMath.getVector3d(neckPos, leftSholderPos);
+							Vector3d vLeftTorsoShoulder = ProfileMath.getVector3d(torsoPos, leftSholderPos);
 							
-							Vector3d vLeftElbowShoulder = ProfileMath.getVector3d(leftElbowPos, leftShoulderPos);
-							Vector3d vLeftShoulderHand = ProfileMath.getVector3d(leftShoulderPos, leftHandPos);
+							Vector3d vLeftElbowShoulder = ProfileMath.getVector3d(leftElbowPos, leftSholderPos);
+							Vector3d vLeftShoulderHand = ProfileMath.getVector3d(leftSholderPos, leftHandPos);
 							
 							Vector3d vLeftTorsoHip = ProfileMath.getVector3d(torsoPos, leftHipPos);
-							Vector3d vLeftSholderHip = ProfileMath.getVector3d(leftShoulderPos, leftHipPos);
+							Vector3d vLeftSholderHip = ProfileMath.getVector3d(leftSholderPos, leftHipPos);
 							
 							//right 
-							Vector3d vRightShoulderNeck = ProfileMath.getVector3d(neckPos, rightShoulderPos);
-							Vector3d vRightTorsoShoulder = ProfileMath.getVector3d(torsoPos, rightShoulderPos);
+							Vector3d vRightSholderNeck = ProfileMath.getVector3d(neckPos, rightSholderPos);
+							Vector3d vRightTorsoShoulder = ProfileMath.getVector3d(torsoPos, rightSholderPos);
 							
-							Vector3d vRightElbowShoulder = ProfileMath.getVector3d(leftElbowPos, rightShoulderPos);
-							Vector3d vRightShoulderHand = ProfileMath.getVector3d(leftShoulderPos, rightHandPos);
+							Vector3d vRightElbowShoulder = ProfileMath.getVector3d(leftElbowPos, rightSholderPos);
+							Vector3d vRightShoulderHand = ProfileMath.getVector3d(leftSholderPos, rightHandPos);
 							
 							Vector3d vRightTorsoHip = ProfileMath.getVector3d(torsoPos, rightHipPos);
-							Vector3d vRightSholderHip = ProfileMath.getVector3d(rightShoulderPos, rightHipPos);
+							Vector3d vRightSholderHip = ProfileMath.getVector3d(rightSholderPos, rightHipPos);
+							Vector3d vDiagonal = ProfileMath.getVector3d(rightSholderPos, leftHipPos);
 							
 							double shoulders = vShoulders.length();
+							double hips = vHips.length();
 							double neck = vHeadNeck.length();
 							double neckTorso = vNeckTorso.length();
 							double headTorso = vHeadTorso.length();
@@ -144,7 +144,7 @@ public class DummyObserver implements Observer {
 							double leftShoulderHand = vLeftShoulderHand.length();
 							double leftTorsoHip = vLeftTorsoHip.length();
 							
-							double rightShoulderNeck = vRightShoulderNeck.length();
+							double rightShoulderNeck = vRightSholderNeck.length();
 							double rightTorsoShoulder = vRightTorsoShoulder.length();
 							double rightElbowShoulder = vRightElbowShoulder.length();
 							
@@ -153,13 +153,17 @@ public class DummyObserver implements Observer {
 							
 							double anglLeftSh_leftElbow = ProfileMath.getVectorAngleDeg(vLeftShoulderNeck, vLeftElbowShoulder);
 							double anglLeftSh_torso = ProfileMath.getVectorAngleDeg(vLeftShoulderNeck, vLeftTorsoShoulder);
-							double anglNeck_rightShouler = ProfileMath.getVectorAngleDeg(vHeadNeck, vRightShoulderNeck);
+							double anglNeck_rightShouler = ProfileMath.getVectorAngleDeg(vHeadNeck, vRightSholderNeck);
 							
 							double anglLeftHip_RightHip = ProfileMath.getVectorAngleDeg(vLeftTorsoHip, vRightTorsoHip);
-							double anglLeftSh_leftHip = ProfileMath.getVectorAngleDeg(vLeftShoulderNeck, vLeftSholderHip);
-							double anglRightSh_rightHip = ProfileMath.getVectorAngleDeg(vRightShoulderNeck, vRightShoulderNeck);
+							double anglLeftSh_leftHip = ProfileMath.getVectorAngleDeg(vLeftSholderHip, vLeftShoulderNeck);
+							double anglRightSh_rightHip = ProfileMath.getVectorAngleDeg(vRightSholderHip,vRightSholderNeck);
 							
+							Point3D TC = ProfileMath.getTriangleCentroid(torsoPos,leftSholderPos,rightSholderPos);
+							Point3D TH = ProfileMath.getTriangleCentroid(torsoPos,rightHipPos,leftHipPos);
 							
+							Vector3d cvUperToHips = ProfileMath.getVector3d(TC, TH);
+ 						    
 							
 //							double torsoLS = getLenght(torsoPos, leftShoulderPos);
 //							double torsoRS = getLenght(torsoPos, rightShoulderPos);
@@ -179,11 +183,11 @@ public class DummyObserver implements Observer {
 //							Point3D LSHC = ProfileMath.getTriangleCentroid(leftShoulderPos,leftElbowPos,leftHandPos);
 //							Point3D RSHC = ProfileMath.getTriangleCentroid(rightShoulderPos,rightElbowPos,rightHandPos);
 //							
-//							Point3D TLSLS = ProfileMath.getTriangleCentroid(torsoPos,leftShoulderPos,leftHipPos);
-//							Point3D TRSRH = ProfileMath.getTriangleCentroid(torsoPos,rightShoulderPos,rightHipPos);
-//							
+							Point3D TLSLS = ProfileMath.getTriangleCentroid(torsoPos,leftSholderPos,leftHipPos);
+							Point3D TRSRH = ProfileMath.getTriangleCentroid(torsoPos,rightSholderPos,rightHipPos);
+							Vector3d cvLeftRighShouldersToHps = ProfileMath.getVector3d(TLSLS, TRSRH);
 //
-//							Point3D TH = ProfileMath.getTriangleCentroid(torsoPos,rightHipPos,leftHipPos);
+							
 //							
 //							double TC_TH = getLenght(TC, TH);
 //							double TLSLS_TRSRH = getLenght(TLSLS, TRSRH);
@@ -194,7 +198,8 @@ public class DummyObserver implements Observer {
 							
 							
 							if (tracker.isInRecordingMode()) {
-								System.out.println(users[i] + ", " + neck + ", " + neckTorso + ", " + headTorso + ", " + shoulders + ", " + anglNeck_rightShouler + ", " + vLeftSholderHip.length() + ", " + vRightSholderHip.length()); 
+								System.out.println(users[i] + ", " + neckTorso + ", " + shoulders + ", " + hips +  ", " + vDiagonal.length() +", " + vRightSholderHip.length() + cvUperToHips.length() + 
+										", " + cvLeftRighShouldersToHps.length() + ", " +anglLeftSh_leftHip + ", " + anglLeftHip_RightHip ); 
 								
 								
 								//System.out.println(users[i] + ", " + leftElbowShoulder + ", " + anglLeftSh_leftElbow + ", " + leftTorsoShoulder + ", " + leftShoulderNeck);
