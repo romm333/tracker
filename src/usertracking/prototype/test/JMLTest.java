@@ -9,6 +9,7 @@ import net.sf.javaml.clustering.Clusterer;
 import net.sf.javaml.clustering.KMedoids;
 import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.Instance;
+import net.sf.javaml.distance.NormalizedEuclideanDistance;
 import net.sf.javaml.tools.data.FileHandler;
 
 import org.junit.Test;
@@ -20,12 +21,16 @@ public class JMLTest {
 	@Test
 	public void test() throws IOException {
 		 /* Load a dataset */
-        Dataset data = FileHandler.loadDataset(new File("profiles/1.csv"), 3, ",");
+        Dataset data = FileHandler.loadDataset(new File("profiles/2.csv"),",");
+        NormalizedEuclideanDistance normDm = new NormalizedEuclideanDistance(data);
+        
         /*
          * Create a new instance of the KMeans algorithm, with no options
          * specified. By default this will generate 4 clusters.
          */
-        KMeansT km = new KMeansT(2);
+       // KMeansT km = new KMeansT(4,100,normDm);
+        KMeansT km = new KMeansT(2,40000);
+        
         /*
          * Cluster the data, it will be returned as an array of data sets, with
          * each dataset representing a cluster
