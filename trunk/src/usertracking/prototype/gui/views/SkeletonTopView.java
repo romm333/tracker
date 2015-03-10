@@ -69,12 +69,23 @@ public class SkeletonTopView extends Component implements Observer {
 			users = tracker.userGen.getUsers();
 
 			for (int i = 0; i < users.length; ++i) {
-				Color c = colors[users[i] % colors.length];
-				c = new Color(255 - c.getRed(), 255 - c.getGreen(),
-						255 - c.getBlue());
-
-				//g.setColor(c);
-				g.setColor(Color.WHITE);
+				
+				
+				Color c = Color.white;
+				
+				int recognizedProfileID = -1;
+				if (tracker.getRecognizedProfiles().size() > 0) {
+					if (tracker.getRecognizedProfiles().containsKey(users[i])) {
+						recognizedProfileID = tracker.getRecognizedProfiles()
+								.get(users[i]).ID;
+						c = colors[recognizedProfileID % colors.length];
+						c = new Color(255 - c.getRed(), 255 - c.getGreen(),
+								255 - c.getBlue());
+					}
+				}
+				
+				g.setColor(c);
+				//g.setColor(Color.WHITE);
 				
 				if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
 					// drawSkeleton(g, users[i]);
