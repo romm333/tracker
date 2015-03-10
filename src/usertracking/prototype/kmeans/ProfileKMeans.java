@@ -57,8 +57,17 @@ public class ProfileKMeans {
 	
 	private JointVector getPointByLine(String line) {
 		String[] abcd = line.split(",");
-		return new JointVector(Double.parseDouble(abcd[0]),
-				Double.parseDouble(abcd[1]), Double.parseDouble(abcd[2]),Double.parseDouble(abcd[2]));
+		return new JointVector(
+				Double.parseDouble(abcd[1]),
+				Double.parseDouble(abcd[2]), 
+				Double.parseDouble(abcd[3]),
+				Double.parseDouble(abcd[4]),
+				Double.parseDouble(abcd[5]),
+				Double.parseDouble(abcd[6]),
+				Double.parseDouble(abcd[7]),
+				Double.parseDouble(abcd[8]),
+				Double.parseDouble(abcd[9]), 
+				0d, 0d, 0d);
 	}
 
 	/**
@@ -155,8 +164,8 @@ public class ProfileKMeans {
 		listD.add(D2);
 		double variationD = pMath.getVariationCoefficient(listD);
 		
-		JointVector jointVector = new JointVector(variationA, variationB, variationD, variationC);
-		return jointVector;
+		//JointVector jointVector = new JointVector(variationA, variationB, variationD, variationC);
+		return null;
 	}
 	
 	public static void main(String[] args) {
@@ -169,13 +178,13 @@ public class ProfileKMeans {
 			//System.out.println("Cluster " + i + ": " + pointsClusters.get(i));
 		}
 		
-		System.out.println();
-		
-		JointVector jv = new JointVector(305.3569416516529, 373.06668553774654, 194.83763499833842,194.83763499833842);		
-		for (int i = 0; i < kMeans.k; i++) {
-			double dd = user1Joints.get(i).getCentroid().getSquareOfDistance(jv);
-			System.out.println(dd);
-		}
+//		System.out.println();
+//		
+//		JointVector jv = new JointVector(305.3569416516529, 373.06668553774654, 194.83763499833842,194.83763499833842);		
+//		for (int i = 0; i < kMeans.k; i++) {
+//			double dd = user1Joints.get(i).getCentroid().getSquareOfDistance(jv);
+//			System.out.println(dd);
+//		}
 	}
 }
 

@@ -49,18 +49,33 @@ public class SkeletonFrontView extends Component implements Observer{
 	Color colors[] = { Color.RED, Color.BLUE, Color.CYAN, Color.GREEN,
 			Color.MAGENTA, Color.PINK, Color.YELLOW, Color.WHITE };
 
+
 	void drawSkeleton(Graphics g) {
 		int[] users;
 		try {
 			users = tracker.userGen.getUsers();
 
 			for (int i = 0; i < users.length; ++i) {
-				Color c = colors[users[i] % colors.length];
-				c = new Color(255 - c.getRed(), 255 - c.getGreen(),
-						255 - c.getBlue());
+				
+				Color c = Color.white;
+				
+				int recognizedProfileID = -1;
+				if (tracker.getRecognizedProfiles().size() > 0) {
+					if (tracker.getRecognizedProfiles().containsKey(users[i])) {
+						recognizedProfileID = tracker.getRecognizedProfiles()
+								.get(users[i]).ID;
+						c = colors[recognizedProfileID % colors.length];
+						c = new Color(255 - c.getRed(), 255 - c.getGreen(),
+								255 - c.getBlue());
+					}
+				}
+				
+//				c = colors[users[i] % colors.length];
+//				c = new Color(255 - c.getRed(), 255 - c.getGreen(),
+//						255 - c.getBlue());
 
-				//g.setColor(c);
-				g.setColor(Color.WHITE);
+				g.setColor(c);
+				//g.setColor(Color.WHITE);
 				
 				String label = null;
 				

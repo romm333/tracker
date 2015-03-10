@@ -6,8 +6,10 @@ import java.awt.event.*;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
 
@@ -15,7 +17,7 @@ import usertracking.prototype.classes.*;
 import usertracking.prototype.gui.views.SkeletonFrontView;
 import usertracking.prototype.gui.views.SkeletonTextInfoView;
 import usertracking.prototype.gui.views.SkeletonTopView;
-import usertracking.prototype.profile.DummyObserver;
+import usertracking.prototype.profile.ProfileObserver;
 
 public class TrackerViewBoardNew extends JFrame {
 
@@ -31,7 +33,7 @@ public class TrackerViewBoardNew extends JFrame {
 	JPanel middlePanel;
 	JPanel rightPanel;
 	JPanel controllPanel;
-	
+	JTextField profileCount;
 
 	public TrackerViewBoardNew() {
 		super("Tracker View Board");
@@ -70,7 +72,7 @@ public class TrackerViewBoardNew extends JFrame {
 		frontViewer.setMaximumSize(new Dimension(340, 590));
 		tracker.addObserver(frontViewer);
 		
-		DummyObserver userProfileObserver = new DummyObserver(tracker);
+		ProfileObserver userProfileObserver = new ProfileObserver(tracker);
 		
 		tracker.addObserver(userProfileObserver);
 		infoViewer = new SkeletonTextInfoView(56, 30);
@@ -139,21 +141,30 @@ public class TrackerViewBoardNew extends JFrame {
 		cbRecMode.addItemListener(recordingModeListener);
 		
 		JCheckBox cbProfileMode = new JCheckBox("Profiling mode");
+		profileCount = new JTextField("       4");
+		JLabel lblPrCount = new JLabel("Profiles count");
 		 
 		ItemListener profileModeListener = new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
+				if (e.getStateChange() == ItemEvent.SELECTED){
+					int clusterCount = Integer.parseInt(profileCount.getText().trim());
+					
+					tracker.loadProfileData(clusterCount);
 					tracker.setInProfilingMode(true);
+				}
 				else
 					tracker.setInProfilingMode(false);
 			}
 		};
 		 
-		    cbProfileMode.addItemListener(profileModeListener);
-		
+		cbProfileMode.addItemListener(profileModeListener);
+				
 		controllPanel.add(cbRecMode);
 		controllPanel.add(cbProfileMode);
+		controllPanel.add(profileCount);
+		controllPanel.add(lblPrCount);
+		
 		
 		rightPanel.add(controllPanel, BorderLayout.NORTH);
 		rightPanel.add(scrollPane, BorderLayout.SOUTH);

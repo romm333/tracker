@@ -2,6 +2,11 @@ package usertracking.prototype.classes;
 
 import org.OpenNI.*;
 
+import usertracking.prototype.kmeans.JointCluster;
+import usertracking.prototype.kmeans.ProfileKMeans;
+import usertracking.prototype.profile.DummyProfile;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +26,14 @@ public class SimpleTracker extends Observable {
 	public String calibPose = null;
 	 HashMap<Integer, HashMap<SkeletonJoint, SkeletonJointPosition>> joints;
 	
+	public HashMap<Integer,DummyProfile> getRecognizedProfiles() {
+		return recognizedProfiles;
+	}
+
+	public void setRecognizedProfiles(HashMap<Integer,DummyProfile> recognizedProfiles) {
+		this.recognizedProfiles = recognizedProfiles;
+	}
+
 	public HashMap<Integer, HashMap<SkeletonJoint, SkeletonJointPosition>> getJoints() {
 		return joints;
 	}
@@ -35,6 +48,12 @@ public class SimpleTracker extends Observable {
 	
 	private boolean isInProfilingMode;
 	private boolean isInRecordingMode;
+	
+	private ProfileKMeans profileData;
+	private List<JointCluster> jointClusters;
+	
+	private List<DummyProfile> profileMeans;
+	private HashMap<Integer,DummyProfile> recognizedProfiles;
 	
 	public SimpleTracker() {
 		try {
@@ -52,6 +71,8 @@ public class SimpleTracker extends Observable {
 			
 			profiledUsers = new LinkedList<Integer>();
 			recognizedUsers = new HashMap<Integer, Double>();
+			recognizedProfiles = new HashMap<Integer, DummyProfile>();
+			
 			userGen.getNewUserEvent().addObserver(new NewUserObserver());
 			
 			userGen.getUserExitEvent().addObserver(new UserExitObserver());
@@ -66,6 +87,8 @@ public class SimpleTracker extends Observable {
 			calibPose = skeletonCap.getSkeletonCalibrationPose();
 			joints = new HashMap<Integer, HashMap<SkeletonJoint, SkeletonJointPosition>>();
 			skeletonCap.setSkeletonProfile(SkeletonProfile.ALL);
+			
+			
 
 			context.startGeneratingAll();
 		
@@ -73,6 +96,27 @@ public class SimpleTracker extends Observable {
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+	
+	public void loadProfileData(int clusterCount){
+		profileData = new ProfileKMeans("profiles/1.csv", clusterCount);
+		jointClusters = profileData.getJointsClusters();
+		
+		profileMeans = new ArrayList<DummyProfile>();
+		
+		for (int i = 0; i < profileData.k; i++) {
+			System.out.println("Cluster " + i + ": "
+					+ jointClusters.get(i).getCentroid() + " " + jointClusters.get(i).getJointVectors().size());
+			DummyProfile oneProfile = new DummyProfile();
+			oneProfile.ID = i;
+			oneProfile.Name = "Profile" + String.valueOf(i);
+			oneProfile.profileMean = jointClusters.get(i).getCentroid();
+			profileMeans.add(oneProfile);
+		}
+	}
+	
+	public ProfileKMeans getProfileData(){
+		return profileData;
 	}
 	
 	public boolean isRecognitionRequestedForUser(int uid){
@@ -124,6 +168,10 @@ public class SimpleTracker extends Observable {
 		this.isInRecordingMode = isInRecordingMode;
 	}
 	
+	public List<DummyProfile> getProfileMeans() {
+		return profileMeans;
+	}
+
 	class UserReenterObserver implements IObserver<UserEventArgs> {
 		@Override
 		public void update(IObservable<UserEventArgs> observable,
@@ -138,7 +186,8 @@ public class SimpleTracker extends Observable {
 				UserEventArgs args) {
 			System.out.println("Exiting user " + args.getId());
 			profiledUsers.remove((Integer)args.getId());
-			recognizedUsers.remove((Integer)args.getId());
+			recognizedUsers.remove(args.getId());
+			recognizedProfiles.remove(args.getId());
 		}
 	}
 
@@ -167,7 +216,8 @@ public class SimpleTracker extends Observable {
 			System.out.println("Lost user " + args.getId());
 			joints.remove(args.getId());
 			profiledUsers.remove((Integer)args.getId());
-			recognizedUsers.remove((Integer)args.getId());
+			recognizedUsers.remove(args.getId());
+			recognizedProfiles.remove(args.getId());
 		}
 	}
 
