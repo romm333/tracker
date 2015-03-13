@@ -141,7 +141,7 @@ public class TrackerViewBoardNew extends JFrame {
 		cbRecMode.addItemListener(recordingModeListener);
 		
 		JCheckBox cbProfileMode = new JCheckBox("Profiling mode");
-		profileCount = new JTextField("       4");
+		profileCount = new JTextField("       2");
 		JLabel lblPrCount = new JLabel("Profiles count");
 		 
 		ItemListener profileModeListener = new ItemListener() {
