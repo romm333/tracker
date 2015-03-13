@@ -98,7 +98,12 @@ public class ProfileObserver implements Observer {
 
 					if (torsoPosition.getConfidence() == 1.0
 							&& headPosition.getConfidence() == 1.0
+							&& rightKnee.getConfidence() == 1.0
+							&& leftKnee.getConfidence() == 1.0
+							&& rightHip.getConfidence() == 1.0
+							&& leftHip.getConfidence() == 1.0
 							&& rightFoot.getConfidence() == 1.0
+							&& leftFoot.getConfidence() == 1.0
 							&& leftElbow.getConfidence() == 1.0
 							&& rightElbow.getConfidence() == 1.0
 							&& buffFrameId != frameId) {
@@ -114,6 +119,8 @@ public class ProfileObserver implements Observer {
 						Point3D leftKneePos = leftKnee.getPosition();
 
 						Point3D rightFootPos = rightFoot.getPosition();
+						Point3D leftFootPos=leftFoot.getPosition();
+						
 						Point3D rightSholderPos = rightShoulder.getPosition();
 						Point3D leftSholderPos = leftShoulder.getPosition();
 
@@ -169,6 +176,12 @@ public class ProfileObserver implements Observer {
 								rightSholderPos, rightHipPos);
 						Vector3d vDiagonal = ProfileMath.getVector3d(
 								rightSholderPos, leftHipPos);
+						
+						Vector3d vRightHipKnee = ProfileMath.getVector3d(rightHipPos, rightKneePos);
+						Vector3d vLeftHipKnee = ProfileMath.getVector3d(leftHipPos, leftKneePos);
+						
+						Vector3d vRightKneeFoot = ProfileMath.getVector3d(rightKneePos, rightFootPos);
+						Vector3d vLeftKneeFoot = ProfileMath.getVector3d(leftKneePos, leftFootPos);
 
 						double shoulders = vShoulders.length();
 						double hips = vHips.length();
@@ -224,18 +237,21 @@ public class ProfileObserver implements Observer {
 								torsoPos, rightSholderPos, rightHipPos);
 						Vector3d cvLeftRighShouldersToHps = ProfileMath
 								.getVector3d(TLSLS, TRSRH);
+						
+						
 
 						if (tracker.isInRecordingMode()) {
-							System.out.println(users[i] + ", " + neckTorso
-									+ ", " + shoulders + ", " + hips + ", "
-									+ vDiagonal.length() + ", "
-									+ vRightSholderHip.length() + ", "
-									+ cvUperToHips.length() + ", "
-									+ cvLeftRighShouldersToHps.length() + ", "
-									+ anglLeftSh_leftHip + ", "
-									+ anglLeftHip_RightHip);
-
-							// System.out.println(users[i] + ", " +
+//							System.out.println(users[i] + ", " + neckTorso
+//									+ ", " + shoulders + ", " + hips + ", "
+//									+ vDiagonal.length() + ", "
+//									+ vRightSholderHip.length() + ", "
+//									+ cvUperToHips.length() + ", "
+//									+ cvLeftRighShouldersToHps.length() + ", "
+//									+ anglLeftSh_leftHip + ", "
+//									+ anglLeftHip_RightHip);
+							
+							 System.out.println(users[i] + ", " + vRightHipKnee.length() + ", " + vLeftHipKnee.length() +
+									 ", " + vRightKneeFoot.length() + ", " + vLeftKneeFoot.length() );
 							// leftElbowShoulder + ", " + anglLeftSh_leftElbow +
 							// ", " + leftTorsoShoulder + ", " +
 							// leftShoulderNeck);
@@ -275,8 +291,9 @@ public class ProfileObserver implements Observer {
 							DummyProfile recognizedProfile = tracker.getProfileMeans().get(minIndex);
 							tracker.getRecognizedProfiles().put(users[i], recognizedProfile);
 							//System.out.println(recognizedProfile.profileMean.toString());
+							System.out.println(Collections.min(distances));
 							
-							tracker.setRecognizedUser(users[i],0d);
+							//tracker.setRecognizedUser(users[i],0d);
 						
 						}
 

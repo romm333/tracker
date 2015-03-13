@@ -8,10 +8,12 @@ import usertracking.prototype.profile.DummyProfile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
  
 public class SimpleTracker extends Observable {
 	private final String SAMPLE_XML_FILE = "sensorConfig/SamplesConfig.xml";
@@ -43,7 +45,7 @@ public class SimpleTracker extends Observable {
 
 	private List<Observer> attachedObservers = new LinkedList<Observer>();
 	
-	List<Integer> profiledUsers;
+	Set<Integer> profiledUsers;
 	HashMap<Integer, Double> recognizedUsers;
 	
 	private boolean isInProfilingMode;
@@ -69,7 +71,7 @@ public class SimpleTracker extends Observable {
 			skeletonCap = userGen.getSkeletonCapability();
 			poseDetectionCap = userGen.getPoseDetectionCapability();
 			
-			profiledUsers = new LinkedList<Integer>();
+			profiledUsers = new HashSet<Integer>();
 			recognizedUsers = new HashMap<Integer, Double>();
 			recognizedProfiles = new HashMap<Integer, DummyProfile>();
 			
@@ -186,6 +188,7 @@ public class SimpleTracker extends Observable {
 				UserEventArgs args) {
 			System.out.println("Exiting user " + args.getId());
 			profiledUsers.remove((Integer)args.getId());
+			profiledUsers.clear();
 			recognizedUsers.remove(args.getId());
 			recognizedProfiles.remove(args.getId());
 		}
