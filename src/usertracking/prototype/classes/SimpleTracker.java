@@ -137,6 +137,10 @@ public class SimpleTracker extends Observable {
 	public synchronized void addObserver(Observer o) {
 		attachedObservers.add(o);
 	}
+	
+	public synchronized void removeObserver(Observer o) {
+		attachedObservers.remove(o);
+	}
 
 	@Override
 	public void notifyObservers() {

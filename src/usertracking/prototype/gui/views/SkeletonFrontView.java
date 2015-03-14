@@ -69,13 +69,8 @@ public class SkeletonFrontView extends Component implements Observer{
 								255 - c.getBlue());
 					}
 				}
-				
-//				c = colors[users[i] % colors.length];
-//				c = new Color(255 - c.getRed(), 255 - c.getGreen(),
-//						255 - c.getBlue());
 
 				g.setColor(c);
-				//g.setColor(Color.WHITE);
 				
 				String label = null;
 				

@@ -23,9 +23,75 @@ import usertracking.prototype.kmeans.JointCluster;
 import usertracking.prototype.kmeans.JointVector;
 import usertracking.prototype.kmeans.ProfileKMeans;
 
-public class ProfileObserver implements Observer {
+public abstract class ProfileObserver implements Observer {
 	private SimpleTracker tracker;
+	/*joints*/
+	SkeletonJointPosition headPosition;
 
+	SkeletonJointPosition neckPosition;
+	SkeletonJointPosition torsoPosition;
+
+	SkeletonJointPosition leftShoulder;
+	SkeletonJointPosition rightShoulder;
+
+	SkeletonJointPosition leftHip;
+	SkeletonJointPosition rightHip;
+
+	SkeletonJointPosition leftKnee;
+	SkeletonJointPosition rightKnee;
+
+	SkeletonJointPosition leftElbow;
+	SkeletonJointPosition rightElbow;
+
+	SkeletonJointPosition lehtHand;
+	SkeletonJointPosition rightHand;
+
+	SkeletonJointPosition rightFoot;
+	SkeletonJointPosition leftFoot;
+	
+	public SimpleTracker getTracker(){
+		return tracker;
+	}
+	
+	private void initJointData(int uid) throws StatusException {
+		headPosition = tracker.skeletonCap.getSkeletonJointPosition(uid,
+				SkeletonJoint.HEAD);
+
+		neckPosition = tracker.skeletonCap.getSkeletonJointPosition(uid,
+				SkeletonJoint.NECK);
+		torsoPosition = tracker.skeletonCap.getSkeletonJointPosition(uid,
+				SkeletonJoint.TORSO);
+		leftShoulder = tracker.skeletonCap.getSkeletonJointPosition(uid,
+				SkeletonJoint.LEFT_SHOULDER);
+		rightShoulder = tracker.skeletonCap.getSkeletonJointPosition(uid,
+				SkeletonJoint.RIGHT_SHOULDER);
+
+		leftHip = tracker.skeletonCap.getSkeletonJointPosition(uid,
+				SkeletonJoint.LEFT_HIP);
+		rightHip = tracker.skeletonCap.getSkeletonJointPosition(uid,
+				SkeletonJoint.RIGHT_HIP);
+
+		leftKnee = tracker.skeletonCap.getSkeletonJointPosition(uid,
+				SkeletonJoint.LEFT_KNEE);
+		rightKnee = tracker.skeletonCap.getSkeletonJointPosition(uid,
+				SkeletonJoint.RIGHT_KNEE);
+
+		leftElbow = tracker.skeletonCap.getSkeletonJointPosition(uid,
+				SkeletonJoint.LEFT_ELBOW);
+		rightElbow = tracker.skeletonCap.getSkeletonJointPosition(uid,
+				SkeletonJoint.RIGHT_ELBOW);
+
+		lehtHand = tracker.skeletonCap.getSkeletonJointPosition(uid,
+				SkeletonJoint.LEFT_HAND);
+		rightHand = tracker.skeletonCap.getSkeletonJointPosition(uid,
+				SkeletonJoint.RIGHT_HAND);
+
+		rightFoot = tracker.skeletonCap.getSkeletonJointPosition(uid,
+				SkeletonJoint.RIGHT_FOOT);
+		leftFoot = tracker.skeletonCap.getSkeletonJointPosition(uid,
+				SkeletonJoint.LEFT_FOOT);
+	}
+	
 	public ProfileObserver(SimpleTracker _tracker) {
 		this.tracker = _tracker;
 	}
@@ -241,17 +307,17 @@ public class ProfileObserver implements Observer {
 						
 
 						if (tracker.isInRecordingMode()) {
-//							System.out.println(users[i] + ", " + neckTorso
-//									+ ", " + shoulders + ", " + hips + ", "
-//									+ vDiagonal.length() + ", "
-//									+ vRightSholderHip.length() + ", "
-//									+ cvUperToHips.length() + ", "
-//									+ cvLeftRighShouldersToHps.length() + ", "
-//									+ anglLeftSh_leftHip + ", "
-//									+ anglLeftHip_RightHip);
+							System.out.println(users[i] + ", " + neckTorso
+									+ ", " + shoulders + ", " + hips + ", "
+									+ vDiagonal.length() + ", "
+									+ vRightSholderHip.length() + ", "
+									+ cvUperToHips.length() + ", "
+									+ cvLeftRighShouldersToHps.length() + ", "
+									+ anglLeftSh_leftHip + ", "
+									+ anglLeftHip_RightHip);
 							
-							 System.out.println(users[i] + ", " + vRightHipKnee.length() + ", " + vLeftHipKnee.length() +
-									 ", " + vRightKneeFoot.length() + ", " + vLeftKneeFoot.length() );
+//							 System.out.println(users[i] + ", " + vRightHipKnee.length() + ", " + vLeftHipKnee.length() +
+//									 ", " + vRightKneeFoot.length() + ", " + vLeftKneeFoot.length() );
 							// leftElbowShoulder + ", " + anglLeftSh_leftElbow +
 							// ", " + leftTorsoShoulder + ", " +
 							// leftShoulderNeck);
@@ -282,7 +348,7 @@ public class ProfileObserver implements Observer {
 									0d, 0d, 0d);
 							
 							for (int k = 0; k <meansCount; k++) {
-								double dd = tracker.getProfileMeans().get(k).profileMean.getSquareOfDistance(jv);
+								double dd = getProfileDistance(jv,k);
 								distances.add(dd);
 								//System.out.println(dd);
 							}
@@ -290,7 +356,8 @@ public class ProfileObserver implements Observer {
 							int minIndex = distances.indexOf(Collections.min(distances)); 
 							DummyProfile recognizedProfile = tracker.getProfileMeans().get(minIndex);
 							tracker.getRecognizedProfiles().put(users[i], recognizedProfile);
-							//System.out.println(recognizedProfile.profileMean.toString());
+							
+							System.out.println(recognizedProfile.profileMean.toString());
 							System.out.println(Collections.min(distances));
 							
 							//tracker.setRecognizedUser(users[i],0d);
@@ -305,6 +372,7 @@ public class ProfileObserver implements Observer {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-
 	}
+	
+	public abstract Double getProfileDistance(JointVector jv, Integer profileMeanIndex);
 }

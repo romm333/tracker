@@ -91,5 +91,21 @@ public class ProfileMathTest {
 		Assert.assertEquals(0.36720802,angle,0);
 	}
 	
+	@Test
+	public void testHashMap(){
+		//a = {3; 4; 0}  b = {4; 4; 2}.
+		//-202,11275200	-0,04417000	8,78720000
+		//-89,51500000	-250,43062600	-56,98870000
+
+		HashMap<Integer, String> map = new HashMap<Integer, String>();
+		map.put(1,"TEST1");
+		map.put(1,"TEST2");
+		map.put(1,"TEST3");
+		map.put(2,"TEST4");
+		
+		System.out.println(map.size());
+		
+		//Assert.assertEquals(0.36720802,angle,0);
+	}
 	
 }
