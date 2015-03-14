@@ -85,12 +85,7 @@ public class SkeletonTopView extends Component implements Observer {
 				}
 				
 				g.setColor(c);
-				//g.setColor(Color.WHITE);
 				
-				if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
-					// drawSkeleton(g, users[i]);
-				}
-
 				if (printID) {
 					Point3D com = tracker.depthGen
 							.convertRealWorldToProjective(tracker.userGen

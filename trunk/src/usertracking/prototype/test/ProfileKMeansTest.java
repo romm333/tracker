@@ -19,7 +19,7 @@ public class ProfileKMeansTest {
 		List<JointCluster> jointClusters;
 		List<DummyProfile> profileMeans;
 		
-		profileData = new ProfileKMeans("profiles/1.csv", 3);
+		profileData = new ProfileKMeans("profiles/1.csv", 6);
 		jointClusters = profileData.getJointsClusters();
 		
 		profileMeans = new ArrayList<DummyProfile>();

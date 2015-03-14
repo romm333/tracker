@@ -2,6 +2,7 @@ package usertracking.prototype.gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Observer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -17,7 +18,8 @@ import usertracking.prototype.classes.*;
 import usertracking.prototype.gui.views.SkeletonFrontView;
 import usertracking.prototype.gui.views.SkeletonTextInfoView;
 import usertracking.prototype.gui.views.SkeletonTopView;
-import usertracking.prototype.profile.ProfileObserver;
+import usertracking.prototype.profile.NewDWTObserver;
+import usertracking.prototype.profile.NewKmeansObserver;
 
 public class TrackerViewBoardNew extends JFrame {
 
@@ -72,9 +74,9 @@ public class TrackerViewBoardNew extends JFrame {
 		frontViewer.setMaximumSize(new Dimension(340, 590));
 		tracker.addObserver(frontViewer);
 		
-		ProfileObserver userProfileObserver = new ProfileObserver(tracker);
-		
-		tracker.addObserver(userProfileObserver);
+//		ProfileDWTObserver userProfileObserver = new ProfileDWTObserver(tracker);
+//		
+//		tracker.addObserver(userProfileObserver);
 		infoViewer = new SkeletonTextInfoView(56, 30);
 	
 		// Main Panels
@@ -159,13 +161,50 @@ public class TrackerViewBoardNew extends JFrame {
 		};
 		 
 		cbProfileMode.addItemListener(profileModeListener);
+		
+		JCheckBox cbRecognitionModeDWT = new JCheckBox("DWT");
+		 
+		ItemListener cbRecognitionModeDWTListener = new ItemListener() {
+			Observer dwtObserver;
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED){
+					dwtObserver = new NewDWTObserver(tracker);
+					tracker.addObserver(dwtObserver);
+				}
+				else
+					tracker.removeObserver(dwtObserver);
+			}
+		};
+		 
+		cbRecognitionModeDWT.addItemListener(cbRecognitionModeDWTListener);
+		
+
+		 JCheckBox cbRecognitionModeKMeans = new JCheckBox("K-Means");
+		 
+		ItemListener cbRecognitionModeKMeansListener = new ItemListener() {
+			Observer prObserver;
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED){
+					prObserver = new NewKmeansObserver(tracker);
+					tracker.addObserver(prObserver);
+				}
+				else
+					tracker.removeObserver(prObserver);
+			}
+		};
+		 
+		cbRecognitionModeKMeans.addItemListener(cbRecognitionModeKMeansListener);
 				
 		controllPanel.add(cbRecMode);
 		controllPanel.add(cbProfileMode);
 		controllPanel.add(profileCount);
+		
 		controllPanel.add(lblPrCount);
-		
-		
+		controllPanel.add(cbRecognitionModeDWT);
+		controllPanel.add(cbRecognitionModeKMeans);
+				
 		rightPanel.add(controllPanel, BorderLayout.NORTH);
 		rightPanel.add(scrollPane, BorderLayout.SOUTH);
 				
