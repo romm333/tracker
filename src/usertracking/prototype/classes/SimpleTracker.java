@@ -57,6 +57,8 @@ public class SimpleTracker extends Observable {
 	private List<DummyProfile> profileMeans;
 	private HashMap<Integer,DummyProfile> recognizedProfiles;
 	
+	private Set<Integer> recordedUsers;
+	
 	public SimpleTracker() {
 		try {
 			scriptNode = new OutArg<ScriptNode>();
@@ -74,6 +76,8 @@ public class SimpleTracker extends Observable {
 			profiledUsers = new HashSet<Integer>();
 			recognizedUsers = new HashMap<Integer, Double>();
 			recognizedProfiles = new HashMap<Integer, DummyProfile>();
+			
+			recordedUsers = new HashSet<Integer>();
 			
 			userGen.getNewUserEvent().addObserver(new NewUserObserver());
 			
@@ -178,6 +182,18 @@ public class SimpleTracker extends Observable {
 		return profileMeans;
 	}
 
+	public boolean isRecordingRequestedForUser(int uid) {
+		return this.recordedUsers.contains(uid);
+	}
+
+	public void recordedUser(int recordedUser) {
+		this.recordedUsers.add(recordedUser);
+	}
+	
+	public Set<Integer> getRecorderUsers(){
+		return this.recordedUsers;
+	}
+
 	class UserReenterObserver implements IObserver<UserEventArgs> {
 		@Override
 		public void update(IObservable<UserEventArgs> observable,
@@ -222,9 +238,12 @@ public class SimpleTracker extends Observable {
 				UserEventArgs args) {
 			System.out.println("Lost user " + args.getId());
 			joints.remove(args.getId());
+			
 			profiledUsers.remove((Integer)args.getId());
 			recognizedUsers.remove(args.getId());
 			recognizedProfiles.remove(args.getId());
+			
+			 recordedUsers.remove((byte)args.getId());
 		}
 	}
 
@@ -273,7 +292,7 @@ public class SimpleTracker extends Observable {
 				 System.out.println("Pose " + args.getPose() + " detected for "
 						 + args.getUser());
 						 profiledUsers.add(args.getUser());
-						 
+						 recordedUsers.add(args.getUser());
 						 
 						 /****/
 												 
