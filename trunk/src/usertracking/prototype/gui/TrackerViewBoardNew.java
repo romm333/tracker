@@ -18,8 +18,10 @@ import usertracking.prototype.classes.*;
 import usertracking.prototype.gui.views.SkeletonFrontView;
 import usertracking.prototype.gui.views.SkeletonTextInfoView;
 import usertracking.prototype.gui.views.SkeletonTopView;
+import usertracking.prototype.kmeans.JointVector;
 import usertracking.prototype.profile.NewDWTObserver;
 import usertracking.prototype.profile.NewKmeansObserver;
+import usertracking.prototype.profile.NewRecordingObserver;
 
 public class TrackerViewBoardNew extends JFrame {
 
@@ -131,12 +133,19 @@ public class TrackerViewBoardNew extends JFrame {
 		 JCheckBox cbRecMode = new JCheckBox("Recording mode");
 		 
 		ItemListener recordingModeListener = new ItemListener() {
+			Observer profileRecorder;
+
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
-					tracker.setInRecordingMode(true);
-				else
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					profileRecorder = new NewRecordingObserver(tracker);
+					tracker.addObserver(profileRecorder);
+					
+				} else {
 					tracker.setInRecordingMode(false);
+					tracker.removeObserver(profileRecorder);
+					tracker.getRecorderUsers().clear();
+				}
 			}
 		};
 		 
@@ -171,6 +180,7 @@ public class TrackerViewBoardNew extends JFrame {
 				if (e.getStateChange() == ItemEvent.SELECTED){
 					dwtObserver = new NewDWTObserver(tracker);
 					tracker.addObserver(dwtObserver);
+					
 				}
 				else
 					tracker.removeObserver(dwtObserver);
