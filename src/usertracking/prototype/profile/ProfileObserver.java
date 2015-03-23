@@ -103,9 +103,7 @@ public abstract class ProfileObserver implements Observer {
 			int buffFrameId = -1;
 			int[] users = tracker.userGen.getUsers();
 			for (int i = 0; i < users.length; ++i) {
-				if (tracker.skeletonCap.isSkeletonTracking(users[i])
-						&& tracker.isRecognitionRequestedForUser(users[i])
-						&& !tracker.isUserRecognized(users[i])) {
+				if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
 
 					SkeletonJointPosition headPosition = tracker.skeletonCap
 							.getSkeletonJointPosition(users[i],
@@ -304,8 +302,8 @@ public abstract class ProfileObserver implements Observer {
 						Vector3d cvLeftRighShouldersToHps = ProfileMath
 								.getVector3d(TLSLS, TRSRH);
 						
+						System.out.println(users[i] + ", " + tracker.isInRecordingMode());
 						
-
 						if (tracker.isInRecordingMode()) {
 							System.out.println(users[i] + ", " + neckTorso
 									+ ", " + shoulders + ", " + hips + ", "
