@@ -50,7 +50,8 @@ public abstract class ProfileObserver implements Observer {
 	SkeletonJointPosition rightFoot;
 	SkeletonJointPosition leftFoot;
 	
-	private int[][] profileHitCount; 
+	
+	HashMap<Integer, Integer[][]> userProfileScore;
 	
 	public SimpleTracker getTracker(){
 		return tracker;
@@ -99,8 +100,7 @@ public abstract class ProfileObserver implements Observer {
 	 
 	public ProfileObserver(SimpleTracker _tracker) {
 		this.tracker = _tracker;
-		int profilesCount = this.tracker.getProfileMeans().size();
-		profileHitCount = new int[profilesCount][1];
+		userProfileScore = new HashMap<Integer, Integer[][]>();
 	}
 
 	@Override
@@ -279,10 +279,6 @@ public abstract class ProfileObserver implements Observer {
 							
 							int minIndex = distances.indexOf(Collections.min(distances));
 							
-							int currentCount = profileHitCount[minIndex][0];
-							currentCount++;
-							profileHitCount[minIndex][0] = currentCount;
-							
 							DummyProfile recognizedProfile = tracker.getProfileMeans().get(minIndex);
 							tracker.getRecognizedProfiles().put(users[i], recognizedProfile);
 							
@@ -290,11 +286,6 @@ public abstract class ProfileObserver implements Observer {
 							//System.out.println(Collections.min(distances));
 							
 							//tracker.setRecognizedUser(users[i],0d);
-							for(int z=0; z<profileHitCount.length; z++)
-							{
-								System.out.println("profile " + z + " hit count " + profileHitCount[z][0]); 
-							}
-						
 						}
 
 					}
