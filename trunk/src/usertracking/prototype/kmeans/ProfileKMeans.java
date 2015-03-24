@@ -128,8 +128,6 @@ public class ProfileKMeans {
 	}
 	
 	public JointVector getStandardDeviationVector(JointVector vector1, JointVector vector2){
-		ProfileMath pMath = new ProfileMath();
-		
 		List<Float> listA = new ArrayList<Float>(2);
 		float A1 = (float)vector1.a;
 		float A2 = (float)vector2.a;
@@ -137,7 +135,7 @@ public class ProfileKMeans {
 		listA.add(A1);
 		listA.add(A2);
 		
-		double variationA = pMath.getVariationCoefficient(listA);
+		double variationA = ProfileMath.getVariationCoefficient(listA);
 		
 		List<Float> listB = new ArrayList<Float>(2);
 		float B1 = (float)vector1.b;
@@ -146,7 +144,7 @@ public class ProfileKMeans {
 		listB.add(B1);
 		listB.add(B2);
 		
-		double variationB = pMath.getVariationCoefficient(listB);
+		double variationB = ProfileMath.getVariationCoefficient(listB);
 		
 		List<Float> listC = new ArrayList<Float>(2);
 	 	float C1 = (float)vector1.c;
@@ -154,7 +152,7 @@ public class ProfileKMeans {
 		
 		listC.add(C1);
 		listC.add(C2);
-		double variationC = pMath.getVariationCoefficient(listC);
+		double variationC = ProfileMath.getVariationCoefficient(listC);
 				
 		List<Float> listD = new ArrayList<Float>(2);
 		float D1 = (float)vector1.d;
@@ -162,9 +160,8 @@ public class ProfileKMeans {
 		
 		listD.add(D1);
 		listD.add(D2);
-		double variationD = pMath.getVariationCoefficient(listD);
+		double variationD = ProfileMath.getVariationCoefficient(listD);
 		
-		//JointVector jointVector = new JointVector(variationA, variationB, variationD, variationC);
 		return null;
 	}
 	
