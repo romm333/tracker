@@ -105,10 +105,16 @@ public abstract class ProfileObserver implements Observer {
 	
 	private void initProfileScore(){
 		int profilesCount = this.getTracker().getProfileMeans().size();
+		
 		Integer[][] hitArray = new Integer[profilesCount][1];
+		for(int i = 0; i < hitArray.length; i++ ){
+			hitArray[i][0] = 0;
+		}
+		
 		userProfileScore = new HashMap<Integer, Integer[][]>();
 		
 		for(int i=0; i<8;i++){
+			
 			userProfileScore.put(i, hitArray);
 		}
 	}
@@ -334,12 +340,18 @@ public abstract class ProfileObserver implements Observer {
 							
 							int minIndex = distances.indexOf(Collections.min(distances));
 							updateProfileScore(users[i], minIndex);
-							int topScoreProfile = getTopProfileScore(users[i], 100);
+							int topScoreProfile = getTopProfileScore(users[i], 300);
+							
+							
 							
 							DummyProfile recognizedProfile = tracker.getProfileMeans().get(minIndex);
-							tracker.getRecognizedProfiles().put(users[i], recognizedProfile);
 							
-							//System.out.println(recognizedProfile.profileMean.toString());
+							//System.out.println(topScoreProfile + ", " + minIndex + ", " + recognizedProfile.profileMean);
+							
+							if(minIndex == topScoreProfile){
+								tracker.getRecognizedProfiles().put(users[i], recognizedProfile);
+								System.out.println(recognizedProfile.profileMean.toString());
+							}
 							//System.out.println(Collections.min(distances));
 							
 							//tracker.setRecognizedUser(users[i],0d);
@@ -352,6 +364,7 @@ public abstract class ProfileObserver implements Observer {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			System.out.println(e.getLocalizedMessage());
 		}
 	}
 	public abstract Double getProfileDistance(JointVector jv, Integer profileMeanIndex);
