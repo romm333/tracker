@@ -1,5 +1,6 @@
 package usertracking.prototype.profile;
 
+import java.lang.invoke.SwitchPoint;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -57,8 +58,6 @@ public abstract class ProfileObserver implements Observer {
 		return tracker;
 	}
 	
-	
-	
 	private void initJointData(int uid) throws StatusException {
 		headPosition = tracker.skeletonCap.getSkeletonJointPosition(uid,
 				SkeletonJoint.HEAD);
@@ -100,9 +99,65 @@ public abstract class ProfileObserver implements Observer {
 	 
 	public ProfileObserver(SimpleTracker _tracker) {
 		this.tracker = _tracker;
-		userProfileScore = new HashMap<Integer, Integer[][]>();
+		initProfileScore();
 	}
-
+	
+	
+	private void initProfileScore(){
+		int profilesCount = this.getTracker().getProfileMeans().size();
+		Integer[][] hitArray = new Integer[profilesCount][1];
+		userProfileScore = new HashMap<Integer, Integer[][]>();
+		
+		for(int i=0; i<8;i++){
+			userProfileScore.put(i, hitArray);
+		}
+	}
+	
+	private void updateProfileScore(int uid, int profileIndex){
+		Integer[][] buffArray = userProfileScore.get(uid);
+		int  buff =  buffArray[profileIndex][0];
+		buff++;
+		
+		buffArray[profileIndex][0] = buff;
+		userProfileScore.put(uid, buffArray);
+	}
+	
+	private int getTopProfileScore(int uid, int delta){
+		Integer[][] buffArray = userProfileScore.get(uid);
+		int topCountIndex = getTopCountIndex(buffArray);
+		int topHitCount = buffArray[topCountIndex][0];
+		
+		int diff = Integer.MIN_VALUE;
+		
+		for (int i=0; i < buffArray.length;i++){
+			if(i==topCountIndex)
+				continue;
+			
+			diff = topHitCount - buffArray[i][0];
+		}
+		
+		if (diff > delta)
+			return topCountIndex;
+		
+		return -1;
+	}
+	
+	private int getTopCountIndex(Integer[][] hits) {
+		int swap = Integer.MIN_VALUE;
+		int maxIndex = Integer.MIN_VALUE;
+		
+		for(int i=0; i < hits.length; i++){
+			int buff = hits[i][0];
+			
+			if(buff < swap)
+				continue;
+			
+			swap = buff;
+			maxIndex = i;
+		}
+		return maxIndex;
+	}
+	
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		try {
@@ -278,6 +333,9 @@ public abstract class ProfileObserver implements Observer {
 							}
 							
 							int minIndex = distances.indexOf(Collections.min(distances));
+							updateProfileScore(users[i], minIndex);
+							
+							int topScoreProfile = getTopProfileScore(users[i], 100);
 							
 							DummyProfile recognizedProfile = tracker.getProfileMeans().get(minIndex);
 							tracker.getRecognizedProfiles().put(users[i], recognizedProfile);
@@ -297,10 +355,5 @@ public abstract class ProfileObserver implements Observer {
 			// TODO: handle exception
 		}
 	}
-	
-	private void getProfileHitCount(){
-		
-	}
-	
 	public abstract Double getProfileDistance(JointVector jv, Integer profileMeanIndex);
 }
