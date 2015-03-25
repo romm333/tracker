@@ -334,7 +334,6 @@ public abstract class ProfileObserver implements Observer {
 							
 							int minIndex = distances.indexOf(Collections.min(distances));
 							updateProfileScore(users[i], minIndex);
-							
 							int topScoreProfile = getTopProfileScore(users[i], 100);
 							
 							DummyProfile recognizedProfile = tracker.getProfileMeans().get(minIndex);
