@@ -48,6 +48,10 @@ public class NewRecordingObserver implements Observer {
 
 	SkeletonJointPosition rightFoot;
 	SkeletonJointPosition leftFoot;
+	
+	int buffFrameId = -1;
+	Point3D buffLeftFoot;
+	Point3D leftFootPosition;
 
 	public SimpleTracker getTracker() {
 		return tracker;
@@ -94,13 +98,16 @@ public class NewRecordingObserver implements Observer {
 
 	public NewRecordingObserver(SimpleTracker _tracker) {
 		this.tracker = _tracker;
+		buffLeftFoot = new Point3D(0,0,0);
+		leftFootPosition = new Point3D(0,0,0);
 	}
-
+	
+	
+			
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
 		try {
-			int buffFrameId = -1;
 			int[] users = tracker.userGen.getUsers();
 			for (int i = 0; i < users.length; ++i) {
 				
@@ -184,6 +191,7 @@ public class NewRecordingObserver implements Observer {
 						Point3D leftKneePos = leftKnee.getPosition();
 
 						Point3D rightFootPos = rightFoot.getPosition();
+						 
 						Point3D leftFootPos = leftFoot.getPosition();
 
 						Point3D rightSholderPos = rightShoulder.getPosition();
@@ -251,6 +259,11 @@ public class NewRecordingObserver implements Observer {
 								rightKneePos, rightFootPos);
 						Vector3d vLeftKneeFoot = ProfileMath.getVector3d(
 								leftKneePos, leftFootPos);
+						
+						leftFootPosition = leftKneePos;
+						Vector3d vLeftFootOverFrames = ProfileMath.getVector3d(
+								leftFootPosition, buffLeftFoot);
+						buffLeftFoot = leftFootPosition;
 
 						double shoulders = vShoulders.length();
 						double hips = vHips.length();
@@ -306,16 +319,18 @@ public class NewRecordingObserver implements Observer {
 								torsoPos, rightSholderPos, rightHipPos);
 						Vector3d cvLeftRighShouldersToHps = ProfileMath
 								.getVector3d(TLSLS, TRSRH);
-
+						
+						
 					
-							System.out.println(users[i] + ", " + neckTorso
-									+ ", " + shoulders + ", " + hips + ", "
-									+ vDiagonal.length() + ", "
-									+ vRightSholderHip.length() + ", "
-									+ cvUperToHips.length() + ", "
-									+ cvLeftRighShouldersToHps.length() + ", "
-									+ anglLeftSh_leftHip + ", "
-									+ anglLeftHip_RightHip);
+//							System.out.println(users[i] + ", " + neckTorso
+//									+ ", " + shoulders + ", " + hips + ", "
+//									+ vDiagonal.length() + ", "
+//									+ vRightSholderHip.length() + ", "
+//									+ cvUperToHips.length() + ", "
+//									+ cvLeftRighShouldersToHps.length() + ", "
+//									+ anglLeftSh_leftHip + ", "
+//									+ anglLeftHip_RightHip);
+						System.out.println(frameId + ", " + vLeftFootOverFrames.length());
 						
 					}
 
