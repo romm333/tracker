@@ -164,11 +164,13 @@ public abstract class ProfileObserver implements Observer {
 		return maxIndex;
 	}
 	
+	int buffFrameId = -1;
+	
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		try {
 			
-			int buffFrameId = -1;
+			
 			int[] users = tracker.userGen.getUsers();
 			for (int i = 0; i < users.length; ++i) {
 				if (tracker.skeletonCap.isSkeletonTracking(users[i])) {
@@ -348,10 +350,10 @@ public abstract class ProfileObserver implements Observer {
 							
 							//System.out.println(topScoreProfile + ", " + minIndex + ", " + recognizedProfile.profileMean);
 							
-							if(minIndex == topScoreProfile){
+							//if(minIndex == topScoreProfile){
 								tracker.getRecognizedProfiles().put(users[i], recognizedProfile);
 								System.out.println(recognizedProfile.profileMean.toString());
-							}
+							//}
 							//System.out.println(Collections.min(distances));
 							
 							//tracker.setRecognizedUser(users[i],0d);
